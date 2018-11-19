@@ -1,0 +1,33 @@
+{
+  "name": "central-notification",
+  "version": "0.0.1",
+  "description": "CEP for Mojaloop Central-Ledger to monitor the notificaion kafka topic and act on it.",
+  "main": "index.js",
+  "dependencies": {
+    "@mojaloop/central-services-error-handling": "0.5.1",
+    "@mojaloop/central-services-shared": "^3.7.1-snapshot",
+    "json-rules-engine": "^2.3.0",
+    "mongoose": "^5.3.8",
+    "mongoose-unique-validator": "^2.0.2",
+    "mustache": "^3.0.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
+    "rxjs": "^6.3.3",
+    "rxjs-compat": "^6.3.3",
+    "uuid4": "^1.1.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vgenev/central-notification.git"
+  },
+  "author": "Valentin Genev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vgenev/central-notification/issues"
+  },
+  "homepage": "https://github.com/vgenev/central-notification#readme"
+}
