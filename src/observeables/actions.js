@@ -27,6 +27,7 @@
 const Rx = require('rxjs')
 const Utility = require('../lib/utility')
 const Uuid = require('uuid4')
+const moment = require('moment')
 const Config = require('../../config/config.json')
 const Enum = require('../lib/enum')
 const TransferEventType = Enum.transferEventType
@@ -103,7 +104,8 @@ const actionObservable = ({ action, params, message }) => {
         messageDetails
       }
       if (previousAction) {
-        if (previousAction.timesTriggered < params.repetitionsAllowed) { // TODO add notificationInterval in the mix condition for repeating event
+        if ((previousAction.timesTriggered < params.repetitionsAllowed) &&
+          (moment(previousAction.updatedAt).add(notificationInterval, 'minutes') < moment.now())) {
           actionResult = await actionBuilder(action)({ payload })
           previousAction.timesTriggered++
           previousAction.save()

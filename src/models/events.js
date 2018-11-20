@@ -48,9 +48,8 @@ const eventSchema = new mongoose.Schema({
   action: { type: String, required: true, enum: actions }, // always sendToKafkaTopic
   templateType: { type: String, required: true },
   language: { type: String, required: true },
-  createdDate: { type: Date, default: Date.now },
   isActive: { type: Boolean, default: true }
-})
+}, { timestamps: true })
 
 const eventModel = mongoose.model(config.mongo.eventCollection, eventSchema)
 
