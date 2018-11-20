@@ -1,5 +1,6 @@
 Notification service
 ====================
+The notification service provides support for notifications based on configured criteria such as Net Debit Cap changes or reaching a threshold on the Net Debit Cap or such others.
 
 stories
 -------
