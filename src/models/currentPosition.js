@@ -42,11 +42,10 @@ const currentPositionSchema = new mongoose.Schema({
   name: { type: String, required: true, index: true },
   currency: { type: String, required: true, index: true },
   positionValue: { type: Number, required: true },
-  createdDate: { type: Date, default: Date.now },
   percentage: { type: Number },
   transferId: { type: String, required: true, index: true },
   messagePayload: { type: String, required: true } // create schema later
-})
+}, { timestamps: true })
 
 const currentPositionModel = mongoose.model(config.mongo.netDebitCapPositionCollection, currentPositionSchema)
 

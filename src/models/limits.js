@@ -45,9 +45,8 @@ const limitSchema = new mongoose.Schema({
   type: { type: String, required: true },
   value: { type: Number, required: true },
   repetitions: { type: Number, default: 3 },
-  threshold: { type: Number, required: true, default: 10 },
-  createdDate: { type: Date, default: Date.now }
-})
+  threshold: { type: Number, required: true, default: 10 }
+}, { timestamps: true })
 
 // we need returned createdDate from central-ledger as well
 

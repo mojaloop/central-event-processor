@@ -42,9 +42,8 @@ const notificationEndpointSchema = new mongoose.Schema({
   name: { type: String, required: true, index: true },
   type: { type: String, required: true, index: true },
   action: { type: String },
-  value: { type: String, required: true },
-  createdDate: { type: Date, default: Date.now }
-})
+  value: { type: String, required: true }
+}, { timestamps: true })
 
 // we need returned createdDate from central-ledger as well
 
