@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8fdab2b7-1898-43bf-bf56-42d49c2633b8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/istorecenturion.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/externalDependencies.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/sprint5rework.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/observeables/actions.js" afterPath="$PROJECT_DIR$/src/observeables/actions.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/observeables/rules/ndcAdjustment.js" afterPath="$PROJECT_DIR$/src/observeables/rules/ndcAdjustment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/observeables/rules/ndcBreach.js" afterPath="$PROJECT_DIR$/src/observeables/rules/ndcBreach.js" />
-    </list>
+    <list default="true" id="8fdab2b7-1898-43bf-bf56-42d49c2633b8" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,17 +21,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ndcBreach.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ndcBreach.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/observeables/rules/ndcBreach.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="76" column="61" lean-forward="true" selection-start-line="76" selection-start-column="61" selection-end-line="76" selection-end-column="61" />
+            <state relative-caret-position="856">
+              <caret line="103" column="9" lean-forward="true" selection-start-line="103" selection-start-column="9" selection-end-line="103" selection-end-column="9" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ndcAdjustment.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ndcAdjustment.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/observeables/rules/ndcAdjustment.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="470">
@@ -486,12 +477,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542696160675</updated>
-      <workItem from="1542696162586" duration="12870000" />
+      <workItem from="1542696162586" duration="13138000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12870000" />
+    <option name="totallyTimeSpent" value="13138000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="6" />
@@ -815,18 +806,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/observeables/rules/ndcAdjustment.js">
+    <entry file="file://$PROJECT_DIR$/src/observeables/rules/ndcBreach.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="470">
-          <caret line="76" column="5" lean-forward="true" selection-start-line="76" selection-start-column="5" selection-end-line="76" selection-end-column="5" />
+        <state relative-caret-position="856">
+          <caret line="103" column="9" lean-forward="true" selection-start-line="103" selection-start-column="9" selection-end-line="103" selection-end-column="9" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/observeables/rules/ndcBreach.js">
+    <entry file="file://$PROJECT_DIR$/src/observeables/rules/ndcAdjustment.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="76" column="61" lean-forward="true" selection-start-line="76" selection-start-column="61" selection-end-line="76" selection-end-column="61" />
+        <state relative-caret-position="470">
+          <caret line="76" column="5" lean-forward="true" selection-start-line="76" selection-start-column="5" selection-end-line="76" selection-end-column="5" />
           <folding />
         </state>
       </provider>
