@@ -92,8 +92,8 @@ const actionObservable = ({ action, params, message }) => {
       }
       let actionResult
       let previousAction = await ActionModel.findOne({ fromEvent: params.fromEvent, isActive: true })
-      let recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType }) // bug
-      let hubDetails = await NotificationModel.findOne({ name: 'Hub', action: params.action, type: params.notificationEndpointType }) // bug
+      let recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType })
+      let hubDetails = await NotificationModel.findOne({ name: 'Hub', action: params.action, type: params.notificationEndpointType })
       let messageDetails = Object.assign({}, params, { notificationInterval, resetPeriod })
       const payload = {
         from: 'SYSTEM',
