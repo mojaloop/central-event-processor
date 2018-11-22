@@ -28,7 +28,7 @@
  * @module src/models/netDebitCapView
  */
 const mongoose = require('mongoose')
-const config = require('../../config/config')
+const config = require('../lib/config')
 
 /**
  * @const currentPossitionSchema
@@ -47,7 +47,7 @@ const currentPositionSchema = new mongoose.Schema({
   messagePayload: { type: String, required: true } // create schema later
 }, { timestamps: true })
 
-const currentPositionModel = mongoose.model(config.mongo.netDebitCapPositionCollection, currentPositionSchema)
+const currentPositionModel = mongoose.model(config.MONGO.netDebitCapPositionCollection, currentPositionSchema)
 
 module.exports = {
   currentPositionModel

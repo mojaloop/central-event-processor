@@ -92,7 +92,7 @@ const setup = async () => {
   }
 
   const generalObservable = topicObservable
-    .pipe(filter(data => data.value.metadata.event.action === 'prepare'),
+    .pipe(filter(data => data.value.metadata.event.action === 'commit'),
       switchMap(Observables.CentralLedgerAPI.getDfspNotificationEndpointsObservable),
       switchMap(getLimitObservable),
       switchMap(Observables.CentralLedgerAPI.getPositionsObservable),
@@ -108,7 +108,7 @@ const setup = async () => {
       }
       Logger.info(actionResult)
     },
-    error: err => Logger.info('err', err),
+    error: err => Logger.info('Error occured: ', err),
     completed: (value) => Logger.info('completed with value', value)
   })
 }

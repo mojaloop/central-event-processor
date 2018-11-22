@@ -25,7 +25,7 @@
 'use strict'
 
 const mongoose = require('mongoose')
-const config = require('../../config/config')
+const config = require('../lib/config')
 
 // as soon as threshold is breached we creat action
 // as soon as the position is fixed isActive becomes false
@@ -34,13 +34,13 @@ const config = require('../../config/config')
 // scheduler will check after an hour if this action is still active and if its active will clear timerTriggered field.
 
 const actionSchema = new mongoose.Schema({
-  triggeredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'currentPossitionSchema' }, // this will show event in the past
+  triggeredBy: { type: mongoose.Schema.Types.ObjectId }, // this will show event in the past
   timesTriggered: { type: Number, default: 1 },
   fromEvent: { type: mongoose.Schema.Types.ObjectId, ref: 'eventSchema' },
   isActive: { type: Boolean, default: true }
 }, { timestamps: true })
 
-const actionModel = mongoose.model(config.mongo.actionCollection, actionSchema)
+const actionModel = mongoose.model(config.MONGO.actionCollection, actionSchema)
 
 module.exports = {
   actionModel
