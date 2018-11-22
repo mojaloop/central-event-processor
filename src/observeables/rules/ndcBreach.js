@@ -42,7 +42,7 @@ const createRules = async (position) => {
       name: position.name,
       currency: position.currency,
       limitType: Enums.limitNotificationMap.NET_DEBIT_CAP.enum,
-      notificationEndpointType: Enums.limitNotificationMap.NET_DEBIT_CAP.NET_DEBIT_CAP_BREACH_MAIL.enum,
+      notificationEndpointType: Enums.limitNotificationMap.NET_DEBIT_CAP.NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL.enum,
       isActive: true
     })
   ])

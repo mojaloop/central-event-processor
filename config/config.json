@@ -10,9 +10,9 @@
     },
     "expanded": "full"
   },
-  "mongo": {
-    "url": "localhost:27017",
-    "database": "mojaloop",
+  "MONGO": {
+    "URI": "localhost:27017",
+    "DATABASE": "mojaloop",
     "ruleCollection": "Rule",
     "netDebitCapPositionCollection": "NDCPosition",
     "actionCollection": "Actions",
