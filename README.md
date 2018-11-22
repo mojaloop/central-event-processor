@@ -8,6 +8,7 @@
 * 7. [General process overview](#Generalprocessoverview)
 	* 7.1. [enums](#enums)
 	* 7.2. [Rules](#Rules)
+  * 7.3  [Config](#Config)
 * 8. [Limit Adjustment Rules flow](#LimitAdjustmentRulesflow)
 * 9. [Limit Position Threshold Breach flow](#LimitPositionThresholdBreachflow)
 * 10. [Actions Agent flow](#ActionsAgentflow)
@@ -22,8 +23,7 @@
 
 ##  1. <a name='Stories'></a>Stories
 * [#517 - Notification for changes to NetDebitCap or Position adjustments](https://github.com/mojaloop/project/issues/517)
-* [#518 - Notification for approach-----------------
-ing Net Debit Cap Threshold](https://github.com/mojaloop/project/issues/518)
+* [#518 - Notification for approaching Net Debit Cap Threshold](https://github.com/mojaloop/project/issues/518)
 
 ##  2. <a name='Tasks'></a>Tasks
 * send notifications when current position breaches the limit threshold value after a successful transfer was commited
@@ -91,6 +91,12 @@ Currently two separate Rules are validated:
 2. Limit Position Threshold Breach Rule [here](src/observables/rules/ndcBreach.js) 
 In the current implementation for each separate rule, an observable has to be created, like the couple above, and configured when and how to trigger it into the [setup](src/setup.js)
 The Rules outputs should be chained to common Action Agent.
+
+###  7.3. <a name='Config'></a>Config
+
+The default config is available [here](config/config.json)
+To use Environmental Variables for MongoDB URI and database name use: 
+`CEP_MONGO_URI` and `CEP_MONGO_DATABASE`
 
 ##  8. <a name='LimitAdjustmentRulesflow'></a>Limit Adjustment Rules flow
 ![limitAdjustment](docs/images/3.png)
