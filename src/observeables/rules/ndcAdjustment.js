@@ -65,13 +65,15 @@ const createRules = async (limit) => {
       dfsp: name,
       limitType: type,
       value: limit.value,
+      currency: limit.currency,
       triggeredBy: limit._id,
       repetitionsAllowed: limit.repetitions,
       fromEvent: dbEvent.id,
       action: dbEvent.action,
       notificationEndpointType: dbEvent.notificationEndpointType,
       templateType: dbEvent.templateType,
-      language: dbEvent.language
+      language: dbEvent.language,
+        messageSubject: `${type} LIMIT ADJUSTMENT`
     }
   }
   let adjustmentRule = new RuleEngine.Rule({ conditions, event })
