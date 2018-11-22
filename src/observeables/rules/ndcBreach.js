@@ -69,7 +69,8 @@ const createRules = async (position) => {
       action: dbEvent.action,
       notificationEndpointType: dbEvent.notificationEndpointType,
       templateType: dbEvent.templateType,
-      language: dbEvent.language
+      language: dbEvent.language,
+        messageSubject: `${limit.type} BREACH CONDITION REACHED`
     }
   }
 
