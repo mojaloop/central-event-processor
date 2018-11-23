@@ -42,7 +42,7 @@
 ##  5. <a name='Localstorage'></a>Local storage
 * Mongo DB
 * Mongoose is used for schema validations and ORM functions
-* full database documentation can be found [here]()
+* full database documentation can be found [here](docs/database/Mojaloop_central-notifications_Db_ver1.0.html)
 
 ##  6. <a name='Architectureoverview'></a>Architecture overview
 ![architecture](docs/images/1.png)
