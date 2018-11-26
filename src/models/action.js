@@ -40,7 +40,7 @@ const actionSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true }
 }, { timestamps: true })
 
-const actionModel = mongoose.model(config.mongo.actionCollection, actionSchema)
+const actionModel = mongoose.model(config.MONGO.actionCollection, actionSchema)
 
 module.exports = {
   actionModel

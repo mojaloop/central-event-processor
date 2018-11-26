@@ -73,7 +73,7 @@ const createRules = async (limit) => {
       notificationEndpointType: dbEvent.notificationEndpointType,
       templateType: dbEvent.templateType,
       language: dbEvent.language,
-        messageSubject: `${type} LIMIT ADJUSTMENT`
+      messageSubject: `${type} LIMIT ADJUSTMENT`
     }
   }
   let adjustmentRule = new RuleEngine.Rule({ conditions, event })

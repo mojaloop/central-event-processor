@@ -45,8 +45,7 @@
 * Mongo DB
 * Mongoose is used for schema validations and ORM functions
 * to set up connection the following environmental variables might be used: `CEP_DATABASE_URI` and `CEP_DATABASE_NAME`
-
-* full database documentation can be found [here]()
+* full database documentation can be found [here](docs/database/Mojaloop_central-notifications_Db_ver1.0.html)
 
 ##  6. <a name='Architectureoverview'></a>Architecture overview
 ![architecture](docs/images/1.png)

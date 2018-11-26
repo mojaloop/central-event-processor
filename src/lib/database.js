@@ -34,7 +34,7 @@ const Logger = require('@mojaloop/central-services-shared').Logger
 const setupDb = () => {
   const db = Mongoose.connection
   Mongoose.Promise = global.Promise
-  Mongoose.connect(`mongodb://${config.mongo.uri}/${config.mongo.database}`)
+  Mongoose.connect(`mongodb://${config.MONGO.URI}/${config.MONGO.DATABASE}`)
   db.on('error', console.error.bind(console, 'connection error'))
   db.once('open', function callback () {
     Logger.info('Connection with database succeeded.')

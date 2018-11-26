@@ -47,7 +47,7 @@ const notificationEndpointSchema = new mongoose.Schema({
 
 // we need returned createdDate from central-ledger as well
 
-const notificationEndpointModel = mongoose.model(config.mongo.notificationEndpointCollection, notificationEndpointSchema)
+const notificationEndpointModel = mongoose.model(config.MONGO.notificationEndpointCollection, notificationEndpointSchema)
 
 module.exports = {
   notificationEndpointModel

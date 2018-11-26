@@ -50,7 +50,7 @@ const limitSchema = new mongoose.Schema({
 
 // we need returned createdDate from central-ledger as well
 
-const limitModel = mongoose.model(config.mongo.limitCollection, limitSchema)
+const limitModel = mongoose.model(config.MONGO.limitCollection, limitSchema)
 
 module.exports = {
   limitModel

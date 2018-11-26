@@ -19,7 +19,7 @@
  - Name Surname <name.surname@gatesfoundation.com>
  * Valentin Genev <valentin.genev@modusbox.com>
  * Deon Botha <deon.botha@modusbox.com>
- --------------
+ -------------- 
  ******/
 
 'use strict'
@@ -70,7 +70,7 @@ const createRules = async (position) => {
       notificationEndpointType: dbEvent.notificationEndpointType,
       templateType: dbEvent.templateType,
       language: dbEvent.language,
-        messageSubject: `${limit.type} BREACH CONDITION REACHED`
+      messageSubject: `${limit.type} BREACH CONDITION REACHED`
     }
   }
 
