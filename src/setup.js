@@ -36,7 +36,7 @@ const { filter, switchMap, share } = require('rxjs/operators')
 const Enum = require('./lib/enum')
 const TransferEventType = Enum.transferEventType
 const TransferEventAction = Enum.transferEventAction
-const Observables = require('./observeables')
+const Observables = require('./observables')
 
 const setup = async () => {
   await require('./lib/database').db()

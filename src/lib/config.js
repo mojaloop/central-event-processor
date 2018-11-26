@@ -1,3 +1,4 @@
-const RC = require('rc')('CEP', require('../../config/config.json'))
+// const RC = require('rc')('CEP', require('../../config/default.json'))
+const config = require('config')
 
-module.exports = RC
+module.exports = config

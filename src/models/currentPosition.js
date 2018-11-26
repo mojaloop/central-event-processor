@@ -47,7 +47,7 @@ const currentPositionSchema = new mongoose.Schema({
   messagePayload: { type: String, required: true } // create schema later
 }, { timestamps: true })
 
-const currentPositionModel = mongoose.model(config.MONGO.netDebitCapPositionCollection, currentPositionSchema)
+const currentPositionModel = mongoose.model(config.mongo.netDebitCapPositionCollection, currentPositionSchema)
 
 module.exports = {
   currentPositionModel

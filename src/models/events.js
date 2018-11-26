@@ -29,7 +29,7 @@
  */
 const mongoose = require('mongoose')
 const config = require('../lib/config')
-const getActions = require('../observeables/actions').getActions
+const getActions = require('../observables/actions').getActions
 /**
  * @const limitSchema
  *
@@ -51,7 +51,7 @@ const eventSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true }
 }, { timestamps: true })
 
-const eventModel = mongoose.model(config.MONGO.eventCollection, eventSchema)
+const eventModel = mongoose.model(config.mongo.eventCollection, eventSchema)
 
 module.exports = {
   eventModel
