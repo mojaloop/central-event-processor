@@ -1,4 +1,4 @@
-Notification service
+Central Event Processor
 ====================
 
 stories
