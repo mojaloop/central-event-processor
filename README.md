@@ -1,3 +1,6 @@
+# Notification service
+
+## Contents
 <!-- vscode-markdown-toc -->
 * 1. [Stories](#Stories)
 * 2. [Tasks](#Tasks)
@@ -19,7 +22,6 @@
 	autoSave=true
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
-# Notification service
 
 ##  1. <a name='Stories'></a>Stories
 * [#517 - Notification for changes to NetDebitCap or Position adjustments](https://github.com/mojaloop/project/issues/517)
@@ -42,6 +44,7 @@
 ##  5. <a name='Localstorage'></a>Local storage
 * Mongo DB
 * Mongoose is used for schema validations and ORM functions
+* to set up connection the following environmental variables might be used: `CEP_DATABASE_URI` and `CEP_DATABASE_NAME`
 * full database documentation can be found [here](docs/database/Mojaloop_central-notifications_Db_ver1.0.html)
 
 ##  6. <a name='Architectureoverview'></a>Architecture overview

@@ -19,96 +19,95 @@
  - Name Surname <name.surname@gatesfoundation.com>
  * Valentin Genev <valentin.genev@modusbox.com>
  * Deon Botha <deon.botha@modusbox.com>
- --------------
+ -------------- 
  ******/
 
 'use strict'
 
 const RuleEngine = require('json-rules-engine')
 const Rx = require('rxjs')
-// const LimitModel = require('../../models/limits').limitModel
+const LimitModel = require('../../models/limits').limitModel
 const EventModel = require('../../models/events').eventModel
 const ActionModel = require('../../models/action').actionModel
+const Enums = require('../../lib/enum')
 
 let engine = new RuleEngine.Engine()
 
-const createRules = async (limit) => {
+const createRules = async (position) => {
   let rules = []
-  let { name, currency, type } = limit
-  let dbEvent = await EventModel.findOne({
-    name,
-    currency,
-    limitType: type,
-    notificationEndpointType: `${type}_ADJUSTMENT`,
-    isActive: true
-  })
+
+  let [limit, dbEvent] = await Promise.all([
+    LimitModel.findOne({ name: position.name, currency: position.currency, type: Enums.limitNotificationMap.NET_DEBIT_CAP.enum }),
+    EventModel.findOne({
+      name: position.name,
+      currency: position.currency,
+      limitType: Enums.limitNotificationMap.NET_DEBIT_CAP.enum,
+      notificationEndpointType: Enums.limitNotificationMap.NET_DEBIT_CAP.NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL.enum,
+      isActive: true
+    })
+  ])
 
   let conditions = {
-    all: [{
-      fact: 'name',
-      operator: 'equal',
-      value: name
-    }, {
-      fact: 'type',
-      operator: 'equal',
-      value: limit.type
-    }, {
-      fact: 'value',
-      operator: 'notEqual',
-      value: limit.oldValue
+    any: [{
+      fact: 'percentage',
+      operator: 'lessThanInclusive',
+      value: limit.threshold,
+      params: limit.type
     }]
   }
 
   let event = {
-    type: `${type}_ADJUSTMENT`,
+    type: limit.type,
     params: {
-      dfsp: name,
-      limitType: type,
-      value: limit.value,
-      currency: limit.currency,
-      triggeredBy: limit._id,
+      dfsp: position.name,
+      limitType: limit.type,
+      value: position.percentage,
+      position: position.positionValue,
+      triggeredBy: position.id,
       repetitionsAllowed: limit.repetitions,
       fromEvent: dbEvent.id,
       action: dbEvent.action,
       notificationEndpointType: dbEvent.notificationEndpointType,
       templateType: dbEvent.templateType,
       language: dbEvent.language,
-        messageSubject: `${type} LIMIT ADJUSTMENT`
+      messageSubject: `${limit.type} BREACH CONDITION REACHED`
     }
   }
-  let adjustmentRule = new RuleEngine.Rule({ conditions, event })
-  rules.push(adjustmentRule)
-  return { rules, event }
+
+  let breachRule = new RuleEngine.Rule({ conditions, event })
+  rules.push(breachRule)
+  return { rules, dbEvent }
 }
 
-const ndcAdjustmentObservable = (limits) => {
-  for (let limit of limits) {
-    return Rx.Observable.create(async observer => {
-      let { rules, event } = await createRules(limit)
+const ndcBreachObservable = ({ positions, message }) => {
+  return Rx.Observable.create(async observer => {
+    for (let position of positions) {
+      let { rules, dbEvent } = await createRules(position)
       rules.forEach(rule => engine.addRule(rule))
-      let actions = await engine.run(limit)
+      let fact = Object.assign({}, position.toObject())
+      let actions = await engine.run(fact)
       if (actions.length) {
         actions.forEach(action => {
           observer.next({
             action: 'produceToKafkaTopic',
-            params: action.params
+            params: action.params,
+            message
           })
         })
       } else {
         observer.next({ action: 'finish' })
-        let activeActions = await ActionModel.find({ fromEvent: event.params.fromEvent, isActive: true })
-        if (activeActions.length) {
+        let activeActions = await ActionModel.find({ fromEvent: dbEvent.id, isActive: true })
+        if (activeActions) {
           for (let activeAction of activeActions) {
             await ActionModel.findByIdAndUpdate(activeAction.id, { isActive: false })
           }
         }
       }
       rules.forEach(rule => engine.removeRule(rule))
-      observer.complete()
-    })
-  }
+    }
+  })
 }
 
 module.exports = {
-  ndcAdjustmentObservable
+  ndcBreachObservable
 }

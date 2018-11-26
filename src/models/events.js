@@ -29,7 +29,7 @@
  */
 const mongoose = require('mongoose')
 const config = require('../lib/config')
-const getActions = require('../observeables/actions').getActions
+const getActions = require('../observables/actions').getActions
 /**
  * @const limitSchema
  *

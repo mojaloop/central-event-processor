@@ -6,6 +6,7 @@
   "dependencies": {
     "@mojaloop/central-services-error-handling": "0.5.1",
     "@mojaloop/central-services-shared": "^3.7.1-snapshot",
+    "config": "^3.0.0",
     "json-rules-engine": "^2.3.0",
     "moment": "^2.22.2",
     "mongoose": "^5.3.8",
