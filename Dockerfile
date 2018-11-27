@@ -19,5 +19,5 @@ RUN npm install --production && \
 
 RUN apk del build-dependencies
 
-EXPOSE 3032
+EXPOSE 3080
 CMD node app.js
