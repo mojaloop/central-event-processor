@@ -51,7 +51,7 @@ const eventSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true }
 }, { timestamps: true })
 
-const eventModel = mongoose.model(config.MONGO.eventCollection, eventSchema)
+const eventModel = mongoose.model(config.mongo.eventCollection, eventSchema)
 
 module.exports = {
   eventModel
