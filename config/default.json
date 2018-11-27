@@ -3,6 +3,7 @@
     "resetPeriod": 60,
     "notificationInterval": 3
   },
+  "healthCheckPort": 3080,
   "swaggerOptions": {
     "info": {
       "title": "Central notification system API Documentation",

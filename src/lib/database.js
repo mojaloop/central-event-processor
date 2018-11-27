@@ -39,6 +39,7 @@ const setupDb = () => {
   db.once('open', function callback () {
     Logger.info('Connection with database succeeded.')
   })
+  return db
 }
 
 exports.db = setupDb

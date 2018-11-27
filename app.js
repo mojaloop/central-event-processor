@@ -21,9 +21,13 @@
  * Deon Botha <deon.botha@modusbox.com>
  --------------
  ******/
-
 'use strict'
 
 const setup = require('./src/setup').setup
+const Logger = require('@mojaloop/central-services-shared').Logger
 
-setup()
+try {
+  setup()
+} catch (err) {
+  Logger.info(`Notifier throws an error ${err}`)
+}

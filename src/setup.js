@@ -37,12 +37,25 @@ const Enum = require('./lib/enum')
 const TransferEventType = Enum.transferEventType
 const TransferEventAction = Enum.transferEventAction
 const Observables = require('./observables')
+const createHealtcheck = require('healthcheck-server')
+const Config = require('./lib/config')
 
 const setup = async () => {
-  await require('./lib/database').db()
+  let db = await require('./lib/database').db()
+
   await Consumer.registerNotificationHandler()
+
   const topicName = Utility.transformGeneralTopicName(Utility.ENUMS.NOTIFICATION, Utility.ENUMS.EVENT)
   const consumer = Consumer.getConsumer(topicName)
+
+  createHealtcheck({
+    port: Config.get('healthCheckPort'),
+    path: '/healthcheck',
+    status: ({cpu, memory}) => {
+      if (db.readyState && consumer._status.running) return true
+      else return false
+    }
+  })
 
   const topicObservable = Rx.Observable.create((observer) => {
     consumer.on('message', async (data) => {
