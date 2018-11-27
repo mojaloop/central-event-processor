@@ -24,9 +24,9 @@
 <!-- /vscode-markdown-toc -->
 
 ##  1. <a name='Stories'></a>Stories
-=======
+
 Central Event Processor
-====================
+=======================
 
 stories
 -------
