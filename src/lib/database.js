@@ -28,17 +28,18 @@
  * @module src/lib/database
  */
 const Mongoose = require('mongoose')
-const config = require('../../config/config')
+const config = require('../lib/config')
 const Logger = require('@mojaloop/central-services-shared').Logger
 
 const setupDb = () => {
   const db = Mongoose.connection
   Mongoose.Promise = global.Promise
-  Mongoose.connect(`mongodb://${config.mongo.url}/${config.mongo.database}`)
+  Mongoose.connect(`mongodb://${config.mongo.uri}/${config.mongo.database}`)
   db.on('error', console.error.bind(console, 'connection error'))
   db.once('open', function callback () {
     Logger.info('Connection with database succeeded.')
   })
+  return db
 }
 
 exports.db = setupDb

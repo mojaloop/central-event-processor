@@ -27,7 +27,8 @@
 const Rx = require('rxjs')
 const Utility = require('../lib/utility')
 const Uuid = require('uuid4')
-const Config = require('../../config/config.json')
+const moment = require('moment')
+const Config = require('../lib/config')
 const Enum = require('../lib/enum')
 const TransferEventType = Enum.transferEventType
 const TransferEventAction = Enum.transferEventAction
@@ -92,8 +93,8 @@ const actionObservable = ({ action, params, message }) => {
       }
       let actionResult
       let previousAction = await ActionModel.findOne({ fromEvent: params.fromEvent, isActive: true })
-      let recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType }) // bug
-      let hubDetails = await NotificationModel.findOne({ name: 'Hub', action: params.action, type: params.notificationEndpointType }) // bug
+      let recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType })
+      let hubDetails = await NotificationModel.findOne({ name: 'Hub', action: params.action, type: params.notificationEndpointType })
       let messageDetails = Object.assign({}, params, { notificationInterval, resetPeriod })
       const payload = {
         from: 'SYSTEM',
@@ -103,7 +104,8 @@ const actionObservable = ({ action, params, message }) => {
         messageDetails
       }
       if (previousAction) {
-        if (previousAction.timesTriggered < params.repetitionsAllowed) { // TODO add notificationInterval in the mix condition for repeating event
+        if ((previousAction.timesTriggered < params.repetitionsAllowed) &&
+          (moment(previousAction.updatedAt).add(notificationInterval, 'minutes') < moment.now())) {
           actionResult = await actionBuilder(action)({ payload })
           previousAction.timesTriggered++
           previousAction.save()

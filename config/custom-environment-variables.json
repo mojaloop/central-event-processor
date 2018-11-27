@@ -1,0 +1,6 @@
+{
+  "mongo": {
+    "uri": "CEP_DATABASE_URI",
+    "database": "CEP_DATABASE_NAME"
+  }
+}

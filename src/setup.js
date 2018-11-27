@@ -36,13 +36,26 @@ const { filter, switchMap, share } = require('rxjs/operators')
 const Enum = require('./lib/enum')
 const TransferEventType = Enum.transferEventType
 const TransferEventAction = Enum.transferEventAction
-const Observables = require('./observeables')
+const Observables = require('./observables')
+const createHealtcheck = require('healthcheck-server')
+const Config = require('./lib/config')
 
 const setup = async () => {
-  await require('./lib/database').db()
+  let db = await require('./lib/database').db()
+
   await Consumer.registerNotificationHandler()
+
   const topicName = Utility.transformGeneralTopicName(Utility.ENUMS.NOTIFICATION, Utility.ENUMS.EVENT)
   const consumer = Consumer.getConsumer(topicName)
+
+  createHealtcheck({
+    port: Config.get('healthCheckPort'),
+    path: '/healthcheck',
+    status: ({cpu, memory}) => {
+      if (db.readyState && consumer._status.running) return true
+      else return false
+    }
+  })
 
   const topicObservable = Rx.Observable.create((observer) => {
     consumer.on('message', async (data) => {
@@ -92,7 +105,7 @@ const setup = async () => {
   }
 
   const generalObservable = topicObservable
-    .pipe(filter(data => data.value.metadata.event.action === 'prepare'),
+    .pipe(filter(data => data.value.metadata.event.action === 'commit'),
       switchMap(Observables.CentralLedgerAPI.getDfspNotificationEndpointsObservable),
       switchMap(getLimitObservable),
       switchMap(Observables.CentralLedgerAPI.getPositionsObservable),
@@ -108,7 +121,7 @@ const setup = async () => {
       }
       Logger.info(actionResult)
     },
-    error: err => Logger.info('err', err),
+    error: err => Logger.info('Error occured: ', err),
     completed: (value) => Logger.info('completed with value', value)
   })
 }

@@ -46,14 +46,14 @@ const transferEventType = {
 }
 
 const notificationActionMap = {
-  NET_DEBIT_CAP_BREACH_MAIL: {
-    enum: 'NET_DEBIT_CAP_BREACH_MAIL',
+  NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL: {
+    enum: 'NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL',
     action: 'sendEmail',
     templateType: 'breach',
     language: 'en'
   },
-  NET_DEBIT_CAP_ADJUSTMENT: {
-    enum: 'NET_DEBIT_CAP_ADJUSTMENT',
+  NET_DEBIT_CAP_ADJUSTMENT_EMAIL: {
+    enum: 'NET_DEBIT_CAP_ADJUSTMENT_EMAIL',
     action: 'sendEmail',
     templateType: 'adjustment',
     language: 'en'
@@ -63,8 +63,8 @@ const notificationActionMap = {
 const limitNotificationMap = {
   NET_DEBIT_CAP: {
     enum: 'NET_DEBIT_CAP',
-    NET_DEBIT_CAP_BREACH_MAIL: notificationActionMap.NET_DEBIT_CAP_BREACH_MAIL,
-    NET_DEBIT_CAP_ADJUSTMENT: notificationActionMap.NET_DEBIT_CAP_ADJUSTMENT
+    NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL: notificationActionMap.NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL,
+    NET_DEBIT_CAP_ADJUSTMENT_EMAIL: notificationActionMap.NET_DEBIT_CAP_ADJUSTMENT_EMAIL
   }
 }
 

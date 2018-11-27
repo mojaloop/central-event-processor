@@ -3,6 +3,7 @@
     "resetPeriod": 60,
     "notificationInterval": 3
   },
+  "healthCheckPort": 3080,
   "swaggerOptions": {
     "info": {
       "title": "Central notification system API Documentation",
@@ -11,7 +12,7 @@
     "expanded": "full"
   },
   "mongo": {
-    "url": "localhost:27017",
+    "uri": "localhost:27017",
     "database": "mojaloop",
     "ruleCollection": "Rule",
     "netDebitCapPositionCollection": "NDCPosition",

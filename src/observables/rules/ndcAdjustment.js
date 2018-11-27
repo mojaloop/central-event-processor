@@ -26,87 +26,89 @@
 
 const RuleEngine = require('json-rules-engine')
 const Rx = require('rxjs')
-const LimitModel = require('../../models/limits').limitModel
+// const LimitModel = require('../../models/limits').limitModel
 const EventModel = require('../../models/events').eventModel
 const ActionModel = require('../../models/action').actionModel
-const Enums = require('../../lib/enum')
 
 let engine = new RuleEngine.Engine()
 
-const createRules = async (position) => {
+const createRules = async (limit) => {
   let rules = []
-
-  let [limit, dbEvent] = await Promise.all([
-    LimitModel.findOne({ name: position.name, currency: position.currency, type: Enums.limitNotificationMap.NET_DEBIT_CAP.enum }),
-    EventModel.findOne({
-      name: position.name,
-      currency: position.currency,
-      limitType: Enums.limitNotificationMap.NET_DEBIT_CAP.enum,
-      notificationEndpointType: Enums.limitNotificationMap.NET_DEBIT_CAP.NET_DEBIT_CAP_BREACH_MAIL.enum,
-      isActive: true
-    })
-  ])
+  let { name, currency, type } = limit
+  let dbEvent = await EventModel.findOne({
+    name,
+    currency,
+    limitType: type,
+    notificationEndpointType: `${type}_ADJUSTMENT`,
+    isActive: true
+  })
 
   let conditions = {
-    any: [{
-      fact: 'percentage',
-      operator: 'lessThanInclusive',
-      value: limit.threshold,
-      params: limit.type
+    all: [{
+      fact: 'name',
+      operator: 'equal',
+      value: name
+    }, {
+      fact: 'type',
+      operator: 'equal',
+      value: limit.type
+    }, {
+      fact: 'value',
+      operator: 'notEqual',
+      value: limit.oldValue
     }]
   }
 
   let event = {
-    type: limit.type,
+    type: `${type}_ADJUSTMENT`,
     params: {
-      dfsp: position.name,
-      limitType: limit.type,
-      value: position.percentage,
-      position: position.positionValue,
-      triggeredBy: position.id,
+      dfsp: name,
+      limitType: type,
+      value: limit.value,
+      currency: limit.currency,
+      triggeredBy: limit._id,
       repetitionsAllowed: limit.repetitions,
       fromEvent: dbEvent.id,
       action: dbEvent.action,
       notificationEndpointType: dbEvent.notificationEndpointType,
       templateType: dbEvent.templateType,
-      language: dbEvent.language
+      language: dbEvent.language,
+      messageSubject: `${type} LIMIT ADJUSTMENT`
     }
   }
-
-  let breachRule = new RuleEngine.Rule({ conditions, event })
-  rules.push(breachRule)
-  return { rules, dbEvent }
+  let adjustmentRule = new RuleEngine.Rule({ conditions, event })
+  rules.push(adjustmentRule)
+  return { rules, event }
 }
 
-const ndcBreachObservable = ({ positions, message }) => {
-  return Rx.Observable.create(async observer => {
-    for (let position of positions) {
-      let { rules, dbEvent } = await createRules(position)
+const ndcAdjustmentObservable = (limits) => {
+  for (let limit of limits) {
+    return Rx.Observable.create(async observer => {
+      let { rules, event } = await createRules(limit)
       rules.forEach(rule => engine.addRule(rule))
-      let fact = Object.assign({}, position.toObject())
-      let actions = await engine.run(fact)
+      let actions = await engine.run(limit)
       if (actions.length) {
         actions.forEach(action => {
           observer.next({
             action: 'produceToKafkaTopic',
-            params: action.params,
-            message
+            params: action.params
           })
         })
       } else {
         observer.next({ action: 'finish' })
-        let activeActions = await ActionModel.find({ fromEvent: dbEvent.id, isActive: true })
-        if (activeActions) {
+        let activeActions = await ActionModel.find({ fromEvent: event.params.fromEvent, isActive: true })
+        if (activeActions.length) {
           for (let activeAction of activeActions) {
             await ActionModel.findByIdAndUpdate(activeAction.id, { isActive: false })
           }
         }
       }
       rules.forEach(rule => engine.removeRule(rule))
-    }
-  })
+      observer.complete()
+    })
+  }
 }
 
 module.exports = {
-  ndcBreachObservable
+  ndcAdjustmentObservable
 }
