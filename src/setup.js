@@ -52,8 +52,12 @@ const setup = async () => {
     port: Config.get('healthCheckPort'),
     path: '/healthcheck',
     status: ({cpu, memory}) => {
-      if (db.readyState && consumer._status.running) return true
-      else return false
+      try {
+        if (db.readyState && consumer._status.running) return true
+        else return false
+      } catch (err) {
+        return false
+      }
     }
   })
 
