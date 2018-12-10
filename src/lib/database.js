@@ -36,7 +36,7 @@ const setupDb = () => {
   Mongoose.Promise = global.Promise
   const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
   `mongodb://${config.mongo.uri}/${config.mongo.database}`
-  Mongoose.connect(connectionString)
+  Mongoose.connect(connectionString, { useFindAndModify: false })
   db.on('error', console.error.bind(console, 'connection error'))
   db.once('open', function callback () {
     Logger.info('Connection with database succeeded.')
