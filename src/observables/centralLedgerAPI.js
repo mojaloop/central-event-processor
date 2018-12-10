@@ -129,7 +129,7 @@ const updateNotificationEndpointsFromResponse = async (name, notificationEndpoin
     //   result.push(document.toObject())
     // } else {
       result.push(notificationRecord.toObject())
-    }
+    // }
   }
   console.log('getNotificationEndpointsFromResponse' + JSON.stringify(result))
   return result
