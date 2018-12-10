@@ -116,18 +116,18 @@ const updateNotificationEndpointsFromResponse = async (name, notificationEndpoin
   let result = []
   let notificationEndPointObject = {}
   for (let notificationEndpoint of notificationEndpoints) {
-    let notificationRecord = await NotificationEndpointModel.findOneAndUpdate({ name: name, type: notificationEndpoint.type }, notificationEndpoint)
-    if (!notificationRecord) {
-      let action = Enums.notificationActionMap[notificationEndpoint.type] ? Enums.notificationActionMap[notificationEndpoint.type].action : ''
-      notificationEndPointObject = {
-        name,
-        type: notificationEndpoint.type,
-        value: notificationEndpoint.value,
-        action
-      }
-      let document = await NotificationEndpointModel.create(notificationEndPointObject)
-      result.push(document.toObject())
-    } else {
+    let notificationRecord = await NotificationEndpointModel.findOneAndUpdate({ name: name, type: notificationEndpoint.type }, notificationEndpoint, {upsert: true, new: true})
+    // if (!notificationRecord) {
+    //   let action = Enums.notificationActionMap[notificationEndpoint.type] ? Enums.notificationActionMap[notificationEndpoint.type].action : ''
+    //   notificationEndPointObject = {
+    //     name,
+    //     type: notificationEndpoint.type,
+    //     value: notificationEndpoint.value,
+    //     action
+    //   }
+    //   let document = await NotificationEndpointModel.create(notificationEndPointObject)
+    //   result.push(document.toObject())
+    // } else {
       result.push(notificationRecord.toObject())
     }
   }
