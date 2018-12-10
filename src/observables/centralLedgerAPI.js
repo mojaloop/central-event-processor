@@ -29,11 +29,14 @@
 const request = require('request-promise')
 const Rx = require('rxjs')
 const Logger = require('@mojaloop/central-services-shared').Logger
+const Config = require('../lib/config')
 const CurrentPositionModel = require('../models/currentPosition').currentPositionModel
 const LimitModel = require('../models/limits').limitModel
 const NotificationEndpointModel = require('../models/notificationEndpoint').notificationEndpointModel
 const EventModel = require('../models/events').eventModel
 const Enums = require('../lib/enum')
+const centralLedgerAPIConfig = Config.get('centralLedgerAPI')
+const centralLedgerAdminURI = `${centralLedgerAPIConfig.adminHost}:${centralLedgerAPIConfig.adminPort}`
 
 const getPositionsFromResponse = positions => {
   let positionObject = {}
@@ -138,9 +141,9 @@ const getDfspNotificationEndpointsObservable = message => {
     const payeeFsp = message.value.to
     try {
       const [payerNotificationResponse, payeeNotificationResponse, hubNotificationResponse] = await Promise.all([
-        request({ uri: `http://localhost:3001/participants/${payerFsp}/endpoints`, json: true }),
-        request({ uri: `http://localhost:3001/participants/${payeeFsp}/endpoints`, json: true }),
-        request({ uri: `http://localhost:3001/participants/hub/endpoints`, json: true })
+        request({ uri: `http://${centralLedgerAdminURI}/participants/${payerFsp}/endpoints`, json: true }),
+        request({ uri: `http://${centralLedgerAdminURI}/participants/${payeeFsp}/endpoints`, json: true }),
+        request({ uri: `http://${centralLedgerAdminURI}/participants/hub/endpoints`, json: true })
       ])
       const payerNotificationEndpoints = await updateNotificationEndpointsFromResponse(payerFsp, payerNotificationResponse)
       const payeeNotificationEndpoints = await updateNotificationEndpointsFromResponse(payeeFsp, payeeNotificationResponse)
@@ -162,7 +165,7 @@ const getDfspNotificationEndpointsObservable = message => {
 
 const requestLimitPerName = async (name) => {
   try {
-    const limit = await request({ uri: `http://localhost:3001/participants/${name}/limits`, json: true })
+    const limit = await request({ uri: `http://${centralLedgerAdminURI}/participants/${name}/limits`, json: true })
     return limit
   } catch (e) {
     throw e
@@ -197,7 +200,7 @@ const getLimitPerNameObservable = (name) => {
 
 const requestPositionPerName = async (name) => {
   try {
-    const position = await request({ uri: `http://localhost:3001/participants/${name}/positions`, json: true })
+    const position = await request({ uri: `http://${centralLedgerAdminURI}/participants/${name}/positions`, json: true })
     return position
   } catch (e) {
     throw e

@@ -3,7 +3,13 @@
     "resetPeriod": 60,
     "notificationInterval": 3
   },
-  "healthCheckPort": 3080,
+  "PORT": 3080,
+  "centralLedgerAPI": {
+    "adminHost": "localhost",
+    "adminPort": 3001,
+    "apiHost": "localhost",
+    "apiPort": 3000
+  },
   "swaggerOptions": {
     "info": {
       "title": "Central notification system API Documentation",

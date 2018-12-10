@@ -49,7 +49,7 @@ const setup = async () => {
   const consumer = Consumer.getConsumer(topicName)
 
   createHealtcheck({
-    port: Config.get('healthCheckPort'),
+    port: Config.get('PORT'),
     path: '/healthcheck',
     status: ({cpu, memory}) => {
       try {
