@@ -128,8 +128,8 @@ const updateNotificationEndpointsFromResponse = async (name, notificationEndpoin
       }
       document = await NotificationEndpointModel.create(notificationEndPointObject)
     } else {
-      notificationRecord.type = notificationEndPoint.type
-      notifficationRecord.action = action
+      notificationRecord.type = notificationEndpoint.type
+      notificationRecord.action = action
       document = await notificationRecord.save()
     }
     result.push(document.toObject())
