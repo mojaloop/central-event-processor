@@ -1,6 +1,6 @@
 {
-  "name": "central-notification",
-  "version": "0.0.1",
+  "name": "central-event-processor",
+  "version": "4.3.0",
   "description": "CEP for Mojaloop Central-Ledger to monitor the notificaion kafka topic and act on it.",
   "main": "index.js",
   "dependencies": {
@@ -27,12 +27,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vgenev/central-notification.git"
+    "url": "git+https://github.com/mojaloop/central-event-processor"
   },
   "author": "Valentin Genev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vgenev/central-notification/issues"
+    "url": "https://github.com/mojaloop/central-event-processor/issues"
   },
-  "homepage": "https://github.com/vgenev/central-notification#readme"
+  "homepage": "https://github.com/mojaloop/central-event-processor#readme"
 }
