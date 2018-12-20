@@ -28,6 +28,8 @@ const Expect = require('chai').expect
 const ActionSchema = require('../../../src/models/action').actionModel
 
 describe('Mongo actionModel', () => {
+
+  // Db field isActive
   it('Field isActive should throw error if invalid object is created', (done) => {
     var actionModel = new ActionSchema({isActive: 'test' })
 
@@ -39,6 +41,63 @@ describe('Mongo actionModel', () => {
 
   it('Field isActive should succeed if an object is created', (done) => {
     var actionModel = new ActionSchema({isActive: true })
+
+    actionModel.validate((err) => {
+      Expect(!err);
+      done();
+    });
+  });
+
+  // Db field timesTriggered
+  it('Field timesTriggered should throw error if invalid object is created', (done) => {
+    var actionModel = new ActionSchema({timesTriggered: 'A' })
+
+    actionModel.validate((err) => {
+      Expect(err.errors.timesTriggered).to.exist;
+      done();
+    });
+  });
+
+  it('Field timesTriggered should succeed if an object is created', (done) => {
+    var actionModel = new ActionSchema({timesTriggered: 1 })
+
+    actionModel.validate((err) => {
+      Expect(!err);
+      done();
+    });
+  });
+
+  // Db field fromEvent
+  it('Field fromEvent should throw error if invalid object is created', (done) => {
+    var actionModel = new ActionSchema({fromEvent: 'A' })
+
+    actionModel.validate((err) => {
+      Expect(err.errors.fromEvent).to.exist;
+      done();
+    });
+  });
+
+  it('Field fromEvent should succeed if an object is created', (done) => {
+    var actionModel = new ActionSchema({fromEvent: Object })
+
+    actionModel.validate((err) => {
+      Expect(!err);
+      done();
+    });
+  });
+
+  // Db field triggeredBy
+  it('Field triggeredBy should throw error if invalid object is created', (done) => {
+    var actionModel = new ActionSchema({triggeredBy: 1 })
+
+    actionModel.validate((err) => {
+      Expect(err.errors.triggeredBy).to.exist;
+      done();
+    });
+  });
+
+  it('Field triggeredBy should succeed if an object is created', (done) => {
+    var actionModel = new ActionSchema({triggeredBy: '435c6890-376f-4947-9d70-7063dd3745d4' })
 
     actionModel.validate((err) => {
       Expect(!err);

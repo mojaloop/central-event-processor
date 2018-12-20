@@ -37,8 +37,7 @@ const actionSchema = new mongoose.Schema({
   triggeredBy: { type: mongoose.Schema.Types.ObjectId}, // this will show event in the past
   timesTriggered: { type: Number, default: 1 },
   fromEvent: { type: mongoose.Schema.Types.ObjectId, ref: 'eventSchema' },
-  isActive: { type: Boolean, default: true }
-}, { timestamps: true })
+  isActive: { type: Boolean, default: true }}, { timestamps: true })
 
 const actionModel = mongoose.model(config.mongo.actionCollection, actionSchema)
 
