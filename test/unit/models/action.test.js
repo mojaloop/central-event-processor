@@ -24,24 +24,25 @@
 
 'use strict'
 
-const mongoose = require('mongoose')
-const config = require('../lib/config')
+const Expect = require('chai').expect
+const ActionSchema = require('../../../src/models/action').actionModel
 
-// as soon as threshold is breached we creat action
-// as soon as the position is fixed isActive becomes false
+describe('Mongo actionModel', () => {
+  it('Field isActive should throw error if invalid object is created', (done) => {
+    var actionModel = new ActionSchema({isActive: 'test' })
 
-// as soon as new action is created, we get the id and pass it to the scheduler.
-// scheduler will check after an hour if this action is still active and if its active will clear timerTriggered field.
+    actionModel.validate((err) => {
+      Expect(err.errors.isActive).to.exist;
+      done();
+    });
+  });
 
-const actionSchema = new mongoose.Schema({
-  triggeredBy: { type: mongoose.Schema.Types.ObjectId}, // this will show event in the past
-  timesTriggered: { type: Number, default: 1 },
-  fromEvent: { type: mongoose.Schema.Types.ObjectId, ref: 'eventSchema' },
-  isActive: { type: Boolean, default: true }
-}, { timestamps: true })
+  it('Field isActive should succeed if an object is created', (done) => {
+    var actionModel = new ActionSchema({isActive: true })
 
-const actionModel = mongoose.model(config.mongo.actionCollection, actionSchema)
-
-module.exports = {
-  actionModel
-}
+    actionModel.validate((err) => {
+      Expect(!err);
+      done();
+    });
+  });
+});

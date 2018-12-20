@@ -22,7 +22,8 @@
     "uuid4": "^1.1.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "nyc mocha test/unit/**/*.test.js --timeout=4000",
+    "test:coverage": "istanbul cover ./node_modules/.bin/_mocha test/unit/**/*.test.js --timeout=4000",
     "start": "node app.js"
   },
   "repository": {
@@ -34,5 +35,21 @@
   "bugs": {
     "url": "https://github.com/mojaloop/central-event-processor/issues"
   },
-  "homepage": "https://github.com/mojaloop/central-event-processor#readme"
+  "homepage": "https://github.com/mojaloop/central-event-processor#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "coveralls": "^3.0.2",
+    "faucet": "0.0.1",
+    "istanbul": "^1.1.0-alpha.1",
+    "istanbul-coveralls": "^1.0.3",
+    "jsonpath": "^1.0.0",
+    "mocha": "^5.2.0",
+    "npm-run-all": "4.0.1",
+    "nyc": "^13.1.0",
+    "rewire": "^4.0.1",
+    "sinon": "^5.0.10",
+    "standard": "8.5.0",
+    "tape": "4.6.2",
+    "tapes": "4.1.0"
+  }
 }
