@@ -44,7 +44,7 @@ const limitSchema = new mongoose.Schema({
   oldValue: { type: Number, required: true, default: 0 },
   type: { type: String, required: true },
   value: { type: Number, required: true },
-  repetitions: { type: Number, default: 3 },
+  repetitions: { type: Number, default: 3 }, // here
   threshold: { type: Number, required: true, default: 10 }
 }, { timestamps: true })
 
