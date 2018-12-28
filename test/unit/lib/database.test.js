@@ -35,7 +35,7 @@ const P = require('bluebird')
 const Mongoose = require('mongoose')
 const Database = require('../../../src/lib/database').db()
 // const config = require('../lib/config')
-// const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-shared').Logger
 
 Test('Mongo Database tests. ', dbTest => {
   let sandbox
@@ -53,12 +53,14 @@ Test('Mongo Database tests. ', dbTest => {
   })
 
   dbTest.test('connection test should ', dbConnectionTest => {
-    dbConnectionTest.test(' throw a connection failed error ', async (test) => {
+    dbConnectionTest.test(' fail connectiong to the Db ', async (test) => {
       try {
-        await Mongoose.connect.throws(new Error())
-        // test.fail('should throw')
+        await Database.db.throws(new Error())
+        Database.db()
+        test.fail('Connection to Db failed')
         test.end()
       } catch (err) {
+        Logger.error(`CEP : connection to Mongo DB failed - ${err}`)
         test.pass('Connection to Db failed')
         test.end()
       }
