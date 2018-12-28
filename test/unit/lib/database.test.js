@@ -25,29 +25,45 @@
 'use strict'
 
 /**
- * @module src/lib/database
+ * @module test/unit/lib/database.test.js
  */
+
+const Test = require('tapes')(require('tape'))
+const Sinon = require('sinon')
+const P = require('bluebird')
+
 const Mongoose = require('mongoose')
-const config = require('../lib/config')
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Database = require('../../../src/lib/database').db()
+// const config = require('../lib/config')
+// const Logger = require('@mojaloop/central-services-shared').Logger
 
-const setupDb = () => {
-    const db = Mongoose.connection
-    Mongoose.Promise = global.Promise
-    Mongoose.set('useFindAndModify', false)
-    Mongoose.set('useNewUrlParser', true)
-    Mongoose.set('useCreateIndex', true)
-    const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
-    `mongodb://${config.mongo.uri}/${config.mongo.database}`
-    Mongoose.connect(`${connectionString}`, { useFindAndModify: false, useNewUrlParser: true, useCreateIndex: true })
-    db.on('error', function (reason, promise) {
-      // Logger.info('Unhandled rejection', {reason: reason, promise: promise})
-      // throw new Error('Connection to Mongo Db failed');
-    })
-    db.once('open', function callback () {
-      Logger.info('Connection with database succeeded.')
-    })
-  return db
-}
+Test('Mongo Database tests. ', dbTest => {
+  let sandbox
 
-exports.db = setupDb
+  dbTest.beforeEach(test => {
+    sandbox = Sinon.createSandbox()
+    // sandbox.stub(Mongoose)
+    // sandbox.stub(Logger)
+    test.end()
+  })
+
+  dbTest.afterEach(test => {
+    sandbox.restore()
+    test.end()
+  })
+
+  dbTest.test('connection test should ', dbConnectionTest => {
+    dbConnectionTest.test(' throw a connection failed error ', async (test) => {
+      try {
+        await Mongoose.connect.throws(new Error())
+        // test.fail('should throw')
+        test.end()
+      } catch (err) {
+        test.pass('Connection to Db failed')
+        test.end()
+      }
+    })
+    dbConnectionTest.end()
+  })
+  dbTest.end()
+})

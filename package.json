@@ -23,7 +23,7 @@
   },
   "scripts": {
     "test": "nyc mocha test/unit/**/*.test.js --timeout=4000",
-    "test:coverage": "istanbul cover ./node_modules/.bin/_mocha test/unit/**/*.test.js --timeout=4000",
+    "test:coverage": "istanbul cover ./node_modules/.bin/_mocha test/unit/**/*.test.js --timeout=60000",
     "start": "node app.js"
   },
   "repository": {
