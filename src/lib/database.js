@@ -41,7 +41,7 @@ const setupDb = () => {
     `mongodb://${config.mongo.uri}/${config.mongo.database}`
     Mongoose.connect(`${connectionString}`, { useFindAndModify: false, useNewUrlParser: true, useCreateIndex: true })
     db.on('error', function (reason, promise) {
-      // Logger.info('Unhandled rejection', {reason: reason, promise: promise})
+      Logger.info('Unhandled rejection', {reason: reason, promise: promise})
       // throw new Error('Connection to Mongo Db failed');
     })
     db.once('open', function callback () {
