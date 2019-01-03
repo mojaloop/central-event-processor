@@ -28,7 +28,7 @@
  * @module test/unit/lib/database.test.js
  */
 
-const Test = require('tapes')(require('tape'))
+const test = require('tapes')(require('tape'))
 const Sinon = require('sinon')
 const P = require('bluebird')
 
@@ -37,49 +37,59 @@ const Database = require('../../../src/lib/database').db
 const config = require('../../../src/lib/config')
 const Logger = require('@mojaloop/central-services-shared').Logger
 
-Test('Mongo Database tests. ', dbTest => {
-  let sandbox
+test('Mongo Database tests. ', dbTest => {
 
-  dbTest.beforeEach(test => {
-    sandbox = Sinon.createSandbox()
-    sandbox.stub(Mongoose)
+  /*dbTest.beforeEach(test => {
+
+    console.log('before test')
     test.end()
   })
 
   dbTest.afterEach(test => {
-    sandbox.restore()
+    console.log('after test')
     test.end()
+  })*/
+
+  dbTest.test('connection test should ', async dbConnectionTest => {
+    // dbConnectionTest.test(' fail connection to the Db ', test => {
+    try {
+        /*let connectionString = await  Sinon.mock(config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
+          `mongodb://${config.mongo.uri}/${config.mongo.database}`)*/
+
+        // let db = await Sinon.mock(Mongoose.connection)
+
+        /*await Sinon.mock(Mongoose.connect(`${connectionString}`, {
+          useFindAndModify: false,
+          useNewUrlParser: true,
+          useCreateIndex: true
+        })).throws(new Error())*/
+
+
+        await Database()
+
+        dbConnectionTest.pass('not connect to Database')
+        dbConnectionTest.end()
+      } catch (Error) {
+        dbConnectionTest.faill('Connected to the Database')
+        dbConnectionTest.end()
+      }
+      // dbConnectionTest.end()
+    // })
   })
 
-  dbTest.test('connection test should ', dbConnectionTest => {
-    dbConnectionTest.test(' fail connection to the Db ', async (test) => {
-      try {
-        // await Database.db.throws(Error)
-        Database()
-        test.fail('Connection failed')
-        test.end()
-      } catch (err) {
-        Logger.error(`CEP : connection to Mongo DB failed - ${err}`)
-        test.pass('Connection to Db failed')
-        test.end()
-      }
-    })
+  /*dbConnectionTest.test(' connect to the Db ', async (test) => {
+    try {
+      const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
+        `mongodb://${config.mongo.uri}/${config.mongo.database}`
+      test.ok(Sinon.mock(Mongoose.connect(`${connectionString}`, { useFindAndModify: false, useNewUrlParser: true, useCreateIndex: true })))
+      test.pass()
+      test.end()
+    } catch (err) {
+      Logger.error(`CEP : connection to Mongo DB failed - ${err}`)
+      test.fail()
+      test.end()
+    }
+  })*/
 
-    /*dbConnectionTest.test(' connect to the Db ', async (test) => {
-      try {
-        const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
-          `mongodb://${config.mongo.uri}/${config.mongo.database}`
-        test.ok(Sinon.mock(Mongoose.connect(`${connectionString}`, { useFindAndModify: false, useNewUrlParser: true, useCreateIndex: true })))
-        test.pass()
-        test.end()
-      } catch (err) {
-        Logger.error(`CEP : connection to Mongo DB failed - ${err}`)
-        test.fail()
-        test.end()
-      }
-    })*/
-
-    dbConnectionTest.end()
-  })
-  dbTest.end()
+dbTest.end()
 })

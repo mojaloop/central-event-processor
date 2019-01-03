@@ -14,6 +14,7 @@
     "mongoose": "^5.3.15",
     "mongoose-unique-validator": "^2.0.2",
     "mustache": "^3.0.0",
+    "proxyquire": "^2.1.0",
     "rc": "^1.2.8",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
@@ -23,7 +24,7 @@
   },
   "scripts": {
     "test": "nyc mocha test/unit/**/*.test.js --timeout=4000",
-    "test:coverage": "istanbul cover ./node_modules/.bin/_mocha test/unit/**/*.test.js --timeout=60000",
+    "test:coverage": "istanbul cover ./node_modules/.bin/_mocha test/unit/**/*.test.js --timeout=4000",
     "start": "node app.js"
   },
   "repository": {
@@ -38,12 +39,14 @@
   "homepage": "https://github.com/mojaloop/central-event-processor#readme",
   "devDependencies": {
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.2",
     "faucet": "0.0.1",
     "istanbul": "^1.1.0-alpha.1",
     "istanbul-coveralls": "^1.0.3",
     "jsonpath": "^1.0.0",
     "mocha": "^5.2.0",
+    "mockgoose": "^7.3.5",
     "npm-run-all": "4.0.1",
     "nyc": "^13.1.0",
     "rewire": "^4.0.1",
