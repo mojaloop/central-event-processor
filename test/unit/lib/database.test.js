@@ -32,50 +32,58 @@ const test = require('tapes')(require('tape'))
 const Sinon = require('sinon')
 const P = require('bluebird')
 
-const Mongoose = require('mongoose').Mongoose;
-const mongoose = new Mongoose();
+const Mongoose = require('mongoose').Mongoose
+const mongoose = new Mongoose()
 
-const Mockgoose = require('mockgoose').Mockgoose;
-const mockgoose = new Mockgoose(mongoose);
+const Mockgoose = require('mockgoose').Mockgoose
+const mockgoose = new Mockgoose(mongoose)
 
 const Database = require('../../../src/lib/database').db
 
 const config = require('../../../src/lib/config')
 const Logger = require('@mojaloop/central-services-shared').Logger
 
-test('Mongo Database tests. ', dbTest => {
+test('Mongo Database tests ', async dbTest => {
 
-  /*dbTest.test('connection test should ', async dbConnectionTest => {
-    try {
-        await Database()
+  /*transferTimeoutTest.beforeEach(t => {
+    sandbox = Sinon.createSandbox()
+    Db.transferTimeout = {
+      query: sandbox.stub()
+    }
+    t.end()
+  }) */
 
-        dbConnectionTest.pass('not connect to Database')
-        dbConnectionTest.end()
-      } catch (Error) {
-        dbConnectionTest.faill('Connected to the Database')
-        dbConnectionTest.end()
-      }
-  })*/
-
-  dbTest.test('connection test should ', async dbConnectionTest => {
-    try {
-      await mockgoose.prepareStorage().then(() => {
-        mongoose.connect('mongodb://foobar/baz');
-        mongoose.connection.on('connected', () => {
-          console.log('db connection is now open');
-        });
-      });
-        await Database()
-
-      /*dbConnectionTest.pass('not connect to Database')
-      dbConnectionTest.end()*/
-      } catch (Error) {
-      console.log('!!! error : ' + Error)
-        /*dbConnectionTest.faill('Connected to the Database')
-        dbConnectionTest.end()*/
-      }
-
+  dbTest.afterEach(async test => {
+    console.log('resetting')
+    await mockgoose.helper.reset()
+    console.log('closing')
+    await mongoose.connection.close()
+    console.log('test end')
+    test.end()
   })
 
-dbTest.end()
+  await dbTest.test('successfull connection made', async (assert) => {
+    try {
+
+      await mockgoose.prepareStorage().then(() => {
+        mongoose.connect('mongodb://foobar/baz')
+
+        mongoose.connection.on('connected', () => {
+          console.log('db connection is now open')
+        })
+      })
+
+      let expectedResult = {$initialConnection: {}}
+
+      let result = await Database()
+      assert.deepEquals(result.$initialConnection, expectedResult.$initialConnection)
+      assert.pass('Db connection successful')
+      assert.end()
+    } catch (err) {
+      assert.fail('Db connection failed')
+      assert.end()
+    }
+  })
+
+  dbTest.end()
 })

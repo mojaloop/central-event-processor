@@ -44,6 +44,7 @@
     "faucet": "0.0.1",
     "istanbul": "^1.1.0-alpha.1",
     "istanbul-coveralls": "^1.0.3",
+    "jest": "^23.6.0",
     "jsonpath": "^1.0.0",
     "mocha": "^5.2.0",
     "mockgoose": "^7.3.5",
