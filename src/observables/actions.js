@@ -126,12 +126,16 @@ const actionObservable = ({ action, params, message }) => {
 }
 
 const clearRepetitionTask = async function (actionId) { // clears the timesTriggered after delay is reached if action is still active
-  let action = await ActionModel.findById(actionId).populate('eventType')
-  let limit = await LimitModel.findOne({ type: action.eventType.limitType, name: action.eventType.name, currency: action.eventType.currency })
-  if (action.isActive && limit) {
-    action.timesTriggered = 1
-    action.save()
-    this.schedule(actionId, resetPeriod * 60 * 1000)
+  try {
+    let action = await ActionModel.findById(actionId).populate('eventType')
+    let limit = await LimitModel.findOne({ type: action.eventType.limitType, name: action.eventType.name, currency: action.eventType.currency })
+    if (action.isActive && limit) {
+      action.timesTriggered = 1
+      action.save()
+      this.schedule(actionId, resetPeriod * 60 * 1000)
+    }
+  } catch (err) {
+    throw err
   }
 }
 

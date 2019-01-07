@@ -38,7 +38,7 @@ const setupDb = () => {
   Mongoose.set('useNewUrlParser', true)
   Mongoose.set('useCreateIndex', true)
   const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
-  `mongodb://${config.mongo.uri}/${config.mongo.database}`
+    `mongodb://${config.mongo.uri}/${config.mongo.database}`
   Mongoose.connect(`${connectionString}`, { useFindAndModify: false, useNewUrlParser: true, useCreateIndex: true })
   db.on('error', console.error.bind(console, 'connection error'))
   db.once('open', function callback () {

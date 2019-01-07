@@ -48,92 +48,132 @@ const getPositionsFromResponse = positions => {
 
 const prepareCurrentPosition = (name, positions, limits, transferId, messagePayload) => {
   let viewsArray = []
-  limits.forEach(limit => {
-    const percentage = 100 - (positions[limit.currency] * 100 / limit.value)
-    let currentPosition = {
-      name,
-      currency: limit.currency,
-      positionValue: positions[limit.currency],
-      percentage,
-      transferId,
-      messagePayload
-    }
-    viewsArray.push(currentPosition)
-  })
-  return viewsArray
+  try {
+    limits.forEach(limit => {
+      const percentage = 100 - (positions[limit.currency] * 100 / limit.value)
+      let currentPosition = {
+        name,
+        currency: limit.currency,
+        positionValue: positions[limit.currency],
+        percentage,
+        transferId,
+        messagePayload
+      }
+      viewsArray.push(currentPosition)
+    })
+    return viewsArray
+  } catch (err) {
+    throw err
+  }
 }
 
 // TODO prepare a check for fresh limits and update them only if its necessary
 
 const updateLimitsFromResponse = async (name, limits) => {
   let result = []
-  for (let limit of limits) {
-    let doc = await LimitModel.findOne({ name: name, currency: limit.currency, type: limit.limit.type })
-    let limitObject = {
-      name,
-      currency: limit.currency,
-      type: limit.limit.type,
-      value: limit.limit.value,
-      threshold: limit.limit.alarmPercentage
+  try {
+    for (let limit of limits) {
+      let doc = await LimitModel.findOne({ name: name, currency: limit.currency, type: limit.limit.type })
+      let limitObject = {
+        name,
+        currency: limit.currency,
+        type: limit.limit.type,
+        value: limit.limit.value,
+        threshold: limit.limit.alarmPercentage
+      }
+      if (doc) {
+        doc.oldValue = doc.value
+        doc.value = limit.limit.value
+        await doc.save()
+        result.push(doc.toObject())
+      } else {
+        let document = await LimitModel.create(limitObject)
+        result.push(document.toObject())
+      }
     }
-    if (doc) {
-      doc.oldValue = doc.value
-      doc.value = limit.limit.value
-      await doc.save()
-      result.push(doc.toObject())
-    } else {
-      let document = await LimitModel.create(limitObject)
-      result.push(document.toObject())
-    }
+    return result
+  } catch (err) {
+    throw err
   }
-  return result
 }
 
 const createEventsForParticipant = async (name, limits) => {
-  for (let limit of limits) {
-    let notificationActions = Enums.limitNotificationMap[limit.type]
-    for (let key in notificationActions) {
-      if (key !== 'enum') {
-        let eventRecord = await EventModel.findOne({ name, currency: limit.currency, limitType: limit.type, notificationEndpointType: key })
-        if (!eventRecord) {
-          const newEvent = {
-            name,
-            currency: limit.currency,
-            notificationEndpointType: key,
-            limitType: limit.type,
-            action: notificationActions[key].action,
-            templateType: notificationActions[key].templateType,
-            language: notificationActions[key].language
+  try {
+    for (let limit of limits) {
+      let notificationActions = Enums.limitNotificationMap[limit.type]
+      for (let key in notificationActions) {
+        if (key !== 'enum') {
+          let eventRecord = await EventModel.findOne({ name, currency: limit.currency, limitType: limit.type, notificationEndpointType: key })
+          if (!eventRecord) {
+            const newEvent = {
+              name,
+              currency: limit.currency,
+              notificationEndpointType: key,
+              limitType: limit.type,
+              action: notificationActions[key].action,
+              templateType: notificationActions[key].templateType,
+              language: notificationActions[key].language
+            }
+            await EventModel.create(newEvent)
           }
-          await EventModel.create(newEvent)
         }
       }
     }
+  } catch (err) {
+    throw err
   }
 }
 
+// const updateNotificationEndpointsFromResponse = async (name, notificationEndpoints) => {
+//   let result = []
+//   let notificationEndPointObject = {}
+//   for (let notificationEndpoint of notificationEndpoints) {
+//     let notificationRecord = await NotificationEndpointModel.findOne({ name: name, type: notificationEndpoint.type })
+//     let action = Enums.notificationActionMap[notificationEndpoint.type] ? Enums.notificationActionMap[notificationEndpoint.type].action : ''
+//     let document
+//     if (!notificationRecord) {
+//       notificationEndPointObject = {
+//         name,
+//         type: notificationEndpoint.type,
+//         value: notificationEndpoint.value,
+//         action
+//       }
+//       document = await NotificationEndpointModel.create(notificationEndPointObject)
+//     } else {
+//       notificationRecord.type = notificationEndpoint.type
+//       notificationRecord.action = action
+//       document = await notificationRecord.save()
+//     }
+//     result.push(document.toObject())
+//   }
+//   return result
+// }
+
 const updateNotificationEndpointsFromResponse = async (name, notificationEndpoints) => {
   let result = []
-  let notificationEndPointObject = {}
-  for (let notificationEndpoint of notificationEndpoints) {
-    let notificationRecord = await NotificationEndpointModel.findOne({ name: name, type: notificationEndpoint.type })
-    let action = Enums.notificationActionMap[notificationEndpoint.type] ? Enums.notificationActionMap[notificationEndpoint.type].action : ''
-    let document
-    if (!notificationRecord) {
-      notificationEndPointObject = {
-        name,
-        type: notificationEndpoint.type,
-        value: notificationEndpoint.value,
-        action
-      }
-      document = await NotificationEndpointModel.create(notificationEndPointObject)
-    } else {
-      notificationRecord.type = notificationEndpoint.type
-      notificationRecord.action = action
-      document = await notificationRecord.save()
+  try {
+    for (let notificationEndpoint of notificationEndpoints) {
+      let action = Enums.notificationActionMap[notificationEndpoint.type] ? Enums.notificationActionMap[notificationEndpoint.type].action : ''
+      let notificationRecord = await NotificationEndpointModel
+        .findOneAndUpdate({
+          name,
+          type: notificationEndpoint.type
+        },
+        {
+          name,
+          type: notificationEndpoint.type,
+          value: notificationEndpoint.value,
+          action
+        }, {
+          upsert: true,
+          new: true
+        })
+      result.push(notificationRecord.toObject())
     }
-    result.push(document.toObject())
+  } catch (err) {
+    throw err
   }
+  // console.log('getNotificationEndpointsFromResponse' + JSON.stringify(result))
   return result
 }
 
@@ -176,11 +216,15 @@ const requestLimitPerName = async (name) => {
 
 const getLimitPerNameObservable = (name) => {
   return Rx.Observable.create(async observer => {
-    const limitResponse = await requestLimitPerName(name)
-    const limits = await updateLimitsFromResponse(name, limitResponse)
-    await createEventsForParticipant(name, limits)
-    observer.next(limits)
-    observer.complete()
+    try {
+      const limitResponse = await requestLimitPerName(name)
+      const limits = await updateLimitsFromResponse(name, limitResponse)
+      await createEventsForParticipant(name, limits)
+      observer.next(limits)
+      observer.complete()
+    } catch (err) {
+      observer.error(err)
+    }
   })
 }
 
