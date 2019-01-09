@@ -42,7 +42,6 @@ const setupDb = () => {
   Mongoose.connect(`${connectionString}`, { useFindAndModify: false, useNewUrlParser: true, useCreateIndex: true })
   db.on('error', function (err) {
     if (err) // couldn't connect
-      console.log('Mongoose connection failed')
       db.close()
   })
   db.once('open', function callback () {

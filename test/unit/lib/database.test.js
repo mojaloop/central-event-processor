@@ -28,6 +28,12 @@
  * @module test/unit/lib/database.test.js
  */
 
+require('leaked-handles').set({
+  fullStack: true, // use full stack traces
+  timeout: 30000, // run every 30 seconds instead of 5.
+  debugSockets: true // pretty print tcp thrown exceptions.
+})
+
 const test = require('tapes')(require('tape'))
 const Sinon = require('sinon')
 const P = require('bluebird')
@@ -53,37 +59,55 @@ test('Mongo Database tests ', async dbTest => {
     t.end()
   }) */
 
-  dbTest.afterEach(async test => {
-    console.log('resetting')
+  /*dbTest.afterEach(async test => {
+
     await mockgoose.helper.reset()
-    console.log('closing')
-    await mongoose.connection.close()
-    console.log('test end')
+    await mongoose.connection.db.dropDatabase()
     test.end()
-  })
+  })*/
 
   await dbTest.test('successfull connection made', async (assert) => {
     try {
 
-      await mockgoose.prepareStorage().then(() => {
-        mongoose.connect('mongodb://foobar/baz')
+      let connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
+        `mongodb://${config.mongo.uri}/${config.mongo.database}`
+
+      let mockDb = await mockgoose.prepareStorage().then(() => {
+        mongoose.connect(`${connectionString}`, {
+          useFindAndModify: false,
+          useNewUrlParser: true,
+          useCreateIndex: true
+        })
 
         mongoose.connection.on('connected', () => {
           console.log('db connection is now open')
         })
+
+        mongoose.connection.on('error', function (err) {
+          console.log('Mongoose default connection has occured ' + err + ' error')
+        })
+
       })
 
-      let expectedResult = {$initialConnection: {}}
-
+      let expectedResult = { $initialConnection: {} }
       let result = await Database()
+
       assert.deepEquals(result.$initialConnection, expectedResult.$initialConnection)
       assert.pass('Db connection successful')
+
+      process.nextTick(() => {
+        mongoose.connection.close(() => {
+          // console.log('Mongoose default connection is disconnected due to application termination')
+          process.exit(0)
+        })
+      })
+
       assert.end()
+
     } catch (err) {
       assert.fail('Db connection failed')
       assert.end()
     }
   })
-
   dbTest.end()
 })
