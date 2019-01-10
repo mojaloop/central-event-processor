@@ -49,26 +49,28 @@ const Database = require('../../../src/lib/database').db
 const config = require('../../../src/lib/config')
 const Logger = require('@mojaloop/central-services-shared').Logger
 
-test('Mongo Database tests ', async dbTest => {
+test('Mongo Database tests', async dbTest => {
 
-  /*transferTimeoutTest.beforeEach(t => {
-    sandbox = Sinon.createSandbox()
-    Db.transferTimeout = {
-      query: sandbox.stub()
-    }
-    t.end()
-  }) */
-
-  /*dbTest.afterEach(async test => {
-
+  dbTest.beforeEach(async t => {
     await mockgoose.helper.reset()
-    await mongoose.connection.db.dropDatabase()
-    test.end()
-  })*/
+    t.end()
+  })
 
-  await dbTest.test('successfull connection made', async (assert) => {
+  await dbTest.test('unsuccessful connection', async (assert) => {
     try {
 
+      let result = await Database('mongodb://foobar:2701/test')
+
+      assert.equals(result, undefined)
+      assert.end()
+    } catch (err) {
+      assert.pass('Db connection failed')
+      assert.end()
+    }
+  })
+
+  await dbTest.test('successful connection', async (assert) => {
+    try {
       let connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
         `mongodb://${config.mongo.uri}/${config.mongo.database}`
 
@@ -86,28 +88,24 @@ test('Mongo Database tests ', async dbTest => {
         mongoose.connection.on('error', function (err) {
           console.log('Mongoose default connection has occured ' + err + ' error')
         })
-
       })
 
       let expectedResult = { $initialConnection: {} }
       let result = await Database()
-
       assert.deepEquals(result.$initialConnection, expectedResult.$initialConnection)
       assert.pass('Db connection successful')
 
       process.nextTick(() => {
         mongoose.connection.close(() => {
-          // console.log('Mongoose default connection is disconnected due to application termination')
           process.exit(0)
         })
       })
 
       assert.end()
-
     } catch (err) {
       assert.fail('Db connection failed')
       assert.end()
     }
   })
-  dbTest.end()
+  await dbTest.end()
 })
