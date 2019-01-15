@@ -47,7 +47,7 @@ Test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     test.end()
   })
 
-  await actionTest.test('Should test the actionObservable returns true when the action is "finish"', async assert => {
+  await actionTest.test('Should return completed when the action is "finish"', async assert => {
     let mockMessage = {
       'value': {
         'from': 'SYSTEM',
@@ -128,11 +128,16 @@ Test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
         assert.deepEqual(result, { actionResult: true })
         assert.end()
       },
-      error => {
-        assert.fail(`test failed with error ${error}`)
+
+      err => {
+        assert.fail(`test failed with error ${err}`)
+        assert.end()
+      },
+
+      () => {
+        assert.ok('Observer completed')
         assert.end()
       })
-
   })
   actionTest.end()
 })

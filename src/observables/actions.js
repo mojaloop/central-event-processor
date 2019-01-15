@@ -89,8 +89,7 @@ const actionObservable = ({ action, params, message }) => {
   return Rx.Observable.create(async observer => {
     try {
         if (action === 'finish') {
-          // return observer.complete({ actionResult: true })
-          observer.next({ actionResult: true })
+          return observer.complete({ actionResult: true })
         }
       let actionResult
       let previousAction = await ActionModel.findOne({ fromEvent: params.fromEvent, isActive: true })
