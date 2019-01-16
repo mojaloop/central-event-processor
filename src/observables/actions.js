@@ -143,4 +143,4 @@ const getActions = () => {
   return actions
 }
 
-module.exports = { actionObservable, getActions }
+module.exports = { actionObservable, getActions}
