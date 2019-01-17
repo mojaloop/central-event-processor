@@ -71,53 +71,73 @@ const setup = async () => {
     })
   })
 
-  const getLimitPerNameShare = (name) => {
-    // this observable is sharing the result from getLimitPerNameObservable to multiple observers
-    let shared = Observables.CentralLedgerAPI.getLimitPerNameObservable(name)
-      .pipe(share())
-    shared.subscribe(limit => {
-      // when result is produced from getLimitPerNameObservable the limit is passed to the pipe below
-      Observables.Rules.ndcAdjustmentObservable(limit)
-        .pipe(switchMap(Observables.actionObservable))
-        .subscribe(v => console.log(v))
-    })
-    return Rx.Observable.create(observer => {
-      let reply = {}
-      // this is used if the result of the share has to be piped to another observable
-      shared.subscribe(limits => {
-        reply[name] = limits
-        observer.next(reply)
-        observer.complete()
-      })
-    })
-  }
+  // const getLimitPerNameShare = (name) => {
+  //   // this observable is sharing the result from getLimitPerNameObservable to multiple observers
+  //   let shared = Observables.CentralLedgerAPI.getLimitPerNameObservable(name)
+  //     .pipe(share())
+  //   // shared.subscribe(limit => {
+  //   //   // when result is produced from getLimitPerNameObservable the limit is passed to the pipe below
+  //   //   Observables.Rules.ndcAdjustmentObservable(limit)
+  //   //     .pipe(switchMap(Observables.actionObservable))
+  //   //     .subscribe(v => console.log(v))
+  //   // })
+  //   return Rx.Observable.create(observer => {
+  //     let reply = {}
+  //     // this is used if the result of the share has to be piped to another observable
+  //     shared.subscribe(limits => {
+  //       reply[name] = limits
+  //       observer.next(reply)
+  //       observer.complete()
+  //     })
+  //   })
+  // }
 
-  const getLimitObservable = ({ message }) => {
-    const payerFsp = message.value.from
-    const payeeFsp = message.value.to
-    return Rx.Observable.create(observer => {
-      let observables = [payerFsp, payeeFsp].map(name => getLimitPerNameShare(name))
-      let allFspsObservable = Rx.forkJoin(observables)
-      // this observable joins the result from 2 getLimitPerNameShare observables and joins them before passing them further
-      allFspsObservable.subscribe(limitsArray => {
-        let limits = {}
-        for (let limit of limitsArray) {
-          limits = Object.assign(limits, limit)
-        }
-        observer.next({ message, limits })
-      })
-    })
-  }
+  // const getLimitObservable = ({ message }) => {
+  //   const payerFsp = message.value.from
+  //   const payeeFsp = message.value.to
+  //   return Rx.Observable.create(observer => {
+  //     let observables = [payerFsp, payeeFsp].map(name => getLimitPerNameShare(name))
+  //     let allFspsObservable = Rx.forkJoin(observables)
+  //     // this observable joins the result from 2 getLimitPerNameShare observables and joins them before passing them further
+  //     allFspsObservable.subscribe(limitsArray => {
+  //       let limits = {}
+  //       for (let limit of limitsArray) {
+  //         limits = Object.assign(limits, limit)
+  //       }
+  //       observer.next({ message, limits })
+  //     })
+  //   })
+  // }
 
   const generalObservable = topicObservable
     .pipe(filter(data => data.value.metadata.event.action === 'commit'),
       switchMap(Observables.CentralLedgerAPI.getDfspNotificationEndpointsObservable),
-      switchMap(getLimitObservable),
+      //  switchMap(getLimitObservable),
       switchMap(Observables.CentralLedgerAPI.getPositionsObservable),
       switchMap(Observables.Rules.ndcBreachObservable),
       switchMap(Observables.actionObservable))
 
   generalObservable.subscribe({
+    next: async ({ actionResult, message }) => {
+      if (!actionResult) {
+        Logger.info(`action unsuccessful. Publishing the message to topic ${topicName}`)
+        // TODO we should change the state and produce error message instead of republish?
+        await Utility.produceGeneralMessage(TransferEventType.NOTIFICATION, TransferEventAction.EVENT, message, Utility.ENUMS.STATE.SUCCESS)
+      }
+      Logger.info(actionResult)
+    },
+    error: err => Logger.info('Error occured: ', err),
+    completed: (value) => Logger.info('completed with value', value)
+  })
+
+  const limitAdjustmentObservable = topicObservable
+    .pipe(filter(data => 'limit' in data.value.content.payload),
+      switchMap(Observables.Store.getLimitsPerNameObservable),
+      switchMap(Observables.Rules.ndcAdjustmentObservable),
+      switchMap(Observables.actionObservable)
+    )
+
+  limitAdjustmentObservable.subscribe({
     next: async ({ actionResult, message }) => {
       if (!actionResult) {
         Logger.info(`action unsuccessful. Publishing the message to topic ${topicName}`)

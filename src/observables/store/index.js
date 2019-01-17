@@ -25,8 +25,5 @@
 'use strict'
 
 module.exports = {
-  actionObservable: require('./actions').actionObservable,
-  Rules: require('./rules'),
-  CentralLedgerAPI: require('./centralLedgerAPI'),
-  Store: require('./store')
+  getLimitsPerNameObservable: require('./limits').getLimitPerNameObservable
 }

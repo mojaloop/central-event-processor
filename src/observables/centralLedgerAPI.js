@@ -33,7 +33,6 @@ const Config = require('../lib/config')
 const CurrentPositionModel = require('../models/currentPosition').currentPositionModel
 const LimitModel = require('../models/limits').limitModel
 const NotificationEndpointModel = require('../models/notificationEndpoint').notificationEndpointModel
-const EventModel = require('../models/events').eventModel
 const Enums = require('../lib/enum')
 const centralLedgerAPIConfig = Config.get('centralLedgerAPI')
 const centralLedgerAdminURI = `${centralLedgerAPIConfig.adminHost}:${centralLedgerAPIConfig.adminPort}`
@@ -97,32 +96,32 @@ const updateLimitsFromResponse = async (name, limits) => {
   }
 }
 
-const createEventsForParticipant = async (name, limits) => {
-  try {
-    for (let limit of limits) {
-      let notificationActions = Enums.limitNotificationMap[limit.type]
-      for (let key in notificationActions) {
-        if (key !== 'enum') {
-          let eventRecord = await EventModel.findOne({ name, currency: limit.currency, limitType: limit.type, notificationEndpointType: key })
-          if (!eventRecord) {
-            const newEvent = {
-              name,
-              currency: limit.currency,
-              notificationEndpointType: key,
-              limitType: limit.type,
-              action: notificationActions[key].action,
-              templateType: notificationActions[key].templateType,
-              language: notificationActions[key].language
-            }
-            await EventModel.create(newEvent)
-          }
-        }
-      }
-    }
-  } catch (err) {
-    throw err
-  }
-}
+// const createEventsForParticipant = async (name, limits) => {
+//   try {
+//     for (let limit of limits) {
+//       let notificationActions = Enums.limitNotificationMap[limit.type]
+//       for (let key in notificationActions) {
+//         if (key !== 'enum') {
+//           let eventRecord = await EventModel.findOne({ name, currency: limit.currency, limitType: limit.type, notificationEndpointType: key })
+//           if (!eventRecord) {
+//             const newEvent = {
+//               name,
+//               currency: limit.currency,
+//               notificationEndpointType: key,
+//               limitType: limit.type,
+//               action: notificationActions[key].action,
+//               templateType: notificationActions[key].templateType,
+//               language: notificationActions[key].language
+//             }
+//             await EventModel.create(newEvent)
+//           }
+//         }
+//       }
+//     }
+//   } catch (err) {
+//     throw err
+//   }
+// }
 
 // const updateNotificationEndpointsFromResponse = async (name, notificationEndpoints) => {
 //   let result = []
@@ -214,19 +213,19 @@ const requestLimitPerName = async (name) => {
   }
 }
 
-const getLimitPerNameObservable = (name) => {
-  return Rx.Observable.create(async observer => {
-    try {
-      const limitResponse = await requestLimitPerName(name)
-      const limits = await updateLimitsFromResponse(name, limitResponse)
-      await createEventsForParticipant(name, limits)
-      observer.next(limits)
-      observer.complete()
-    } catch (err) {
-      observer.error(err)
-    }
-  })
-}
+// const getLimitPerNameObservable = (name) => {
+//   return Rx.Observable.create(async observer => {
+//     try {
+//       const limitResponse = await requestLimitPerName(name)
+//       const limits = await updateLimitsFromResponse(name, limitResponse)
+//       await createEventsForParticipant(name, limits)
+//       observer.next(limits)
+//       observer.complete()
+//     } catch (err) {
+//       observer.error(err)
+//     }
+//   })
+// }
 
 // const getLimitObservable = ({ message }) => {
 //   const payerFsp = message.value.from
@@ -290,6 +289,6 @@ const getPositionsObservable = ({ message, limits }) => {
 module.exports = {
   // getLimitObservable,
   getPositionsObservable,
-  getLimitPerNameObservable,
+  // getLimitPerNameObservable,
   getDfspNotificationEndpointsObservable
 }

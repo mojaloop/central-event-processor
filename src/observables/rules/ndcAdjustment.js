@@ -61,7 +61,7 @@ const createRules = async (limit) => {
     }
 
     let event = {
-      type: `${type}_ADJUSTMENT`,
+      type: `${type}_ADJUSTMENT_EMAIL`,
       params: {
         dfsp: name,
         limitType: type,
@@ -85,36 +85,34 @@ const createRules = async (limit) => {
   }
 }
 
-const ndcAdjustmentObservable = (limits) => {
-  for (let limit of limits) {
-    return Rx.Observable.create(async observer => {
-      try {
-        let { rules, event } = await createRules(limit)
-        rules.forEach(rule => engine.addRule(rule))
-        let actions = await engine.run(limit)
-        if (actions.length) {
-          actions.forEach(action => {
-            observer.next({
-              action: 'produceToKafkaTopic',
-              params: action.params
-            })
+const ndcAdjustmentObservable = (limit) => {
+  return Rx.Observable.create(async observer => {
+    try {
+      let { rules, event } = await createRules(limit)
+      rules.forEach(rule => engine.addRule(rule))
+      let actions = await engine.run(limit)
+      if (actions.length) {
+        actions.forEach(action => {
+          observer.next({
+            action: 'produceToKafkaTopic',
+            params: action.params
           })
-        } else {
-          observer.next({ action: 'finish' })
-          let activeActions = await ActionModel.find({ fromEvent: event.params.fromEvent, isActive: true })
-          if (activeActions.length) {
-            for (let activeAction of activeActions) {
-              await ActionModel.findByIdAndUpdate(activeAction.id, { isActive: false })
-            }
+        })
+      } else {
+        observer.next({ action: 'finish' })
+        let activeActions = await ActionModel.find({ fromEvent: event.params.fromEvent, isActive: true })
+        if (activeActions.length) {
+          for (let activeAction of activeActions) {
+            await ActionModel.findByIdAndUpdate(activeAction.id, { isActive: false })
           }
         }
-        rules.forEach(rule => engine.removeRule(rule))
-        observer.complete()
-      } catch (err) {
-        observer.error(err)
       }
-    })
-  }
+      rules.forEach(rule => engine.removeRule(rule))
+      observer.complete()
+    } catch (err) {
+      observer.error(err)
+    }
+  })
 }
 
 module.exports = {
