@@ -82,7 +82,11 @@ const dictionary = {
 }
 
 const actionBuilder = (action) => {
-  return dictionary[action]
+  if (action in dictionary) {
+    return dictionary[action]
+  } else {
+    throw new Error('Action ' + action + ' are not supported')
+  }
 }
 
 const actionObservable = ({ action, params, message }) => {

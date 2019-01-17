@@ -28,10 +28,13 @@ const Utility = require('../../../src/lib/utility')
 const Sinon = require('sinon')
 const ActionObservable = require('../../../src/observables/actions').actionObservable
 const ActionModel = require('../../../src/models/action').actionModel
+const Action = require('../../../src/models/action')
 const NotificationModel = require('../../../src/models/notificationEndpoint').notificationEndpointModel
 const LimitModel = require('../../../src/models/limits').limitModel
 const SinonMongoose = require('sinon-mongoose')
 const P = require('bluebird')
+
+// const factory = require('factory-girl')
 
 test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   Sinon.config = {
@@ -44,7 +47,8 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     isActive: false,
     triggeredBy: '5bf5480ba305f9801a6d59df',
     fromEvent: '5bf5480ba305f9801a6d59e3',
-    updatedAt: '2018-11-21T13:55:24.791Z'
+    updatedAt: '2018-11-21T13:55:24.791Z',
+    save: () => {return P.resolve()}
   }
   let dfspNotificationEndpointModelJSON = {
     name: 'dfsp2',
@@ -63,6 +67,9 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     sandbox = Sinon.createSandbox()
     sandbox.stub(NotificationModel, 'findOne')
     sandbox.stub(ActionModel, 'findOne')
+    sandbox.stub(Rx)
+    sandbox.stub(Rx,'asyncScheduler')
+    Rx.asyncScheduler.schedule.returns(P.resolve())
     sandbox.stub(Utility)
     Utility.produceGeneralMessage.returns(P.resolve())
 
@@ -74,7 +81,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     test.end()
   })
 
-  /*await actionTest.test('Should return completed when the action is "finish"', async assert => {
+  await actionTest.test('Should return completed when the action is "finish"', async assert => {
     let mockMessage = {
       'value': {
         'from': 'SYSTEM',
@@ -174,10 +181,10 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       dfsp: 'dfsp2',
       action: 'sendmail',
       notificationEndpointType: 'NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL',
-      repetitionsAllowed: 3
+      repetitionsAllowed: 0
     }
 
-    let action = ''
+    let action = 'sendEmail'
     let mockMessage = {
       'value': {
         'from': 'SYSTEM',
@@ -283,7 +290,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
         assert.ok('Observer completed')
         assert.end()
       })
-  })*/
+  })
 
   await actionTest.test('Should save previous action if Times triggered ?????????????????', async assert => {
 
@@ -295,7 +302,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       repetitionsAllowed: 3
     }
 
-    let action = 'sendmail'
+    let action = 'sendEmail'
     let mockMessage = {
       'value': {
         'from': 'SYSTEM',
@@ -386,8 +393,6 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       isActive: true
     }).resolves(actionModelJSON)
 
-
-
     ActionObservable({ action, params, mockMessage }).subscribe(
       result => {
         assert.ok
@@ -404,5 +409,6 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
         assert.end()
       })
   })
+
   actionTest.end()
 })
