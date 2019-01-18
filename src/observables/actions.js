@@ -72,9 +72,9 @@ const dictionary = {
     }
   },
 
-  sendRequest: ({ method = 'GET', url, payload }) => {
+  /*sendRequest: ({ method = 'GET', url, payload }) => {
     return 'not implemented'
-  },
+  },*/
 
   sendEmail: ({ emailAddress, subject, body }) => {
     return 'not implemented'
@@ -147,4 +147,4 @@ const getActions = () => {
   return actions
 }
 
-module.exports = { actionObservable, getActions}
+module.exports = { actionObservable, getActions, clearRepetitionTask}
