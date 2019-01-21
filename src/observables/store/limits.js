@@ -11,7 +11,7 @@ const getLimitPerNameObservable = (message) => {
       let name = message.value.from
       const limitResult = await updateLimitsFromMessage(name, currency, limit)
       await createEventsForParticipant(name, limitResult)
-      observer.next(limit)
+      observer.next(limitResult)
       observer.complete()
     } catch (err) {
       observer.error(err)

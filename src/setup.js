@@ -37,7 +37,7 @@ const Enum = require('./lib/enum')
 const TransferEventType = Enum.transferEventType
 const TransferEventAction = Enum.transferEventAction
 const Observables = require('./observables')
-const createHealtcheck = require('healthcheck-server')
+const createHealthcheck = require('healthcheck-server')
 const Config = require('./lib/config')
 
 const setup = async () => {
@@ -48,7 +48,7 @@ const setup = async () => {
   const topicName = Utility.transformGeneralTopicName(Utility.ENUMS.NOTIFICATION, Utility.ENUMS.EVENT)
   const consumer = Consumer.getConsumer(topicName)
 
-  createHealtcheck({
+  createHealthcheck({
     port: Config.get('PORT'),
     path: '/health',
     status: ({ cpu, memory }) => {
