@@ -14,6 +14,7 @@ const getLimitPerNameObservable = (message) => {
       observer.next(limitResult)
       observer.complete()
     } catch (err) {
+      Logger.info(`getLimitPerNameObservable exit with error: ${err}`)
       observer.error(err)
     }
   })
@@ -40,6 +41,7 @@ const createEventsForParticipant = async (name, limit) => {
       }
     }
   } catch (err) {
+    Logger.info(`createEventsForParticipant exit with error: ${err}`)
     throw err
   }
 }
@@ -64,6 +66,7 @@ const updateLimitsFromMessage = async (name, currency, limit) => {
       return document.toObject()
     }
   } catch (err) {
+    Logger.info(`updateLimitsFromMessage exit with error: ${err}`)
     throw err
   }
 }
