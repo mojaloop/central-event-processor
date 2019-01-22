@@ -132,5 +132,5 @@ const setup = async () => {
 }
 
 module.exports = {
-  setup
+  setup,
 }

@@ -31,7 +31,7 @@ const Sinon = require('sinon')
 const ActionObservable = require('../../../src/observables/actions').actionObservable
 const ActionModel = require('../../../src/models/action').actionModel
 const NotificationModel = require('../../../src/models/notificationEndpoint').notificationEndpointModel
-const ClearRepetitiontask = require('../../../src/observables/actions').clearRepetitionTask
+const ClearRepetitionTask = require('../../../src/observables/actions').clearRepetitionTask
 const LimitModel = require('../../../src/models/limits').limitModel
 const SinonMongoose = require('sinon-mongoose')
 const P = require('bluebird')
@@ -70,11 +70,18 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     //sandbox.stub(LimitModel, 'findOne')
     sandbox.stub(NotificationModel, 'findOne')
     sandbox.stub(ActionModel, 'findOne')
-    /*sandbox.stub(Rx)
-    Rx.asyncScheduler.returns(P.resolve())*/
-    sandbox.stub(Utility)
-    Utility.produceGeneralMessage.returns(P.resolve())
 
+   /* sandbox.stub(Rx, 'asyncScheduler')
+    Rx.asyncScheduler.returns({schedule: () => {return P.resolve()}})*/
+    /*sandbox
+      .stub(ClearRepetitiontask,'Rx.Scheduler.async.schedule')
+      .returns(P.resolve());*/
+
+    // sandbox.stub(Rx.prototype, 'asyncScheduler')
+
+    sandbox.stub(Utility)
+
+    Utility.produceGeneralMessage.returns(P.resolve())
     test.end()
   })
 
@@ -83,7 +90,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     test.end()
   })
 
-  /*await actionTest.test('Should return completed when the action is "finish"', async assert => {
+  await actionTest.test('Should return completed when the action is "finish"', async assert => {
     let mockMessage = {
       'value': {
         'from': 'SYSTEM',
@@ -646,9 +653,9 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
         assert.ok('Observer completed')
         assert.end()
       })
-  })*/
+  })
 
-  /*await actionTest.test('Should create a new action if no previous action exist', async assert => {
+  await actionTest.test('Should create a new action if no previous action exist', async assert => {
 
     let params = {
       triggeredBy: '51bb793aca2ab77a3200000e',
@@ -773,9 +780,9 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
         })
         assert.end()
       })
-  })*/
+  })
 
-  await actionTest.test('Clear repetition tasks', async assert => {
+  /*await actionTest.test('Clear repetition tasks', async assert => {
 
     let action = {
       isActive: true,
@@ -800,15 +807,16 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       .resolves(actionModelJSON)
 
     try {
-      ClearRepetitiontask(1)
+      ClearRepetitionTask('5bf5480ba305f9801a6d59df')
 
-
-
+      assert.end()
       console.log('result ' + result)
     } catch (err) {
       Logger.error('Error ' + err)
+      assert.fail('err !!' + err)
+      assert.end()
     }
-  })
+  })*/
 
   actionTest.end()
 })

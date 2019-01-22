@@ -52,7 +52,7 @@ test('Mongo Database tests', async dbTest => {
     t.end()
   })
 
- /* await dbTest.test('unsuccessful connection', async (assert) => {
+  await dbTest.test('unsuccessful connection', async (assert) => {
     try {
       let result = await Database('mongodb://foobar:2701/test')
       assert.equals(result, undefined)
@@ -61,9 +61,9 @@ test('Mongo Database tests', async dbTest => {
       assert.pass('Db connection failed')
       assert.end()
     }
-  })*/
+  })
 
-  /*await dbTest.test('successful connection', async (assert) => {
+  await dbTest.test('successful connection', async (assert) => {
     try {
       let connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
         `mongodb://${config.mongo.uri}/${config.mongo.database}`
@@ -97,7 +97,7 @@ test('Mongo Database tests', async dbTest => {
       assert.fail('Db connection failed')
       assert.end()
     }
-  })*/
+  })
 
   await dbTest.end()
 })
