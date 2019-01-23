@@ -89,7 +89,7 @@ const ndcAdjustmentObservable = (limit) => {
   return Rx.Observable.create(async observer => {
     try {
       let { rules, event } = await createRules(limit)
-      rules.forEach(rule => engine.addRule(rule))
+      rules.forEach(rule => engine.addRule(rule)) // TODO check if it is a loop atm and if not remove the forEach and push 
       let actions = await engine.run(limit)
       if (actions.length) {
         actions.forEach(action => {
@@ -100,7 +100,7 @@ const ndcAdjustmentObservable = (limit) => {
         })
       } else {
         observer.next({ action: 'finish' })
-        let activeActions = await ActionModel.find({ fromEvent: event.params.fromEvent, isActive: true })
+        let activeActions = await ActionModel.find({ fromEvent: event.params.fromEvent, isActive: true }) // TODO move this into the action observerbale
         if (activeActions.length) {
           for (let activeAction of activeActions) {
             await ActionModel.findByIdAndUpdate(activeAction.id, { isActive: false })

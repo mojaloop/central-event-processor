@@ -34,7 +34,7 @@ const config = require('../lib/config')
 // scheduler will check after an hour if this action is still active and if its active will clear timerTriggered field.
 
 const actionSchema = new mongoose.Schema({
-  triggeredBy: { type: mongoose.Schema.Types.ObjectId }, // this will show event in the past
+  triggeredBy: { type: mongoose.Schema.Types.ObjectId }, // this will show artefact (ndc breach, limit change, etc) in the past 
   timesTriggered: { type: Number, default: 1 },
   fromEvent: { type: mongoose.Schema.Types.ObjectId, ref: 'eventSchema' },
   isActive: { type: Boolean, default: true }
