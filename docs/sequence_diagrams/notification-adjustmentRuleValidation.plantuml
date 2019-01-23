@@ -1,0 +1,86 @@
+@startuml
+' declate title
+title 10.3. Notification Limit Adjustment Rules Validation
+autonumber
+
+' declare actors
+collections "Notification-Topic" as TOPIC_NOTIFY
+boundary "Central Event Processor" as CEP
+database "CEP Store" as DB
+
+box "Central Services" #LightYellow
+participant TOPIC_NOTIFY
+end box
+box "Central Event Processing Service" #LightGreen
+participant CEP
+participant DB
+end box
+
+' start flow
+Group Limit Adjustment Rules Validation
+    activate CEP
+    note over TOPIC_NOTIFY
+        Events are published
+        to Notification Topic
+        by Central Services
+    end note
+    TOPIC_NOTIFY <-- CEP: Consumes notification messages
+    activate TOPIC_NOTIFY
+    deactivate TOPIC_NOTIFY
+    CEP -> CEP: Filter according to event action
+    note over CEP
+        Qualifying event action
+        {
+        "limit" in data.value.content.payload
+        }
+    end note
+
+    alt Messages event type that qualify
+        CEP -> DB: Update current limits
+        activate DB
+        hnote over DB #LightYellow
+        limits
+        end hnote
+        CEP <-- DB: Return results
+        deactivate DB
+        CEP -> DB: Create events per participant
+        activate DB
+        hnote over DB #LightYellow
+        events
+        end hnote
+        CEP <-- DB: Return results
+        deactivate DB
+        CEP -> CEP: Check if their is a difference
+        note over of CEP
+            Check if there is a difference between
+            the stored and captured limits for both payee and payer
+            for all currencies
+        end note
+
+        alt Limit difference identified
+            CEP -> CEP: Create new action object and pass it to the Action Agent
+        else Limits are equal - same event
+            CEP -> CEP: Send finish single to Action Agent.
+            CEP -> DB: Request action from event
+            activate DB
+            hnote over DB #LightYellow
+                actions
+            end hnote
+            CEP <-- DB: Return results
+            deactivate DB
+            note right of CEP
+                deactive pending action
+            end note
+            CEP --> DB: Persist updated action to CEP Store
+            activate DB
+            hnote over DB #LightYellow
+                actions
+            end hnote
+            CEP <-- DB: Return results
+            deactivate DB
+        end
+    else Ignore - Message does not qualify for notification action
+    end
+    deactivate CEP
+end
+@enduml
