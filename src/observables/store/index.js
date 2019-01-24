@@ -24,23 +24,6 @@
 
 'use strict'
 
-const mongoose = require('mongoose')
-const config = require('../lib/config')
-
-// as soon as threshold is breached we creat action
-// as soon as the position is fixed isActive becomes false
-
-// as soon as new action is created, we get the id and pass it to the scheduler.
-// scheduler will check after an hour if this action is still active and if its active will clear timerTriggered field.
-
-const actionSchema = new mongoose.Schema({
-  triggeredBy: { type: mongoose.Schema.Types.ObjectId }, // this will show artefact (ndc breach, limit change, etc) in the past 
-  timesTriggered: { type: Number, default: 1 },
-  fromEvent: { type: mongoose.Schema.Types.ObjectId, ref: 'eventSchema' },
-  isActive: { type: Boolean, default: true }}, { timestamps: true })
-
-const actionModel = mongoose.model(config.mongo.actionCollection, actionSchema)
-
 module.exports = {
-  actionModel
+  getLimitsPerNameObservable: require('./limits').getLimitPerNameObservable
 }

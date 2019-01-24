@@ -70,15 +70,15 @@ const dictionary = {
     } catch (err) {
       throw err
     }
-  },
+  }
 
-  /*sendRequest: ({ method = 'GET', url, payload }) => {
+  /* sendRequest: ({ method = 'GET', url, payload }) => {
     return 'not implemented'
-  },*/
+  },
 
   sendEmail: ({ emailAddress, subject, body }) => {
     return 'not implemented'
-  }
+  } */
 }
 
 const actionBuilder = (action) => {
@@ -92,9 +92,9 @@ const actionBuilder = (action) => {
 const actionObservable = ({ action, params, message }) => {
   return Rx.Observable.create(async observer => {
     try {
-        if (action === 'finish') {
-          return observer.complete({ actionResult: true })
-        }
+      if (action === 'finish') {
+        return observer.complete({ actionResult: true })
+      }
       let actionResult
       let previousAction = await ActionModel.findOne({ fromEvent: params.fromEvent, isActive: true })
       let recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType })
@@ -159,4 +159,4 @@ const getActions = () => {
   return actions
 }
 
-module.exports = { actionObservable, getActions, clearRepetitionTask}
+module.exports = { actionObservable, getActions, clearRepetitionTask }

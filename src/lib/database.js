@@ -39,12 +39,10 @@ const setupDb = (connectionString = defaultConnectionString) => {
   Mongoose.set('useFindAndModify', false)
   Mongoose.set('useNewUrlParser', true)
   Mongoose.set('useCreateIndex', true)
-  /*const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
-    `mongodb://${config.mongo.uri}/${config.mongo.database}`*/
   Mongoose.connect(`${connectionString}`, { useFindAndModify: false, useNewUrlParser: true, useCreateIndex: true })
-  db.on('error', function (err) {
-      Logger.info('Connection with database failed.')
-      db.close()
+  db.on('error', (err) => {
+    Logger.info(`Connection with database failed with error: ${err}`)
+    db.close()
   })
   db.once('open', function callback () {
     Logger.info('Connection with database succeeded.')
