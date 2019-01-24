@@ -35,82 +35,75 @@ let engine = new RuleEngine.Engine()
 
 const createRules = async (position) => {
   let rules = []
-  try {
-    let [limit, dbEvent] = await Promise.all([
-      LimitModel.findOne({ name: position.name, currency: position.currency, type: Enums.limitNotificationMap.NET_DEBIT_CAP.enum }),
-      EventModel.findOne({
-        name: position.name,
-        currency: position.currency,
-        limitType: Enums.limitNotificationMap.NET_DEBIT_CAP.enum,
-        notificationEndpointType: Enums.limitNotificationMap.NET_DEBIT_CAP.NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL.enum,
-        isActive: true
-      })
-    ])
 
-    let conditions = {
-      any: [{
-        fact: 'percentage',
-        operator: 'lessThanInclusive',
-        value: limit.threshold,
-        params: limit.type
-      }]
-    }
+  let [limit, dbEvent] = await Promise.all([
+    LimitModel.findOne({ name: position.name, currency: position.currency, type: Enums.limitNotificationMap.NET_DEBIT_CAP.enum }),
+    EventModel.findOne({
+      name: position.name,
+      currency: position.currency,
+      limitType: Enums.limitNotificationMap.NET_DEBIT_CAP.enum,
+      notificationEndpointType: Enums.limitNotificationMap.NET_DEBIT_CAP.NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL.enum,
+      isActive: true
+    })
+  ])
 
-    let event = {
-      type: limit.type,
-      params: {
-        dfsp: position.name,
-        limitType: limit.type,
-        value: position.percentage,
-        position: position.positionValue,
-        triggeredBy: position.id,
-        repetitionsAllowed: limit.repetitions,
-        fromEvent: dbEvent.id,
-        action: dbEvent.action,
-        notificationEndpointType: dbEvent.notificationEndpointType,
-        templateType: dbEvent.templateType,
-        language: dbEvent.language,
-        messageSubject: `${limit.type} BREACH CONDITION REACHED`
-      }
-    }
-
-    let breachRule = new RuleEngine.Rule({ conditions, event })
-    rules.push(breachRule)
-    return { rules, dbEvent }
-  } catch (err) {
-    throw err
+  let conditions = {
+    any: [{
+      fact: 'percentage',
+      operator: 'lessThanInclusive',
+      value: limit.threshold,
+      params: limit.type
+    }]
   }
+
+  let event = {
+    type: limit.type,
+    params: {
+      dfsp: position.name,
+      limitType: limit.type,
+      value: position.percentage,
+      position: position.positionValue,
+      triggeredBy: position.id,
+      repetitionsAllowed: limit.repetitions,
+      fromEvent: dbEvent.id,
+      action: dbEvent.action,
+      notificationEndpointType: dbEvent.notificationEndpointType,
+      templateType: dbEvent.templateType,
+      language: dbEvent.language,
+      messageSubject: `${limit.type} BREACH CONDITION REACHED`
+    }
+  }
+
+  let breachRule = new RuleEngine.Rule({ conditions, event })
+  rules.push(breachRule)
+  return { rules, dbEvent }
 }
 
 const ndcBreachObservable = ({ positions, message }) => {
   return Rx.Observable.create(async observer => {
-    try {
-      for (let position of positions) {
-        let { rules, dbEvent } = await createRules(position)
-        rules.forEach(rule => engine.addRule(rule))
-        let fact = Object.assign({}, position.toObject())
-        let actions = await engine.run(fact)
-        if (actions.length) {
-          actions.forEach(action => {
-            observer.next({
-              action: 'produceToKafkaTopic',
-              params: action.params,
-              message
-            })
+    for (let position of positions) {
+      let { rules, dbEvent } = await createRules(position)
+      rules.forEach(rule => engine.addRule(rule))
+      let fact = Object.assign({}, position.toObject())
+      let actions = await engine.run(fact)
+      if (actions.length) {
+        actions.forEach(action => {
+          observer.next({
+            action: 'produceToKafkaTopic',
+            params: action.params,
+            message
           })
-        } else {
-          observer.next({ action: 'finish' })
-          let activeActions = await ActionModel.find({ fromEvent: dbEvent.id, isActive: true })
-          if (activeActions) {
-            for (let activeAction of activeActions) {
-              await ActionModel.findByIdAndUpdate(activeAction.id, { isActive: false })
-            }
+        })
+      } else {
+        observer.next({ action: 'finish' })
+        let activeActions = await ActionModel.find({ fromEvent: dbEvent.id, isActive: true })
+        if (activeActions) {
+          for (let activeAction of activeActions) {
+            await ActionModel.findByIdAndUpdate(activeAction.id, { isActive: false })
           }
         }
-        rules.forEach(rule => engine.removeRule(rule))
       }
-    } catch (err) {
-      observer.error(err)
+      rules.forEach(rule => engine.removeRule(rule))
     }
   })
 }
