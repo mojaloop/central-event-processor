@@ -10,8 +10,8 @@ control "Central Event Processor" as CEP
 database "CEP Store" as DB
 
 box "Central Services" #LightYellow
-participant TOPIC_NOTIFY
 participant CLAPI
+participant TOPIC_NOTIFY
 end box
 box "Central Event Processing Services" #LightGreen
 participant CEP
@@ -82,13 +82,17 @@ Group Limit Position Breach
         end note
 
         alt Threshold is breached
-            CEP -> CEP:
+            CEP -> CEP
             note right of CEP #LightGrey
                 Create new **Action Object**.
-                Pass **Action Object** to the Action Agent.
-                Send finish single to Action Agent.
+'                Pass **Action Object** to the Action Agent.
             end note
+            ref over CEP :  Notification Action {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagramsnotification-actionFlow.svg Action Flow]]} \n
         else Threshold not breached - same event
+            CEP -> CEP
+            note right of CEP #LightGrey
+                Send finish **Action Object** to Action Agent.
+            end note
             CEP -> DB: Request **Action Object**
             note right of CEP #LightGrey
                 Request previous **Action Object**

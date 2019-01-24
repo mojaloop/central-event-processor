@@ -22,6 +22,7 @@ end box
 Group Action Flow
     activate CEP
     CEP -> AA: Recieves an action event
+    activate AA
     AA -> AA
     note right of AA #lightGrey
         Evaluate action event
@@ -29,6 +30,8 @@ Group Action Flow
 
     alt Finish Signal "No"
         AA -> DB: Request **Action Object** details
+        activate DB
+        deactivate DB
         hnote over DB
             request
         end hnote
@@ -43,16 +46,20 @@ Group Action Flow
             Prepare notification details
         end note
         AA -> DB: Request **Action Object** by same event details
+        activate DB
+        deactivate DB
         hnote over DB
             request
         end hnote
 
         alt No previous **Action Object** with same event detail
             AA -> DB: Store **Action Object**
+            activate DB
             hnote over DB
                 action
             end hnote
             AA <-- DB: Return result **actionId**
+            deactivate DB
             AA -> AA
             note right of AA #LightGrey
                 Schedule reset repetition for
@@ -74,6 +81,8 @@ Group Action Flow
             else Repetition and notification interval allowed not allowed
             end
             AA -> DB: Update **Action Object**
+            activate DB
+            deactivate DB
             AA -> AA
             note right of AA #LightGrey
                 Schedule reset repetitions for **actionId**
@@ -87,6 +96,7 @@ Group Action Flow
             end note
         end
     else Finish Signal "Yes"
+    deactivate AA
     note right of CEP #LightGrey
         EXIT - No action required
     end note
