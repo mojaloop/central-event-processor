@@ -5,7 +5,7 @@ autonumber
 
 ' declare actors
 collections "Notification-Topic" as TOPIC_NOTIFY
-boundary "Central Event Processor" as CEP
+control "Central Event Processor" as CEP
 database "CEP Store" as DB
 
 box "Central Services" #LightYellow
@@ -19,65 +19,71 @@ end box
 ' start flow
 Group Limit Adjustment Rules Validation
     activate CEP
-    note over TOPIC_NOTIFY
+    note right of TOPIC_NOTIFY #LightGrey
         Events are published
         to Notification Topic
         by Central Services
     end note
-    TOPIC_NOTIFY <-- CEP: Consumes notification messages
+    TOPIC_NOTIFY <- CEP: Consumes notification messages
     activate TOPIC_NOTIFY
     deactivate TOPIC_NOTIFY
     CEP -> CEP: Filter according to event action
-    note over CEP
+    note right of CEP
         Qualifying event action
+
         {
-        "limit" in data.value.content.payload
+            "limit" in data.value.content.payload
         }
     end note
 
     alt Messages event type that qualify
-        CEP -> DB: Update current limits
+        CEP -> DB: Update current **limits**
         activate DB
         hnote over DB #LightYellow
-        limits
+            limits
         end hnote
-        CEP <-- DB: Return results
         deactivate DB
-        CEP -> DB: Create events per participant
+        CEP -> DB: Create **events** per participant
         activate DB
         hnote over DB #LightYellow
-        events
+            events
         end hnote
-        CEP <-- DB: Return results
         deactivate DB
-        CEP -> CEP: Check if their is a difference
-        note over of CEP
-            Check if there is a difference between
-            the stored and captured limits for both payee and payer
-            for all currencies
+        CEP -> CEP
+        note right of CEP #LightGrey
+            Check if there is a difference
+            between the stored and captured **limits**
+            for both **payee** and **payer**
+            for all **currencies**.
         end note
 
         alt Limit difference identified
-            CEP -> CEP: Create new action object and pass it to the Action Agent
-        else Limits are equal - same event
-            CEP -> CEP: Send finish single to Action Agent.
-            CEP -> DB: Request action from event
-            activate DB
-            hnote over DB #LightYellow
-                actions
-            end hnote
-            CEP <-- DB: Return results
-            deactivate DB
-            note right of CEP
-                deactive pending action
+            CEP -> CEP
+            note right of CEP #LightGrey
+                Create new **Action Object**.
+                Pass **Action Object** to the Action Agent.
             end note
-            CEP --> DB: Persist updated action to CEP Store
+        else Limits are equal - same event
+            CEP -> CEP
+            note right of CEP #LightGrey
+                Send finish single to Action Agent.
+            end note
+            CEP -> DB: Request **Action Object** for event
             activate DB
             hnote over DB #LightYellow
                 actions
             end hnote
             CEP <-- DB: Return results
             deactivate DB
+            note right of CEP #lightGrey
+                deactive pending **Action Object** event
+            end note
+            CEP -> DB: Persist updated **Action Object** to CEP Store
+            activate DB
+            hnote over DB #LightYellow
+                actions
+            end hnote
+           deactivate DB
         end
     else Ignore - Message does not qualify for notification action
     end

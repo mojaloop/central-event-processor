@@ -6,7 +6,7 @@ autonumber
 ' declare actors
 collections "Notification-Topic" as TOPIC_NOTIFY
 boundary "Central Admin API" as CLAPI
-boundary "Central Event Processor" as CEP
+control "Central Event Processor" as CEP
 database "CEP Store" as DB
 
 box "Central Services" #LightYellow
@@ -21,19 +21,20 @@ end box
 ' start flow
 Group Limit Position Breach
     activate CEP
-    note over TOPIC_NOTIFY
+    note right of TOPIC_NOTIFY #LightGrey
         Events are published
         to Notification Topic
         by Central Services
     end note
-    TOPIC_NOTIFY <-- CEP: Consumes notification messages
+    TOPIC_NOTIFY <- CEP: Consumes notification messages
     activate TOPIC_NOTIFY
     deactivate TOPIC_NOTIFY
     CEP -> CEP: Filter according to event action
-    note over CEP
+    note right of CEP
         Qualifying event action
+
         {
-        data.value.metadata.event.action === 'commit'
+            data.value.metadata.event.action === 'commit'
         }
     end note
 
@@ -41,12 +42,11 @@ Group Limit Position Breach
         CLAPI <- CEP: Request notification info for both payee and payer\n<color #FF0000><b>Error codes:</b> 2001, 2003 </color>
         activate CLAPI
         deactivate CLAPI
-        CEP --> DB: Persist message related data to CEP store
+        CEP -> DB: Persist message related data to CEP store
         activate DB
         hnote over DB #LightYellow
             events
         end hnote
-        CEP <-- DB: Return results
         deactivate DB
         CLAPI <- CEP: Request current positions info for both payee and payer\n<color #FF0000><b>Error codes:</b> 2001, 2003 </color>
         activate CLAPI
@@ -56,38 +56,43 @@ Group Limit Position Breach
         hnote over DB #LightYellow
             limits
         end hnote
-        note right of CEP
+        note right of CEP #LightGrey
             API call to CEP Store
-            requesting current limits
-            for payee and payer
+            requesting current **limits**
+            for **payee** and **payer**
         end note
-        CEP <-- DB: Return results
+        CEP <-- DB: Return results current limits
         deactivate DB
-        CEP -> CEP: Calculate threshold percentage for payee and payer
-        note over of CEP
-            Calculate the current threshold
-            percentage for both payee and payer
-            for all currencies
+        CEP -> CEP:
+        note right of CEP #LightGrey
+            Calculate the current **threshold**
+            **percentage** for both **payee** and **payer**
+            for all **currencies**
         end note
-        CEP --> DB: Persist new position with threshold information
+        CEP -> DB: Persist new position with threshold information
         activate DB
         hnote over DB #LightYellow
             limits
         end hnote
-        CEP <-- DB: Return results
         deactivate DB
-        CEP -> CEP: Invoke rules engine
+        CEP -> CEP
+        note right of CEP #LightGrey
+            Evaluate 'facts'
+            Invoke Rule Engine
+        end note
 
         alt Threshold is breached
-            CEP -> CEP: Create new action object and pass it to the Action Agent
-            note over of CEP
+            CEP -> CEP:
+            note right of CEP #LightGrey
+                Create new **Action Object**.
+                Pass **Action Object** to the Action Agent.
                 Send finish single to Action Agent.
             end note
         else Threshold not breached - same event
-            CEP -> DB: Request action from event
-            note right of CEP
-                Request previous action with same
-                limit type, currency, DFSP and notification endpoint type
+            CEP -> DB: Request **Action Object**
+            note right of CEP #LightGrey
+                Request previous **Action Object**
+                with same event details
             end note
             activate DB
         hnote over DB #LightYellow
@@ -95,18 +100,30 @@ Group Limit Position Breach
         end hnote
         CEP <-- DB: Return results
         deactivate DB
-        note right of CEP
-            deactive pending action
-        end note
-        CEP --> DB: Persist updated action to CEP Store
+            note right of CEP
+                Event details for **Action Object**
+                {
+                    limit type
+                    currency
+                    dfsp
+                    notification endpoint type
+                }
+            end note
+            alt Action Event exist
+                CEP -> CEP
+                note right of CEP #LightGrey
+                    Deactive pending **Action Object** event
+                end note
+            else Action Event does not exist
+            end
+        CEP -> DB: Persist updated **Action Object** event to CEP Store
         activate DB
         hnote over DB #LightYellow
             action
         end hnote
-        CEP <-- DB: Return results
         deactivate DB
         end
-    else Ignore - Message does not qualify for notification action
+    else Message does not qualify for notification action
     end
     deactivate CEP
 end
