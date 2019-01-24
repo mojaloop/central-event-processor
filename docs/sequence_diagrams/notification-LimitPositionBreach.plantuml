@@ -1,6 +1,6 @@
 @startuml
 ' declate title
-title 10.3. Notification Limit Position Breach
+title 10.3. Notification Limit Position Breach Rule Validation
 autonumber
 
 ' declare actors
@@ -87,7 +87,7 @@ Group Limit Position Breach
                 Create new **Action Object**.
 '                Pass **Action Object** to the Action Agent.
             end note
-            ref over CEP :  Notification Action {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagramsnotification-actionFlow.svg Action Flow]]} \n
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagrams/notification-actionFlow.svg Action Flow]]} \n
         else Threshold not breached - same event
             CEP -> CEP
             note right of CEP #LightGrey

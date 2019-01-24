@@ -49,7 +49,7 @@ group Notification Process
         activate DB
         deactivate DB
         CEP -> CEP
-        note over of CEP #LightGrey
+        note right of CEP #LightGrey
             Invoke the Rule Engine.
             Evaluate the facts.
         end note

@@ -28,16 +28,16 @@ Group Action Flow
         Evaluate action event
     end note
 
-    alt Finish Signal "No"
-        AA -> DB: Request **Action Object** details
+    alt **Action Object** exist
+        AA -> DB: Request **Event Object**  details
         activate DB
         deactivate DB
         hnote over DB
-            request
+            event
         end hnote
         note right of AA #LightGrey
-            **Action Object** event details;
-                Event action details,
+            **Event Object** details;
+                Action details,
                 Hub notification details,
                 DFSP notification details.
         end note
@@ -45,11 +45,11 @@ Group Action Flow
         note right of AA #LightGrey
             Prepare notification details
         end note
-        AA -> DB: Request **Action Object** by same event details
+        AA -> DB: Request **Action Object** by same **Event Object** details
         activate DB
         deactivate DB
         hnote over DB
-            request
+            action
         end hnote
 
         alt No previous **Action Object** with same event detail
@@ -65,6 +65,8 @@ Group Action Flow
                 Schedule reset repetition for
                 this **actionId** as per rules
             end note
+            ref over AA :  Notification Scheduler Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagrams/notification-schedulerFlow.svg Scheduler Flow]]} \n
+
             TOPIC_NOTIFY <- AA: Update topic with notification
             note left of AA
                 {
@@ -76,18 +78,18 @@ Group Action Flow
             alt Repetition and notification interval allowed
                 AA -> AA
                 note right of AA #LightGrey
-                    Update action.
+                    Increment repetition counter.
                 end note
-            else Repetition and notification interval allowed not allowed
-            end
             AA -> DB: Update **Action Object**
+            else Repetition and notification interval not allowed
+            end
             activate DB
             deactivate DB
-            AA -> AA
-            note right of AA #LightGrey
-                Schedule reset repetitions for **actionId**
-                as per configuration rules.
-            end note
+'            AA -> AA
+'            note right of AA #LightGrey
+'                Schedule reset repetitions for **actionId**
+'                as per configuration rules.
+'            end note
             TOPIC_NOTIFY <- AA: Update topic with notification
             note left of AA
                 {
@@ -95,7 +97,7 @@ Group Action Flow
                 }
             end note
         end
-    else Finish Signal "Yes"
+    else No **Action Object**
     deactivate AA
     note right of CEP #LightGrey
         EXIT - No action required

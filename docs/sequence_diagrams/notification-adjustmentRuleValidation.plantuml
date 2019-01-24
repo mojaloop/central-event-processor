@@ -61,13 +61,15 @@ Group Limit Adjustment Rules Validation
             CEP -> CEP
             note right of CEP #LightGrey
                 Create new **Action Object**.
-                Pass **Action Object** to the Action Agent.
+'                Pass **Action Object** to the Action Agent.
             end note
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagramsnotification-actionFlow.svg Action Flow]]} \n
         else Limits are equal - same event
             CEP -> CEP
             note right of CEP #LightGrey
-                Send finish single to Action Agent.
+                Send Action Object to Action Agent.
             end note
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagramsnotification-actionFlow.svg Action Flow]]} \n
             CEP -> DB: Request **Action Object** for event
             activate DB
             hnote over DB #LightYellow
@@ -76,7 +78,7 @@ Group Limit Adjustment Rules Validation
             CEP <-- DB: Return results
             deactivate DB
             note right of CEP #lightGrey
-                deactive pending **Action Object** event
+                Deactive pending **Action Object** event
             end note
             CEP -> DB: Persist updated **Action Object** to CEP Store
             activate DB
