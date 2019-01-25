@@ -19,7 +19,7 @@
  - Name Surname <name.surname@gatesfoundation.com>
  * Valentin Genev <valentin.genev@modusbox.com>
  * Deon Botha <deon.botha@modusbox.com>
- -------------- 
+ --------------
  ******/
 
 'use strict'

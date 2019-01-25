@@ -24,27 +24,6 @@
 
 'use strict'
 
-/**
- * @module src/lib/database
- */
-const Mongoose = require('mongoose')
-const config = require('../lib/config')
-const Logger = require('@mojaloop/central-services-shared').Logger
-
-const setupDb = () => {
-  const db = Mongoose.connection
-  Mongoose.Promise = global.Promise
-  Mongoose.set('useFindAndModify', false)
-  Mongoose.set('useNewUrlParser', true)
-  Mongoose.set('useCreateIndex', true)
-  const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
-    `mongodb://${config.mongo.uri}/${config.mongo.database}`
-  Mongoose.connect(`${connectionString}`, { useFindAndModify: false, useNewUrlParser: true, useCreateIndex: true })
-  db.on('error', console.error.bind(console, 'connection error'))
-  db.once('open', function callback () {
-    Logger.info('Connection with database succeeded.')
-  })
-  return db
+module.exports = {
+  getLimitsPerNameObservable: require('./limits').getLimitPerNameObservable
 }
-
-exports.db = setupDb
