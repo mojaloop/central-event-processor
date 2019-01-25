@@ -6,6 +6,7 @@
   "dependencies": {
     "@mojaloop/central-services-error-handling": "0.5.1",
     "@mojaloop/central-services-shared": "^3.7.1-snapshot",
+    "@mojaloop/central-services-stream": "^3.9.0-snapshot",
     "config": "^3.0.0",
     "healthcheck-server": "^1.0.0",
     "json-rules-engine": "^2.3.0",
@@ -34,4 +35,4 @@
     "url": "https://github.com/mojaloop/central-event-processor/issues"
   },
   "homepage": "https://github.com/mojaloop/central-event-processor#readme"
-} 
+}
