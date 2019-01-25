@@ -1,6 +1,6 @@
 {
   "name": "central-event-processor",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "description": "CEP for Mojaloop Central-Ledger to monitor the notificaion kafka topic and act on it.",
   "main": "index.js",
   "dependencies": {
