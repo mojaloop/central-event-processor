@@ -1,16 +1,16 @@
 @startuml
 ' declate title
-title 10.6. Notification Scheduler Flow
+title 10.5. Notification Scheduler Flow
 autonumber
 
 ' declare actors
-'collections "Notification-Topic" as TOPIC_NOTIFY
+'collections "Notification-Topic" as topicNotify
 'boundary "Central Event Processor" as CEP
 control "Action Agent" as AA
 database "CEP Store" as DB
 
 box "Central Services" #LightYellow
-'participant TOPIC_NOTIFY
+'participant topicNotify
 end box
 box "Central Event Processing Service" #LightGreen
 'participant CEP
@@ -24,17 +24,14 @@ Group Scheduler Flow
     AA -> AA
     note right of AA #lightGrey
     Scheduled time for certain
-    event **<actionId>** has been reached
+    event **actionId** has been reached
     end note
-    AA -> DB
+    AA -> DB: Request Action by Id
     hnote over DB
         action
     end note
     activate DB
     deactivate DB
-    note right of AA #lightGrey
-        Request Action by Id
-    end note
     alt Action is active
     AA -> AA
     note right of AA #lightGrey
@@ -48,7 +45,7 @@ Group Scheduler Flow
     deactivate DB
     AA -> AA
     note right of AA #lightGrey
-        Reschedule the same **<actionId>**
+        Reschedule the same **actionId**
     end note
     else
     end

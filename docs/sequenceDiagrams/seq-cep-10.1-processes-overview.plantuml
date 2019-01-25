@@ -4,15 +4,15 @@ title 10.1. Notification Process Overview
 autonumber
 
 ' declare actors
-boundary "Central Admin API" as CLAPI
+boundary "Central Ledger\nAdmin API" as CLAPI
 control "Central Event Processor" as CEP
 control "Notification Handler" as NOTIFIER
-collections "Notification-Topic" as TOPIC_NOTIFY
+collections "Notification-Topic" as topicNotify
 database "CEP Store" as DB
 
 box "Central Services" #LightYellow
 participant CLAPI
-participant TOPIC_NOTIFY
+participant topicNotify
 end box
 box "Central Event Processing Services" #LightGreen
 participant CEP
@@ -25,14 +25,14 @@ end box
 ' start flow
 group Notification Process
     activate CEP
-    note right of TOPIC_NOTIFY #LightGrey
+    note right of topicNotify #LightGrey
         Events are published
         to Notification Topic
         by Central Services
     end note
-    TOPIC_NOTIFY <- CEP: Consumes notification messages
-    activate TOPIC_NOTIFY
-    deactivate TOPIC_NOTIFY
+    topicNotify <- CEP: Consumes notification messages
+    activate topicNotify
+    deactivate topicNotify
     CEP -> CEP
     note right of CEP #LightGrey
         Filter notification messages on event types
@@ -62,8 +62,8 @@ group Notification Process
             CEP -> DB: Persist new notification to CEP Store
             activate DB
             deactivate DB
-            TOPIC_NOTIFY <- CEP: Place message to Notification-Topic
-            activate TOPIC_NOTIFY
+            topicNotify <- CEP: Place message to Notification-Topic
+            activate topicNotify
         else Message does not qualify for notification event (Ignore)
         end
     else Message event type does not qualify for notification action (Ignore)
@@ -71,12 +71,12 @@ group Notification Process
     end
 
     group Notification event
-    TOPIC_NOTIFY <-- NOTIFIER: Consumes messages from Notification Topic for processing.
+    topicNotify <-- NOTIFIER: Consumes messages from Notification Topic for processing.
     note left of NOTIFIER #LightGrey
         Notifier Handler to process topic and
         distribute notifications/alerts
     end note
-            deactivate TOPIC_NOTIFY
+            deactivate topicNotify
     end
 end
 @enduml

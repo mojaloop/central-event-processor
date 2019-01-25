@@ -1,16 +1,16 @@
 @startuml
 ' declate title
-title 10.5. Notification Action Flow
+title 10.4. Notification Action Flow
 autonumber
 
 ' declare actors
-collections "Notification-Topic" as TOPIC_NOTIFY
+collections "Notification-Topic" as topicNotify
 boundary "Central Event Processor" as CEP
 control "Action Agent" as AA
 database "CEP Store" as DB
 
 box "Central Services" #LightYellow
-participant TOPIC_NOTIFY
+participant topicNotify
 end box
 box "Central Event Processing Service" #LightGreen
 participant CEP
@@ -65,13 +65,15 @@ Group Action Flow
                 Schedule reset repetition for
                 this **actionId** as per rules
             end note
-            ref over AA :  Notification Scheduler Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagrams/notification-schedulerFlow.svg Scheduler Flow]]} \n
+            ref over AA :  Notification Scheduler Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.5-scheduler-flow.svg 10.5-scheduler-flow]]} \n
 
-            TOPIC_NOTIFY <- AA: Update topic with notification
+            topicNotify <- AA: Update topic with notification
             note left of AA
-                {
-                    from field = "SYSTEM"
-                }
+                Notification topic:
+
+                    {
+                        from field = "SYSTEM"
+                    }
             end note
         else Previous **Action Object** with same event detail
 
@@ -85,16 +87,13 @@ Group Action Flow
             end
             activate DB
             deactivate DB
-'            AA -> AA
-'            note right of AA #LightGrey
-'                Schedule reset repetitions for **actionId**
-'                as per configuration rules.
-'            end note
-            TOPIC_NOTIFY <- AA: Update topic with notification
+            topicNotify <- AA: Update topic with notification
             note left of AA
-                {
-                    from field = "SYSTEM"
-                }
+                Notification topic:
+
+                    {
+                        from field = "SYSTEM"
+                    }
             end note
         end
     else No **Action Object**

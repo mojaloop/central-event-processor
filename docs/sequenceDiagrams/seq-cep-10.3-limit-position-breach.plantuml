@@ -4,14 +4,14 @@ title 10.3. Notification Limit Position Breach Rule Validation
 autonumber
 
 ' declare actors
-collections "Notification-Topic" as TOPIC_NOTIFY
-boundary "Central Admin API" as CLAPI
+collections "Notification-Topic" as topicNotify
+boundary "Central-Ledger\nAdmin API" as CLAPI
 control "Central Event Processor" as CEP
 database "CEP Store" as DB
 
 box "Central Services" #LightYellow
 participant CLAPI
-participant TOPIC_NOTIFY
+participant topicNotify
 end box
 box "Central Event Processing Services" #LightGreen
 participant CEP
@@ -21,17 +21,17 @@ end box
 ' start flow
 Group Limit Position Breach
     activate CEP
-    note right of TOPIC_NOTIFY #LightGrey
+    note right of topicNotify #LightGrey
         Events are published
         to Notification Topic
         by Central Services
     end note
-    TOPIC_NOTIFY <- CEP: Consumes notification messages
-    activate TOPIC_NOTIFY
-    deactivate TOPIC_NOTIFY
+    topicNotify <- CEP: Consumes notification messages
+    activate topicNotify
+    deactivate topicNotify
     CEP -> CEP: Filter according to event action
     note right of CEP
-        Qualifying event action
+        Qualifying event action:
 
         {
             data.value.metadata.event.action === 'commit'
@@ -87,7 +87,7 @@ Group Limit Position Breach
                 Create new **Action Object**.
 '                Pass **Action Object** to the Action Agent.
             end note
-            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagrams/notification-actionFlow.svg Action Flow]]} \n
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4-action-flow]]} \n
         else Threshold not breached - same event
             CEP -> CEP
             note right of CEP #LightGrey
@@ -105,7 +105,8 @@ Group Limit Position Breach
         CEP <-- DB: Return results
         deactivate DB
             note right of CEP
-                Event details for **Action Object**
+                Event details for **Action Object**:
+
                 {
                     limit type
                     currency

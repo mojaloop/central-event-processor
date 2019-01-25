@@ -1,15 +1,15 @@
 @startuml
 ' declate title
-title 10.3. Notification Limit Adjustment Rules Validation
+title 10.2. Notification Limit Adjustment Rules Validation
 autonumber
 
 ' declare actors
-collections "Notification-Topic" as TOPIC_NOTIFY
+collections "Notification-Topic" as topicNotify
 control "Central Event Processor" as CEP
 database "CEP Store" as DB
 
 box "Central Services" #LightYellow
-participant TOPIC_NOTIFY
+participant topicNotify
 end box
 box "Central Event Processing Service" #LightGreen
 participant CEP
@@ -19,17 +19,17 @@ end box
 ' start flow
 Group Limit Adjustment Rules Validation
     activate CEP
-    note right of TOPIC_NOTIFY #LightGrey
+    note right of topicNotify #LightGrey
         Events are published
         to Notification Topic
         by Central Services
     end note
-    TOPIC_NOTIFY <- CEP: Consumes notification messages
-    activate TOPIC_NOTIFY
-    deactivate TOPIC_NOTIFY
+    topicNotify <- CEP: Consumes notification messages
+    activate topicNotify
+    deactivate topicNotify
     CEP -> CEP: Filter according to event action
     note right of CEP
-        Qualifying event action
+        Qualifying event action:
 
         {
             "limit" in data.value.content.payload
@@ -63,13 +63,13 @@ Group Limit Adjustment Rules Validation
                 Create new **Action Object**.
 '                Pass **Action Object** to the Action Agent.
             end note
-            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagramsnotification-actionFlow.svg Action Flow]]} \n
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagrams/seq-cep-10.4-action-flow.svg 10.4-action-flow]]} \n
         else Limits are equal - same event
             CEP -> CEP
             note right of CEP #LightGrey
                 Send Action Object to Action Agent.
             end note
-            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagramsnotification-actionFlow.svg Action Flow]]} \n
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagrams/seq-cep-10.4-action-flow.svg 10.4-action-flow]]} \n
             CEP -> DB: Request **Action Object** for event
             activate DB
             hnote over DB #LightYellow
