@@ -96,7 +96,7 @@ Group Limit Position Breach
         deactivate DB
             note right of CEP #yellow
                 Event details for **Action Object**:
-                {limitType, currency, dfsp, notificationEndpointType}
+                limitType, currency, dfsp, notificationEndpointType
             end note
             alt Action event exist
                 CEP -> CEP: Deactivate pending **Action Object** event
