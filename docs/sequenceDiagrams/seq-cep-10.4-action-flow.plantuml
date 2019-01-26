@@ -5,7 +5,7 @@ autonumber
 
 ' declare actors
 collections "Notification-Topic" as topicNotify
-boundary "Central Event Processor" as CEP
+control "Central Event Processor" as CEP
 control "Action Agent" as AA
 database "CEP Store" as DB
 
@@ -21,7 +21,7 @@ end box
 ' start flow
 Group Action Flow
     activate CEP
-    CEP -> AA: Recieves an action event
+    CEP -> AA: Action event
     activate AA
     AA -> AA: Evaluate action event
 
@@ -55,12 +55,8 @@ Group Action Flow
             AA <-- DB: Return result **actionId**
             deactivate DB
             AA -> AA: Schedule reset repetition for **actionId** as per rules
-            ref over AA :  Notification Scheduler Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.5-scheduler-flow.svg 10.5]]} \n
             note left of AA #yellow
-                Notification topic:
-                    {
-                        from: "SYSTEM"
-                    }
+                {from: "SYSTEM"}
             end note
             topicNotify <- AA: Update topic with notification
             activate topicNotify
@@ -78,10 +74,7 @@ Group Action Flow
             else Repetition and notification interval not allowed
             end
             note left of AA #yellow
-                Notification topic:
-                    {
-                        from: "SYSTEM"
-                    }
+                {from: "SYSTEM"}
             end note
             topicNotify <- AA: Update topic with notification
             activate topicNotify
@@ -90,6 +83,6 @@ Group Action Flow
     else No **Action Object** exist
     deactivate AA
     end
-    deactivate CEP
 end
+    deactivate CEP
 @enduml

@@ -1,7 +1,6 @@
 @startuml
 ' declate title
-'title 10.3. Breaching Threshold Percentage Limit
-title 10.3. Limit Position Breach Rule Validation
+title 10.3. Breaching Threshold Percentage Limit
 autonumber
 
 ' declare actors
@@ -33,9 +32,7 @@ Group Limit Position Breach
     CEP -> CEP: Filter according to event action
     note right of CEP #yellow
         Qualifying event action:
-        {
-            data.value.metadata.event.action === 'commit'
-        }
+        {data.value.metadata.event.action === 'commit'}
     end note
 
     alt Messages event type that qualify
@@ -99,13 +96,11 @@ Group Limit Position Breach
         deactivate DB
             note right of CEP #yellow
                 Event details for **Action Object**:
-                {
-                    limit type, currency, dfsp, notification endpoint type
-                }
+                {limitType, currency, dfsp, notificationEndpointType}
             end note
-            alt Action Event exist
-                CEP -> CEP: Deactive pending **Action Object** event
-            else Action Event does not exist
+            alt Action event exist
+                CEP -> CEP: Deactivate pending **Action Object** event
+            else Action event does not exist
             end
         CEP -> DB: Persist updated **Action Object** event to CEP Store
         activate DB
@@ -116,6 +111,6 @@ Group Limit Position Breach
         end
     else Message does not qualify for notification action
     end
-    deactivate CEP
 end
+    deactivate CEP
 @enduml

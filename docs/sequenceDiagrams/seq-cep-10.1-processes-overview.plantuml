@@ -38,9 +38,6 @@ group Notification Process
     alt Messages event type that qualify
         CEP -> CLAPI: Request additional info for notification\n<color #FF0000><b>Error codes:</b> 2001, 2003 </color>
         activate CLAPI
-        note left of CEP #LightGrey
-            API call to Central Ledger Admin API.
-        end note
         deactivate CLAPI
         CEP -> DB: Persist message related data
         hnote over DB #LightYellow
