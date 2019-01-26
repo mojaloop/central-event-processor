@@ -1,0 +1,84 @@
+@startuml
+' declate title
+title 10.2. Notification Limit Adjustment Rules Validation
+autonumber
+
+' declare actors
+collections "Notification-Topic" as topicNotify
+control "Central Event Processor" as CEP
+database "CEP Store" as DB
+
+box "Central Services" #LightYellow
+participant topicNotify
+end box
+box "Central Event Processing Service" #LightGreen
+participant CEP
+participant DB
+end box
+
+' start flow
+Group Limit Adjustment Rules Validation
+    activate CEP
+    note left of topicNotify #LightGrey
+        Events are published
+        to Notification Topic
+        by Central Services.
+    end note
+    topicNotify <- CEP: Consumes notification messages
+    activate topicNotify
+    deactivate topicNotify
+    CEP -> CEP: Filter according to event action
+    note right of CEP #yellow
+        Qualifying event action:
+        "limit" in data.value.content.payload
+    end note
+
+    alt Messages event type that qualify
+        CEP -> DB: Update current **limits**
+        activate DB
+        hnote over DB #LightYellow
+            limits
+        end hnote
+        deactivate DB
+        CEP -> DB: Create **events** per participant
+        activate DB
+        hnote over DB #LightYellow
+            events
+        end hnote
+        deactivate DB
+        CEP -> CEP
+        note right of CEP #LightGrey
+            Check if there is a difference
+            between the stored and captured **limits**
+            for both **payee** and **payer**
+            for all **currencies**.
+        end note
+
+        alt Limit difference identified
+            CEP -> CEP: Create new **Action Object**
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
+        else Limits are equal - same event
+            CEP -> CEP: Send Action Object to Action Agent
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
+            CEP -> DB: Request **Action Object** for event
+            activate DB
+            hnote over DB #LightYellow
+                actions
+            end hnote
+            CEP <-- DB: Return results
+            deactivate DB
+            note right of CEP #lightGrey
+                Deactive pending **Action Object** event.
+            end note
+            CEP -> DB: Persist updated **Action Object**
+            activate DB
+            hnote over DB #LightYellow
+                actions
+            end hnote
+           deactivate DB
+        end
+    else Ignore - Message does not qualify for notification action
+    end
+end
+    deactivate CEP
+@enduml

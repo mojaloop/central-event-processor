@@ -1,0 +1,82 @@
+@startuml
+' declate title
+title 10.1. Notification Process Overview
+autonumber
+
+' declare actors
+boundary "Central Ledger\nAdmin API" as CLAPI
+control "Central Event Processor" as CEP
+control "Notifier" as NOTIFIER
+collections "Notification-Topic" as topicNotify
+database "CEP Store" as DB
+
+box "Central Services" #LightYellow
+participant CLAPI
+participant topicNotify
+end box
+box "Central Event Processing Services" #LightGreen
+participant CEP
+participant DB
+end box
+box "Notifier Services" #LightBlue
+participant NOTIFIER
+end box
+
+' start flow
+group Notification Process
+    activate CEP
+    activate NOTIFIER
+    note left of topicNotify #LightGrey
+        Events are published
+        to Notification Topic
+        by Central Services.
+    end note
+    topicNotify <- CEP: Consumes notification messages
+    activate topicNotify
+    deactivate topicNotify
+    CEP -> CEP: Filter notification messages on event types
+    alt Messages event type that qualify
+        CEP -> CLAPI: Request additional info for notification\n<color #FF0000><b>Error codes:</b> 2001, 2003 </color>
+        activate CLAPI
+        deactivate CLAPI
+        CEP -> DB: Persist message related data
+        hnote over DB #LightYellow
+            events
+        end hnote
+        activate DB
+        deactivate DB
+        CEP -> CEP
+        note right of CEP #LightGrey
+            Invoke the Rule Engine.
+            Evaluate the facts.
+        end note
+
+        alt Qualifying messages will trigger a notification event
+            CEP -> CEP: Constructs new notification
+            CEP -> DB: Persist new notification
+            hnote over DB #LightYellow
+                action
+            end hnote
+            activate DB
+            deactivate DB
+            topicNotify <- CEP: Persist new notification
+            activate topicNotify
+            deactivate topicNotify
+        else Message does not qualify for notification event (Ignore)
+        end
+    else Message event type does not qualify for notification action (Ignore)
+    deactivate CEP
+    end
+
+    group Notification event
+    topicNotify <- NOTIFIER: Consumes messages from topic
+    activate topicNotify
+    deactivate NOTIFIER
+    deactivate topicNotify
+    note left of NOTIFIER #LightGrey
+        Notifier Handler to process topic and
+        distribute notifications/alerts.
+    end note
+    end
+end
+@enduml
