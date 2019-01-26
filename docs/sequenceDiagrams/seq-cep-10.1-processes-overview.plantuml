@@ -6,7 +6,7 @@ autonumber
 ' declare actors
 boundary "Central Ledger\nAdmin API" as CLAPI
 control "Central Event Processor" as CEP
-control "Notification Handler" as NOTIFIER
+control "Notifier" as NOTIFIER
 collections "Notification-Topic" as topicNotify
 database "CEP Store" as DB
 
@@ -25,27 +25,27 @@ end box
 ' start flow
 group Notification Process
     activate CEP
-    note right of topicNotify #LightGrey
+    activate NOTIFIER
+    note left of topicNotify #LightGrey
         Events are published
         to Notification Topic
-        by Central Services
+        by Central Services.
     end note
     topicNotify <- CEP: Consumes notification messages
     activate topicNotify
     deactivate topicNotify
-    CEP -> CEP
-    note right of CEP #LightGrey
-        Filter notification messages on event types
-    end note
-
+    CEP -> CEP: Filter notification messages on event types
     alt Messages event type that qualify
         CEP -> CLAPI: Request additional info for notification\n<color #FF0000><b>Error codes:</b> 2001, 2003 </color>
         activate CLAPI
         note left of CEP #LightGrey
-            API call to Central Admin API
+            API call to Central Ledger Admin API.
         end note
         deactivate CLAPI
-        CEP -> DB: Persist message related data to CEP store
+        CEP -> DB: Persist message related data
+        hnote over DB #LightYellow
+            events
+        end hnote
         activate DB
         deactivate DB
         CEP -> CEP
@@ -55,15 +55,16 @@ group Notification Process
         end note
 
         alt Qualifying messages will trigger a notification event
-            CEP -> CEP
-            note right of CEP #LightGrey
-                Notification messages is constructed.
-            end note
-            CEP -> DB: Persist new notification to CEP Store
+            CEP -> CEP: Constructs new notification
+            CEP -> DB: Persist new notification
+            hnote over DB #LightYellow
+                action
+            end hnote
             activate DB
             deactivate DB
-            topicNotify <- CEP: Place message to Notification-Topic
+            topicNotify <- CEP: Persist new notification
             activate topicNotify
+            deactivate topicNotify
         else Message does not qualify for notification event (Ignore)
         end
     else Message event type does not qualify for notification action (Ignore)
@@ -71,12 +72,14 @@ group Notification Process
     end
 
     group Notification event
-    topicNotify <-- NOTIFIER: Consumes messages from Notification Topic for processing.
+    topicNotify <- NOTIFIER: Consumes messages from topic
+    activate topicNotify
+    deactivate NOTIFIER
+    deactivate topicNotify
     note left of NOTIFIER #LightGrey
         Notifier Handler to process topic and
-        distribute notifications/alerts
+        distribute notifications/alerts.
     end note
-            deactivate topicNotify
     end
 end
 @enduml

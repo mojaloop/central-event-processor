@@ -19,18 +19,17 @@ end box
 ' start flow
 Group Limit Adjustment Rules Validation
     activate CEP
-    note right of topicNotify #LightGrey
+    note left of topicNotify #LightGrey
         Events are published
         to Notification Topic
-        by Central Services
+        by Central Services.
     end note
     topicNotify <- CEP: Consumes notification messages
     activate topicNotify
     deactivate topicNotify
     CEP -> CEP: Filter according to event action
-    note right of CEP
+    note right of CEP #yellow
         Qualifying event action:
-
         {
             "limit" in data.value.content.payload
         }
@@ -58,18 +57,11 @@ Group Limit Adjustment Rules Validation
         end note
 
         alt Limit difference identified
-            CEP -> CEP
-            note right of CEP #LightGrey
-                Create new **Action Object**.
-'                Pass **Action Object** to the Action Agent.
-            end note
-            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagrams/seq-cep-10.4-action-flow.svg 10.4-action-flow]]} \n
+            CEP -> CEP: Create new **Action Object**
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
         else Limits are equal - same event
-            CEP -> CEP
-            note right of CEP #LightGrey
-                Send Action Object to Action Agent.
-            end note
-            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagrams/seq-cep-10.4-action-flow.svg 10.4-action-flow]]} \n
+            CEP -> CEP: Send Action Object to Action Agent
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequence_diagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
             CEP -> DB: Request **Action Object** for event
             activate DB
             hnote over DB #LightYellow
@@ -78,9 +70,9 @@ Group Limit Adjustment Rules Validation
             CEP <-- DB: Return results
             deactivate DB
             note right of CEP #lightGrey
-                Deactive pending **Action Object** event
+                Deactive pending **Action Object** event.
             end note
-            CEP -> DB: Persist updated **Action Object** to CEP Store
+            CEP -> DB: Persist updated **Action Object**
             activate DB
             hnote over DB #LightYellow
                 actions

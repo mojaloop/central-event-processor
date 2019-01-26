@@ -4,16 +4,12 @@ title 10.5. Notification Scheduler Flow
 autonumber
 
 ' declare actors
-'collections "Notification-Topic" as topicNotify
-'boundary "Central Event Processor" as CEP
 control "Action Agent" as AA
 database "CEP Store" as DB
 
 box "Central Services" #LightYellow
-'participant topicNotify
 end box
 box "Central Event Processing Service" #LightGreen
-'participant CEP
 participant AA
 participant DB
 end box
@@ -21,32 +17,22 @@ end box
 ' start flow
 Group Scheduler Flow
     activate AA
-    AA -> AA
-    note right of AA #lightGrey
-    Scheduled time for certain
-    event **actionId** has been reached
-    end note
+    AA -> AA: Event **actionId** triggered by scheduled time
     AA -> DB: Request Action by Id
-    hnote over DB
+    hnote over DB #LightYellow
         action
     end note
     activate DB
     deactivate DB
     alt Action is active
-    AA -> AA
-    note right of AA #lightGrey
-        Reset action timesTriggered counter
-    end note
+    AA -> AA: Reset action timesTriggered counter
     AA -> DB: Persist Action Object
-    hnote over DB
+    hnote over DB #LightYellow
         action
     end note
     activate DB
     deactivate DB
-    AA -> AA
-    note right of AA #lightGrey
-        Reschedule the same **actionId**
-    end note
+    AA -> AA: Reschedule the same **actionId**
     else
     end
 end

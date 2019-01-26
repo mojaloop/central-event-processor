@@ -1,6 +1,7 @@
 @startuml
 ' declate title
-title 10.3. Notification Limit Position Breach Rule Validation
+'title 10.3. Breaching Threshold Percentage Limit
+title 10.3. Limit Position Breach Rule Validation
 autonumber
 
 ' declare actors
@@ -21,18 +22,17 @@ end box
 ' start flow
 Group Limit Position Breach
     activate CEP
-    note right of topicNotify #LightGrey
+    note left of topicNotify #LightGrey
         Events are published
         to Notification Topic
-        by Central Services
+        by Central Services.
     end note
     topicNotify <- CEP: Consumes notification messages
     activate topicNotify
     deactivate topicNotify
     CEP -> CEP: Filter according to event action
-    note right of CEP
+    note right of CEP #yellow
         Qualifying event action:
-
         {
             data.value.metadata.event.action === 'commit'
         }
@@ -59,7 +59,7 @@ Group Limit Position Breach
         note right of CEP #LightGrey
             API call to CEP Store
             requesting current **limits**
-            for **payee** and **payer**
+            for **payee** and **payer**.
         end note
         CEP <-- DB: Return results current limits
         deactivate DB
@@ -67,7 +67,7 @@ Group Limit Position Breach
         note right of CEP #LightGrey
             Calculate the current **threshold**
             **percentage** for both **payee** and **payer**
-            for all **currencies**
+            for all **currencies**.
         end note
         CEP -> DB: Persist new position with threshold information
         activate DB
@@ -78,25 +78,18 @@ Group Limit Position Breach
         CEP -> CEP
         note right of CEP #LightGrey
             Evaluate 'facts'
-            Invoke Rule Engine
+            Invoke Rule Engine.
         end note
 
         alt Threshold is breached
-            CEP -> CEP
-            note right of CEP #LightGrey
-                Create new **Action Object**.
-'                Pass **Action Object** to the Action Agent.
-            end note
-            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4-action-flow]]} \n
+            CEP -> CEP: Create new **Action Object**
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
         else Threshold not breached - same event
-            CEP -> CEP
-            note right of CEP #LightGrey
-                Send finish **Action Object** to Action Agent.
-            end note
+            CEP -> CEP: Send finish **Action Object** to Action Agent
             CEP -> DB: Request **Action Object**
             note right of CEP #LightGrey
                 Request previous **Action Object**
-                with same event details
+                with same event details.
             end note
             activate DB
         hnote over DB #LightYellow
@@ -104,21 +97,14 @@ Group Limit Position Breach
         end hnote
         CEP <-- DB: Return results
         deactivate DB
-            note right of CEP
+            note right of CEP #yellow
                 Event details for **Action Object**:
-
                 {
-                    limit type
-                    currency
-                    dfsp
-                    notification endpoint type
+                    limit type, currency, dfsp, notification endpoint type
                 }
             end note
             alt Action Event exist
-                CEP -> CEP
-                note right of CEP #LightGrey
-                    Deactive pending **Action Object** event
-                end note
+                CEP -> CEP: Deactive pending **Action Object** event
             else Action Event does not exist
             end
         CEP -> DB: Persist updated **Action Object** event to CEP Store
