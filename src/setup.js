@@ -129,6 +129,15 @@ const setup = async () => {
     error: err => Logger.info('Error occured: ', err),
     completed: (value) => Logger.info('completed with value', value)
   })
+
+  // =============  maw
+  const settlementTransferPositionChangeObservable = topicObservable
+    .pipe(filter(data => data.value.metadata.event.action === 'settlement-transfer-position-change'),
+      switchMap(Observables.CentralLedgerAPI.getParticipantEndpointsFromResponseObservable),
+      switchMap(Observables.actionObservable)
+
+    )
+// =============
 }
 
 module.exports = {

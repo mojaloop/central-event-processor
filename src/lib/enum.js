@@ -57,6 +57,12 @@ const notificationActionMap = {
     action: 'sendEmail',
     templateType: 'adjustment',
     language: 'en'
+  },
+  NET_DEBIT_CAP_POSITION_CHANGE_EMAIL: {
+    enum: 'NET_DEBIT_CAP_POSITION_CHANGE_EMAIL',
+    action: 'sendEmail',
+    templateType: 'position',
+    language: 'en'
   }
 }
 
