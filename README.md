@@ -25,9 +25,8 @@
 <!-- /vscode-markdown-toc -->
 
 ##  1. <a name='Stories'></a>Stories
-=======
 Central Event Processor
-====================
+=======================
 
 stories
 -------
@@ -116,7 +115,7 @@ This rule is triggered on each limit response from the central-ledger admin API.
 
 
 ##  9. <a name='LimitPositionThresholdBreachflow'></a>Limit Position Threshold Breach flow
-![limitPositionThresholdBreach](docs/sequenceDiagrams/seq-cep-10.3.-breaching-threshold-percentage-limit.svg)
+![limitPositionThresholdBreach](docs/sequenceDiagrams/seq-cep-10.3-breaching-threshold-percentage-limit.svg)
 
 This rule is triggered when all data for the participants in the current transfer is received.
 

@@ -80,7 +80,7 @@ Group Limit Position Breach
 
         alt Threshold is breached
             CEP -> CEP: Create new **Action Object**
-            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/blob/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
         else Threshold not breached - same event
             CEP -> CEP: Send finish **Action Object** to Action Agent
             CEP -> DB: Request **Action Object**
