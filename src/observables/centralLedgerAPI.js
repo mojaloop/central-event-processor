@@ -43,7 +43,6 @@ const getPositionsFromResponse = positions => {
   return positionObject
 }
 
-//=================maw
 const getParticipantEndpointsFromMessageResponse = async participantName => {
 
   const unKnownParticipantObjArray = [{
@@ -62,21 +61,20 @@ const getParticipantEndpointsFromMessageResponse = async participantName => {
     return unKnownParticipantObjArray
   }
 }
-//=================maw==
 
 const createEventsForParticipantSettlementPositionChange = async (message) => {
   try {
     let notificationActions = Enums.notificationActionMap['SETTLEMENT_TRANSFER_POSITION_CHANGE']
 
     let eventRecord = await EventModel.findOne({
-      name: message.to,
-      currency: message.payload.currency,
+      name: message.value.to,
+      currency: message.value.content.payload.currency,
       notificationEndpointType: notificationActions.enum
     })
     if (!eventRecord) {
       const newEvent = {
-        name: message.to,
-        currency: message.payload.currency,
+        name: message.value.to,
+        currency: message.value.content.payload.currency,
         notificationEndpointType: notificationActions.enum,
         limitType: notificationActions.enum,
         action: notificationActions[key].action,
@@ -94,6 +92,35 @@ const createEventsForParticipantSettlementPositionChange = async (message) => {
   }
 }
 
+const storeCurrentPositionForSettlementChange = async (message) => {
+  try{
+
+    let currentPositionRecord = await CurrentPositionModel.findOne({
+      name: message.value.to,
+      positionType : 'settlement',
+      currency: message.value.content.payload.currency,
+      positionValue : message.value.content.payload.value,
+    })
+    if (!currentPositionRecord){
+      const newCurrentPosition = {
+        name: message.value.to,
+        positionType: 'settlement',
+        currency: message.value.content.payload.currency,
+        positionValue: message.value.content.payload.value,
+        transferId: message.value.id,
+        messagePayload: message.value.content.payload
+      }
+      await CurrentPositionModel.create(newCurrentPosition)
+      return newCurrentPosition
+    } else {
+      return currentPositionRecord
+    }
+  } catch (err) {
+    Logger.info(`storeCurrentPositionForSettlementChange exit with error: ${err}`)
+    throw err
+  }
+}
+
 // settlement position change
 const getParticipantEndpointsFromResponseObservable = message => {
   return Rxs.Observable.create(async observer => {
@@ -101,17 +128,15 @@ const getParticipantEndpointsFromResponseObservable = message => {
     payerFsp = message.value.from
     payeeFsp = message.value.to
     */
-    // Get notification endpoints from central service database
     try {
-      const [payeeNotificationResponse, hubNotificationResponse, dbEvent] = await Promise.all([
-        getParticipantEndpointsFromMessageResponse(message.to),
+      const [payeeNotificationResponse, hubNotificationResponse, dbEvent, currentPositionForSettlementChange] = await Promise.all([
+        getParticipantEndpointsFromMessageResponse(message.value.to),
         getParticipantEndpointsFromMessageResponse('hub'),
         createEventsForParticipantSettlementPositionChange(message),
-        //pouplate current position collection :
+        storeCurrentPositionForSettlementChange(message)
       ])
 
       // Persist endpoints in CEP storage
-      // const payerNotificationEndpoints = await updateNotificationEndpointsFromResponse(message.value.from, payerNotificationResponse)
       const payeeNotificationEndpoints = await updateNotificationEndpointsFromResponse(message.value.to, payeeNotificationResponse)
       const hubNotificationEndpoints = await updateNotificationEndpointsFromResponse('Hub', hubNotificationResponse)
 
@@ -121,8 +146,8 @@ const getParticipantEndpointsFromResponseObservable = message => {
 
       let params = {
         dfsp: message.value.to,
-        value: message.value.payload.value,
-        triggeredBy: message.value.id,  // needs new collection
+        value: message.value.content.payload.value,
+        triggeredBy: message.value.id,
         repetitionsAllowed: 1,
         fromEvent: dbEvent.id,
         action: dbEvent.action,
@@ -144,8 +169,6 @@ const getParticipantEndpointsFromResponseObservable = message => {
     }
   })
 }
-
-//=================maw
 
 const prepareCurrentPosition = (name, positions, limits, transferId, messagePayload) => {
   let viewsArray = []
