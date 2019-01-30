@@ -137,10 +137,7 @@ const setup = async () => {
       switchMap(Observables.actionObservable)
 
     )
-
-
-
-// =============
+  // =============
 }
 
 module.exports = {
