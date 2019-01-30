@@ -11,11 +11,12 @@
 * 7. [General process overview](#Generalprocessoverview)
 	* 7.1. [enums](#enums)
 	* 7.2. [Rules](#Rules)
-  * 7.3  [Config](#Config)
+    * 7.3  [Config](#Config)
 * 8. [Limit Adjustment Rules flow](#LimitAdjustmentRulesflow)
 * 9. [Limit Position Threshold Breach flow](#LimitPositionThresholdBreachflow)
 * 10. [Actions Agent flow](#ActionsAgentflow)
-* 11. [Notifier flow (separate service)](#Notifierflowseparateservice)
+* 11. [Scheduler flow](#Schedulerflow)
+* 12. [Notifier flow (separate service)](#Notifierflowseparateservice)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -109,22 +110,27 @@ To use Environmental Variables for MongoDB URI and database name use:
 `CEP_MONGO_URI` and `CEP_MONGO_DATABASE`
 
 ##  8. <a name='LimitAdjustmentRulesflow'></a>Limit Adjustment Rules flow
-![limitAdjustment](docs/images/3.png)
+![limitAdjustment](docs/sequenceDiagrams/seq-cep-10.2-adjustment-rule-validation.svg)
 
 This rule is triggered on each limit response from the central-ledger admin API. 
 
 
 ##  9. <a name='LimitPositionThresholdBreachflow'></a>Limit Position Threshold Breach flow
-![limitPositionThresholdBreach](docs/images/4.png)
+![limitPositionThresholdBreach](docs/sequenceDiagrams/seq-cep-10.3.-breaching-threshold-percentage-limit.svg)
 
 This rule is triggered when all data for the participants in the current transfer is received.
 
 ##  10. <a name='ActionsAgentflow'></a>Actions Agent flow
-![actionAgent](docs/images/5.png)
+![actionAgent](docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg)
 
 The Action Agent - [here](src/observables/actions) - takes care of action preparation regrding the data from central-ledger admin API and various settings.
 
-##  11. <a name='Notifierflowseparateservice'></a>Notifier flow (separate service)
+##  11. <a name='Schedulerflow'></a>Scheduler flow
+![schedulerFlow](docs/sequenceDiagrams/seq-cep-10.5-scheduler-flow.svg)
+
+The scheduler coordinates the Action Object that requires to be dispatched. It would typically action a scheduled event that qualifies by insure only the prescribed number of notifications are dispatched within the set time frame defined.
+
+##  12. <a name='Notifierflowseparateservice'></a>Notifier flow (separate service)
 ![notifier](docs/images/6.png)
 
 Email notifier service is a separate app, that observes the same topic for messages with field *from* = `SYSTEM`. Its code is available [here](https://github.com/mojaloop/email-notifier)
