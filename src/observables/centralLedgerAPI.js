@@ -93,33 +93,6 @@ const createEventsForParticipantSettlementPositionChange = async (message) => {
     throw err
   }
 }
-/*
-let [limit, dbEvent] = await
-EventModel.findOne({
-  name: position.name,
-  currency: position.currency,
-  limitType: Enums.limitNotificationMap.NET_DEBIT_CAP.enum,
-  notificationEndpointType: Enums.limitNotificationMap.NET_DEBIT_CAP.NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL.enum,
-  isActive: true
-})
-*/
-/*
-params: {
-      dfsp: position.name,
-      limitType: limit.type,
-      value: position.percentage,
-      position: position.positionValue,
-      triggeredBy: position.id,
-      repetitionsAllowed: limit.repetitions,
-      fromEvent: dbEvent.id,
-      action: dbEvent.action,
-      notificationEndpointType: dbEvent.notificationEndpointType,
-      templateType: dbEvent.templateType,
-      language: dbEvent.language,
-      messageSubject: `${limit.type} BREACH CONDITION REACHED`
-    }*/
-
-//===================
 
 // settlement position change
 const getParticipantEndpointsFromResponseObservable = message => {
@@ -134,7 +107,7 @@ const getParticipantEndpointsFromResponseObservable = message => {
         getParticipantEndpointsFromMessageResponse(message.to),
         getParticipantEndpointsFromMessageResponse('hub'),
         createEventsForParticipantSettlementPositionChange(message),
-        //pouplate new collection :
+        //pouplate current position collection :
       ])
 
       // Persist endpoints in CEP storage
@@ -181,6 +154,7 @@ const prepareCurrentPosition = (name, positions, limits, transferId, messagePayl
       const percentage = 100 - (positions[limit.currency] * 100 / limit.value)
       let currentPosition = {
         name,
+        positionType: 'settlement',
         currency: limit.currency,
         positionValue: positions[limit.currency],
         percentage,
