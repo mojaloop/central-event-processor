@@ -130,14 +130,22 @@ const setup = async () => {
     completed: (value) => Logger.info('completed with value', value)
   })
 
-  // =============  maw
   const settlementTransferPositionChangeObservable = topicObservable
     .pipe(filter(data => data.value.metadata.event.action === 'settlement-transfer-position-change'),
       switchMap(Observables.CentralLedgerAPI.getParticipantEndpointsFromResponseObservable),
-      switchMap(Observables.actionObservable)
-
-    )
-  // =============
+      switchMap(Observables.actionObservable))
+  settlementTransferPositionChangeObservable.subscribe({
+    next: async ({ actionResult, message }) => {
+      if (!actionResult) {
+        Logger.info(`action unsuccessful. Publishing the message to topic ${topicName}`)
+        // TODO we should change the state and produce error message instead of republish?
+        await Utility.produceGeneralMessage(?????TransferEventType.NOTIFICATION, TransferEventAction.EVENT, message, Utility.ENUMS.STATE.SUCCESS)
+      }
+      Logger.info(actionResult)
+    },
+    error: err => Logger.info('Error occured: ', err),
+    completed: (value) => Logger.info('completed with value', value)
+  })
 }
 
 module.exports = {

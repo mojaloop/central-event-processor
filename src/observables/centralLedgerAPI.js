@@ -147,7 +147,7 @@ const getParticipantEndpointsFromResponseObservable = message => {
       let params = {
         dfsp: message.value.to,
         value: message.value.content.payload.value,
-        triggeredBy: message.value.id,
+        triggeredBy: currentPositionForSettlementChange.id,
         repetitionsAllowed: 1,
         fromEvent: dbEvent.id,
         action: dbEvent.action,
