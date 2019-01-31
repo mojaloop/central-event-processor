@@ -31,7 +31,7 @@ const moment = require('moment')
 const Config = require('../lib/config')
 const Enum = require('../lib/enum')
 const TransferEventType = Enum.transferEventType
-const TransferEventAction = Enum.transferEventAction
+// const TransferEventAction = Enum.transferEventAction
 const Logger = require('@mojaloop/central-services-shared').Logger
 const ActionModel = require('../models/action').actionModel
 const NotificationModel = require('../models/notificationEndpoint').notificationEndpointModel
@@ -64,7 +64,7 @@ const createMessageProtocol = (payload, action, state = '', pp = '') => {
 }
 
 const dictionary = {
-  produceToKafkaTopic: async ({ payload, action, eventType = TransferEventType.NOTIFICATION, eventAction = TransferEventAction.EVENT }) => {
+  produceToKafkaTopic: async ({ payload, action, eventType = TransferEventType.NOTIFICATION, eventAction = 'email-notifier' }) => {
     try {
       await Utility.produceGeneralMessage(eventType, eventAction, createMessageProtocol(payload, action), Utility.ENUMS.STATE.SUCCESS)
     } catch (err) {
@@ -91,13 +91,14 @@ const actionObservable = ({ action, params, message }) => {
       if (action === 'finish') {
         return observer.complete({ actionResult: true })
       }
+      let hubName = Config.get('HUB_PARTICIPANT').NAME
       let actionResult
       let previousAction = await ActionModel.findOne({ fromEvent: params.fromEvent, isActive: true })
       let recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType })
-      let hubDetails = await NotificationModel.findOne({ name: 'Hub', action: params.action, type: params.notificationEndpointType })
+      let hubDetails = await NotificationModel.findOne({ name: hubName, action: params.action, type: params.notificationEndpointType })
       let messageDetails = Object.assign({}, params, { notificationInterval, resetPeriod })
       const payload = {
-        from: 'SYSTEM',
+        from: hubName,
         to: params.dfsp,
         recepientDetails,
         hubDetails,

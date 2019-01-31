@@ -81,40 +81,12 @@ const transferEventAction = {
   EVENT: 'event',
   FULFIL: 'fulfil'
 }
-const adminTransferAction = {
-  RECORD_FUNDS_IN: 'recordFundsIn',
-  RECORD_FUNDS_OUT_PREPARE: 'recordFundsOutPrepare',
-  RECORD_FUNDS_OUT_COMMIT: 'recordFundsOutCommit',
-  RECORD_FUNDS_OUT_ABORT: 'recordFundsOutAbort'
-}
-const rejectionType = {
-  EXPIRED: 'expired',
-  CANCELLED: 'cancelled'
-}
-const transferEventStatus = {
-  SUCCESS: 'success',
-  FAILED: 'failed'
-}
 const headers = {
   FSPIOP: {
     SWITCH: 'central-switch'
   }
 }
 const topicMap = {
-  position: {
-    'commit': {
-      functionality: transferEventType.POSITION,
-      action: transferEventAction.FULFIL
-    },
-    'timeout-reserved': {
-      functionality: transferEventType.POSITION,
-      action: transferEventAction.ABORT
-    },
-    'reject': {
-      functionality: transferEventType.POSITION,
-      action: transferEventAction.ABORT
-    }
-  },
   notification: {
     'prepare': {
       functionality: transferEventType.NOTIFICATION,
@@ -143,6 +115,10 @@ const topicMap = {
     'get': {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
+    },
+    'email-notifier': {
+      functionality: transferEventType.NOTIFICATION,
+      action: transferEventAction.EVENT
     }
   }
 }
@@ -150,9 +126,6 @@ const topicMap = {
 module.exports = {
   transferEventType,
   transferEventAction,
-  adminTransferAction,
-  rejectionType,
-  transferEventStatus,
   headers,
   topicMap,
   limitNotificationMap,
