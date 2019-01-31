@@ -1,0 +1,116 @@
+@startuml
+' declate title
+title 10.3. Breaching Threshold Percentage Limit
+autonumber
+
+' declare actors
+collections "Notification-Topic" as topicNotify
+boundary "Central-Ledger\nAdmin API" as CLAPI
+control "Central Event Processor" as CEP
+database "CEP Store" as DB
+
+box "Central Services" #LightYellow
+participant CLAPI
+participant topicNotify
+end box
+box "Central Event Processing Services" #LightGreen
+participant CEP
+participant DB
+end box
+
+' start flow
+Group Limit Position Breach
+    activate CEP
+    note left of topicNotify #LightGrey
+        Events are published
+        to Notification Topic
+        by Central Services.
+    end note
+    topicNotify <- CEP: Consumes notification messages
+    activate topicNotify
+    deactivate topicNotify
+    CEP -> CEP: Filter according to event action
+    note right of CEP #yellow
+        Qualifying event action:
+        {data.value.metadata.event.action === 'commit'}
+    end note
+
+    alt Messages event type that qualify
+        CLAPI <- CEP: Request notification info for both payee and payer\n<color #FF0000><b>Error codes:</b> 2001, 2003 </color>
+        activate CLAPI
+        deactivate CLAPI
+        CEP -> DB: Persist message related data to CEP store
+        activate DB
+        hnote over DB #LightYellow
+            events
+        end hnote
+        deactivate DB
+        CLAPI <- CEP: Request current positions info for both payee and payer\n<color #FF0000><b>Error codes:</b> 2001, 2003 </color>
+        activate CLAPI
+        deactivate CLAPI
+        CEP -> DB: Request current limits
+        activate DB
+        hnote over DB #LightYellow
+            limits
+        end hnote
+        note right of CEP #LightGrey
+            API call to CEP Store
+            requesting current **limits**
+            for **payee** and **payer**.
+        end note
+        CEP <-- DB: Return results current limits
+        deactivate DB
+        CEP -> CEP:
+        note right of CEP #LightGrey
+            Calculate the current **threshold**
+            **percentage** for both **payee** and **payer**
+            for all **currencies**.
+        end note
+        CEP -> DB: Persist new position with threshold information
+        activate DB
+        hnote over DB #LightYellow
+            limits
+        end hnote
+        deactivate DB
+        CEP -> CEP
+        note right of CEP #LightGrey
+            Evaluate 'facts'
+            Invoke Rule Engine.
+        end note
+
+        alt Threshold is breached
+            CEP -> CEP: Create new **Action Object**
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
+        else Threshold not breached - same event
+            CEP -> CEP: Send finish **Action Object** to Action Agent
+            CEP -> DB: Request **Action Object**
+            note right of CEP #LightGrey
+                Request previous **Action Object**
+                with same event details.
+            end note
+            activate DB
+        hnote over DB #LightYellow
+            action
+        end hnote
+        CEP <-- DB: Return results
+        deactivate DB
+            note right of CEP #yellow
+                Event details for **Action Object**:
+                limitType, currency, dfsp, notificationEndpointType
+            end note
+            alt Action event exist
+                CEP -> CEP: Deactivate pending **Action Object** event
+            else Action event does not exist
+            end
+        CEP -> DB: Persist updated **Action Object** event to CEP Store
+        activate DB
+        hnote over DB #LightYellow
+            action
+        end hnote
+        deactivate DB
+        end
+    else Message does not qualify for notification action
+    end
+end
+    deactivate CEP
+@enduml

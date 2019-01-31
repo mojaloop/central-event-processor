@@ -1,0 +1,88 @@
+@startuml
+' declate title
+title 10.4. Notification Action Flow
+autonumber
+
+' declare actors
+collections "Notification-Topic" as topicNotify
+control "Central Event Processor" as CEP
+control "Action Agent" as AA
+database "CEP Store" as DB
+
+box "Central Services" #LightYellow
+participant topicNotify
+end box
+box "Central Event Processing Service" #LightGreen
+participant CEP
+participant AA
+participant DB
+end box
+
+' start flow
+Group Action Flow
+    activate CEP
+    CEP -> AA: Action event
+    activate AA
+    AA -> AA: Evaluate action event
+
+    alt **Action Object** exist
+        AA -> DB: Request **Event Object**  details
+        activate DB
+        deactivate DB
+        hnote over DB #LightYellow
+            event
+        end hnote
+        note right of AA #LightGrey
+            **Event Object** details;
+                Action details,
+                Hub notification details,
+                DFSP notification details.
+        end note
+        AA -> AA: Prepare notification details
+        AA -> DB: Request **Action Object** by same **Event Object** details
+        activate DB
+        deactivate DB
+        hnote over DB #LightYellow
+            action
+        end hnote
+
+        alt No previous **Action Object** with same event detail
+            AA -> DB: Store **Action Object**
+            activate DB
+            hnote over DB #LightYellow
+                action
+            end hnote
+            AA <-- DB: Return result **actionId**
+            deactivate DB
+            AA -> AA: Schedule reset repetition for **actionId** as per rules
+            note left of AA #yellow
+                {from: "SYSTEM"}
+            end note
+            topicNotify <- AA: Update topic with notification
+            activate topicNotify
+            deactivate topicNotify
+        else Previous **Action Object** with same event detail
+
+            alt Repetition and notification interval allowed
+                AA -> AA: Increment repetition counter
+                AA -> DB: Update **Action Object**
+                activate DB
+                hnote over DB #LightYellow
+                    action
+                end hnote
+                deactivate DB
+            else Repetition and notification interval not allowed
+            end
+            note left of AA #yellow
+                {from: "SYSTEM"}
+            end note
+            topicNotify <- AA: Update topic with notification
+            activate topicNotify
+            deactivate topicNotify
+        end
+    else No **Action Object** exist
+    deactivate AA
+    end
+end
+    deactivate CEP
+@enduml

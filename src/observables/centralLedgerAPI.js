@@ -31,6 +31,7 @@ const Config = require('../lib/config')
 const CurrentPositionModel = require('../models/currentPosition').currentPositionModel
 const LimitModel = require('../models/limits').limitModel
 const NotificationEndpointModel = require('../models/notificationEndpoint').notificationEndpointModel
+const EventModel = require('../models/events').eventModel
 const Enums = require('../lib/enum')
 const centralLedgerAPIConfig = Config.get('centralLedgerAPI')
 const centralLedgerAdminURI = `${centralLedgerAPIConfig.adminHost}:${centralLedgerAPIConfig.adminPort}`
@@ -44,7 +45,6 @@ const getPositionsFromResponse = positions => {
 }
 
 const getParticipantEndpointsFromMessageResponse = async participantName => {
-
   const unKnownParticipantObjArray = [{
     type: 'UNKNOWN_PARTICIPANT',
     value: 'DO_NOT_NOTIFY'
@@ -77,9 +77,9 @@ const createEventsForParticipantSettlementPositionChange = async (message) => {
         currency: message.value.content.payload.currency,
         notificationEndpointType: notificationActions.enum,
         limitType: notificationActions.enum,
-        action: notificationActions[key].action,
-        templateType: notificationActions[key].templateType,
-        language: notificationActions[key].language
+        action: notificationActions.action,
+        templateType: notificationActions.templateType,
+        language: notificationActions.language
       }
       await EventModel.create(newEvent)
       return newEvent
@@ -93,15 +93,14 @@ const createEventsForParticipantSettlementPositionChange = async (message) => {
 }
 
 const storeCurrentPositionForSettlementChange = async (message) => {
-  try{
-
+  try {
     let currentPositionRecord = await CurrentPositionModel.findOne({
       name: message.value.to,
-      positionType : 'settlement',
+      positionType: 'settlement',
       currency: message.value.content.payload.currency,
-      positionValue : message.value.content.payload.value,
+      positionValue: message.value.content.payload.value
     })
-    if (!currentPositionRecord){
+    if (!currentPositionRecord) {
       const newCurrentPosition = {
         name: message.value.to,
         positionType: 'settlement',
@@ -123,7 +122,7 @@ const storeCurrentPositionForSettlementChange = async (message) => {
 
 // settlement position change
 const getParticipantEndpointsFromResponseObservable = message => {
-  return Rxs.Observable.create(async observer => {
+  return Rx.Observable.create(async observer => {
     /*
     payerFsp = message.value.from
     payeeFsp = message.value.to
@@ -160,10 +159,9 @@ const getParticipantEndpointsFromResponseObservable = message => {
       observer.next({
         action: 'produceToKafkaTopic',
         params: params,
-        message,
+        message
       })
-    } catch
-      (err) {
+    } catch (err) {
       Logger.info(`getParticipantEndpointsFromResponseObservable failed with error: ${err}`)
       observer.error(err)
     }
@@ -177,7 +175,6 @@ const prepareCurrentPosition = (name, positions, limits, transferId, messagePayl
       const percentage = 100 - (positions[limit.currency] * 100 / limit.value)
       let currentPosition = {
         name,
-        positionType: 'settlement',
         currency: limit.currency,
         positionValue: positions[limit.currency],
         percentage,
@@ -199,18 +196,18 @@ const updateNotificationEndpointsFromResponse = async (name, notificationEndpoin
       let action = Enums.notificationActionMap[notificationEndpoint.type] ? Enums.notificationActionMap[notificationEndpoint.type].action : ''
       let notificationRecord = await NotificationEndpointModel
         .findOneAndUpdate({
-            name,
-            type: notificationEndpoint.type
-          },
-          {
-            name,
-            type: notificationEndpoint.type,
-            value: notificationEndpoint.value,
-            action
-          }, {
-            upsert: true,
-            new: true
-          })
+          name,
+          type: notificationEndpoint.type
+        },
+        {
+          name,
+          type: notificationEndpoint.type,
+          value: notificationEndpoint.value,
+          action
+        }, {
+          upsert: true,
+          new: true
+        })
       result.push(notificationRecord.toObject())
     }
   } catch (err) {
@@ -220,7 +217,6 @@ const updateNotificationEndpointsFromResponse = async (name, notificationEndpoin
 }
 
 // TODO rework per name and loop the message over from and to
-//NDC breach condition
 const getDfspNotificationEndpointsObservable = message => {
   return Rx.Observable.create(async observer => {
     const payerFsp = message.value.from
@@ -228,8 +224,8 @@ const getDfspNotificationEndpointsObservable = message => {
     try {
       const [payerNotificationResponse, payeeNotificationResponse, hubNotificationResponse] = await Promise.all([
         request({ uri: `http://${centralLedgerAdminURI}/participants/${payerFsp}/endpoints`, json: true }),
-        request({ uri: `http://${centralLedgerAdmI}/participants/${payeeFsp}/endpoints`, json: true }),
-        request({ uri: `http://${centralLedgerAdminURinURI}/participants/hub/endpoints`, json: true })
+        request({ uri: `http://${centralLedgerAdminURI}/participants/${payeeFsp}/endpoints`, json: true }),
+        request({ uri: `http://${centralLedgerAdminURI}/participants/hub/endpoints`, json: true })
       ])
       const payerNotificationEndpoints = await updateNotificationEndpointsFromResponse(payerFsp, payerNotificationResponse)
       const payeeNotificationEndpoints = await updateNotificationEndpointsFromResponse(payeeFsp, payeeNotificationResponse)
@@ -251,10 +247,7 @@ const getDfspNotificationEndpointsObservable = message => {
 
 const requestPositionPerName = async (name) => {
   try {
-    const position = await request({
-      uri: `http://${centralLedgerAdminURI}/participants/${name}/positions`,
-      json: true
-    })
+    const position = await request({ uri: `http://${centralLedgerAdminURI}/participants/${name}/positions`, json: true })
     return position
   } catch (e) {
     throw e

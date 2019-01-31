@@ -1,0 +1,40 @@
+@startuml
+' declate title
+title 10.5. Notification Scheduler Flow
+autonumber
+
+' declare actors
+control "Action Agent" as AA
+database "CEP Store" as DB
+
+box "Central Services" #LightYellow
+end box
+box "Central Event Processing Service" #LightGreen
+participant AA
+participant DB
+end box
+
+' start flow
+Group Scheduler Flow
+    activate AA
+    AA -> AA: Event **actionId** triggered by scheduled time
+    AA -> DB: Request Action by Id
+    hnote over DB #LightYellow
+        action
+    end note
+    activate DB
+    deactivate DB
+    alt Action is active
+    AA -> AA: Reset action timesTriggered counter
+    AA -> DB: Persist Action Object
+    hnote over DB #LightYellow
+        action
+    end note
+    activate DB
+    deactivate DB
+    AA -> AA: Reschedule the same **actionId**
+    else
+    end
+end
+    deactivate AA
+@enduml
