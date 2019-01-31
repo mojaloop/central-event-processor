@@ -139,7 +139,7 @@ const setup = async () => {
       if (!actionResult) {
         Logger.info(`action unsuccessful. Publishing the message to topic ${topicName}`)
         // TODO we should change the state and produce error message instead of republish?
-        await Utility.produceGeneralMessage(?????TransferEventType.NOTIFICATION, TransferEventAction.EVENT, message, Utility.ENUMS.STATE.SUCCESS)
+        await Utility.produceGeneralMessage(TransferEventType.NOTIFICATION, TransferEventAction.EVENT, message, Utility.ENUMS.STATE.SUCCESS)
       }
       Logger.info(actionResult)
     },
