@@ -35,6 +35,7 @@ const EventModel = require('../models/events').eventModel
 const Enums = require('../lib/enum')
 const centralLedgerAPIConfig = Config.get('centralLedgerAPI')
 const centralLedgerAdminURI = `${centralLedgerAPIConfig.adminHost}:${centralLedgerAPIConfig.adminPort}`
+const hubName = Config.get('HUB_PARTICIPANT').NAME
 
 const getPositionsFromResponse = positions => {
   let positionObject = {}
@@ -130,14 +131,14 @@ const getParticipantEndpointsFromResponseObservable = message => {
     try {
       const [payeeNotificationResponse, hubNotificationResponse, dbEvent, currentPositionForSettlementChange] = await Promise.all([
         getParticipantEndpointsFromMessageResponse(message.value.to),
-        getParticipantEndpointsFromMessageResponse('hub'),
+        getParticipantEndpointsFromMessageResponse(hubName),
         createEventsForParticipantSettlementPositionChange(message),
         storeCurrentPositionForSettlementChange(message)
       ])
 
       // Persist endpoints in CEP storage
       const payeeNotificationEndpoints = await updateNotificationEndpointsFromResponse(message.value.to, payeeNotificationResponse)
-      const hubNotificationEndpoints = await updateNotificationEndpointsFromResponse('Hub', hubNotificationResponse)
+      const hubNotificationEndpoints = await updateNotificationEndpointsFromResponse(hubName, hubNotificationResponse)
 
       const notifications = {}
       notifications[message.value.to] = payeeNotificationEndpoints
@@ -229,7 +230,7 @@ const getDfspNotificationEndpointsObservable = message => {
       ])
       const payerNotificationEndpoints = await updateNotificationEndpointsFromResponse(payerFsp, payerNotificationResponse)
       const payeeNotificationEndpoints = await updateNotificationEndpointsFromResponse(payeeFsp, payeeNotificationResponse)
-      const hubNotificationEndpoints = await updateNotificationEndpointsFromResponse('Hub', hubNotificationResponse)
+      const hubNotificationEndpoints = await updateNotificationEndpointsFromResponse(hubName, hubNotificationResponse)
       const notifications = {}
       notifications[payerFsp] = payerNotificationEndpoints
       notifications[payeeFsp] = payeeNotificationEndpoints
