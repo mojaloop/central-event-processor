@@ -32,12 +32,12 @@ const Consumer = require('./lib/kafka/consumer')
 const Utility = require('./lib/utility')
 const Logger = require('@mojaloop/central-services-shared').Logger
 const Rx = require('rxjs')
-const { filter, switchMap } = require('rxjs/operators')
+const { filter, switchMap, share } = require('rxjs/operators')
 const Enum = require('./lib/enum')
 const TransferEventType = Enum.transferEventType
 const TransferEventAction = Enum.transferEventAction
 const Observables = require('./observables')
-const createHealthcheck = require('healthcheck-server')
+const createHealtcheck = require('healthcheck-server')
 const Config = require('./lib/config')
 
 const setup = async () => {
@@ -48,22 +48,17 @@ const setup = async () => {
   const topicName = Utility.transformGeneralTopicName(Utility.ENUMS.NOTIFICATION, Utility.ENUMS.EVENT)
   const consumer = Consumer.getConsumer(topicName)
 
-  createHealthcheck({
-    port: Config.get('PORT'),
-    path: '/health',
-    status: ({ cpu, memory }) => {
-      try {
-        if (db.readyState && consumer._status.running) return true
-        else return false
-      } catch (err) {
-        return false
-      }
+  createHealtcheck({
+    port: Config.get('healthCheckPort'),
+    path: '/healthcheck',
+    status: ({cpu, memory}) => {
+      if (db.readyState && consumer._status.running) return true
+      else return false
     }
   })
 
   const topicObservable = Rx.Observable.create((observer) => {
     consumer.on('message', async (data) => {
-      Logger.info(`Central-Event-Processor :: Topic ${topicName} :: Payload: \n${JSON.stringify(data.value, null, 2)}`)
       observer.next(data)
       if (!Consumer.isConsumerAutoCommitEnabled(topicName)) {
         consumer.commitMessageSync(data)
@@ -71,9 +66,48 @@ const setup = async () => {
     })
   })
 
+  const getLimitPerNameShare = (name) => {
+    // this observable is sharing the result from getLimitPerNameObservable to multiple observers
+    let shared = Observables.CentralLedgerAPI.getLimitPerNameObservable(name)
+      .pipe(share())
+    shared.subscribe(limit => {
+      // when result is produced from getLimitPerNameObservable the limit is passed to the pipe below
+      Observables.Rules.ndcAdjustmentObservable(limit)
+        .pipe(switchMap(Observables.actionObservable))
+        .subscribe(v => console.log(v))
+    })
+    return Rx.Observable.create(observer => {
+      let reply = {}
+      // this is used if the result of the share has to be piped to another observable
+      shared.subscribe(limits => {
+        reply[name] = limits
+        observer.next(reply)
+        observer.complete()
+      })
+    })
+  }
+
+  const getLimitObservable = ({ message }) => {
+    const payerFsp = message.value.from
+    const payeeFsp = message.value.to
+    return Rx.Observable.create(observer => {
+      let observables = [payerFsp, payeeFsp].map(name => getLimitPerNameShare(name))
+      let allFspsObservable = Rx.forkJoin(observables)
+      // this observable joins the result from 2 getLimitPerNameShare observables and joins them before passing them further
+      allFspsObservable.subscribe(limitsArray => {
+        let limits = {}
+        for (let limit of limitsArray) {
+          limits = Object.assign(limits, limit)
+        }
+        observer.next({ message, limits })
+      })
+    })
+  }
+
   const generalObservable = topicObservable
     .pipe(filter(data => data.value.metadata.event.action === 'commit'),
       switchMap(Observables.CentralLedgerAPI.getDfspNotificationEndpointsObservable),
+      switchMap(getLimitObservable),
       switchMap(Observables.CentralLedgerAPI.getPositionsObservable),
       switchMap(Observables.Rules.ndcBreachObservable),
       switchMap(Observables.actionObservable))
@@ -82,26 +116,7 @@ const setup = async () => {
     next: async ({ actionResult, message }) => {
       if (!actionResult) {
         Logger.info(`action unsuccessful. Publishing the message to topic ${topicName}`)
-        // TODO consider should we change the state and produce error message instead of republish?
-        await Utility.produceGeneralMessage(TransferEventType.NOTIFICATION, TransferEventAction.EVENT, message, Utility.ENUMS.STATE.SUCCESS)
-      }
-      Logger.info(actionResult)
-    },
-    error: err => Logger.info('Error occured: ', err),
-    completed: (value) => Logger.info('completed with value', value)
-  })
-
-  const limitAdjustmentObservable = topicObservable
-    .pipe(filter(data => 'limit' in data.value.content.payload),
-      switchMap(Observables.Store.getLimitsPerNameObservable),
-      switchMap(Observables.Rules.ndcAdjustmentObservable),
-      switchMap(Observables.actionObservable)
-    )
-
-  limitAdjustmentObservable.subscribe({
-    next: async ({ actionResult, message }) => {
-      if (!actionResult) {
-        Logger.info(`action unsuccessful. Publishing the message to topic ${topicName}`)
+        // TODO we should change the state and produce error message instead of republish?
         await Utility.produceGeneralMessage(TransferEventType.NOTIFICATION, TransferEventAction.EVENT, message, Utility.ENUMS.STATE.SUCCESS)
       }
       Logger.info(actionResult)

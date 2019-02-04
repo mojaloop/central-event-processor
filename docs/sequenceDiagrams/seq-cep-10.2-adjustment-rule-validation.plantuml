@@ -56,10 +56,10 @@ Group Limit Adjustment Rules Validation
 
         alt Limit difference identified
             CEP -> CEP: Create new **Action Object**
-            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/blob/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
         else Limits are equal - same event
             CEP -> CEP: Send Action Object to Action Agent
-            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/tree/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
+            ref over CEP :  Notification Action Flow {[[https://github.com/mojaloop/central-event-processor/blob/master/docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg 10.4]]} \n
             CEP -> DB: Request **Action Object** for event
             activate DB
             hnote over DB #LightYellow

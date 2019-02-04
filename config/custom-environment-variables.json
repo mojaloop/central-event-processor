@@ -2,11 +2,5 @@
   "mongo": {
     "uri": "CEP_DATABASE_URI",
     "database": "CEP_DATABASE_NAME"
-  },
-  "centralLedgerAPI": {
-    "adminHost": "CL_ADMIN_HOST",
-    "adminPort": "CL_ADMIN_PORT",
-    "apiHost": "CL_API_HOST",
-    "apiPort": "CL_API_PORT"
   }
 }

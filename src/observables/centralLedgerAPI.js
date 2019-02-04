@@ -24,16 +24,16 @@
 
 'use strict'
 
+// TODO rework per name and loop the message over from and to
+
 const request = require('request-promise')
 const Rx = require('rxjs')
 const Logger = require('@mojaloop/central-services-shared').Logger
-const Config = require('../lib/config')
 const CurrentPositionModel = require('../models/currentPosition').currentPositionModel
 const LimitModel = require('../models/limits').limitModel
 const NotificationEndpointModel = require('../models/notificationEndpoint').notificationEndpointModel
+const EventModel = require('../models/events').eventModel
 const Enums = require('../lib/enum')
-const centralLedgerAPIConfig = Config.get('centralLedgerAPI')
-const centralLedgerAdminURI = `${centralLedgerAPIConfig.adminHost}:${centralLedgerAPIConfig.adminPort}`
 
 const getPositionsFromResponse = positions => {
   let positionObject = {}
@@ -45,62 +45,102 @@ const getPositionsFromResponse = positions => {
 
 const prepareCurrentPosition = (name, positions, limits, transferId, messagePayload) => {
   let viewsArray = []
-  try {
-    limits.forEach(limit => {
-      const percentage = 100 - (positions[limit.currency] * 100 / limit.value)
-      let currentPosition = {
-        name,
-        currency: limit.currency,
-        positionValue: positions[limit.currency],
-        percentage,
-        transferId,
-        messagePayload
+  limits.forEach(limit => {
+    const percentage = 100 - (positions[limit.currency] * 100 / limit.value)
+    let currentPosition = {
+      name,
+      currency: limit.currency,
+      positionValue: positions[limit.currency],
+      percentage,
+      transferId,
+      messagePayload
+    }
+    viewsArray.push(currentPosition)
+  })
+  return viewsArray
+}
+
+// TODO prepare a check for fresh limits and update them only if its necessary
+
+const updateLimitsFromResponse = async (name, limits) => {
+  let result = []
+  for (let limit of limits) {
+    let doc = await LimitModel.findOne({ name: name, currency: limit.currency, type: limit.limit.type })
+    let limitObject = {
+      name,
+      currency: limit.currency,
+      type: limit.limit.type,
+      value: limit.limit.value,
+      threshold: limit.limit.alarmPercentage
+    }
+    if (doc) {
+      doc.oldValue = doc.value
+      doc.value = limit.limit.value
+      await doc.save()
+      result.push(doc.toObject())
+    } else {
+      let document = await LimitModel.create(limitObject)
+      result.push(document.toObject())
+    }
+  }
+  return result
+}
+
+const createEventsForParticipant = async (name, limits) => {
+  for (let limit of limits) {
+    let notificationActions = Enums.limitNotificationMap[limit.type]
+    for (let key in notificationActions) {
+      if (key !== 'enum') {
+        let eventRecord = await EventModel.findOne({ name, currency: limit.currency, limitType: limit.type, notificationEndpointType: key })
+        if (!eventRecord) {
+          const newEvent = {
+            name,
+            currency: limit.currency,
+            notificationEndpointType: key,
+            limitType: limit.type,
+            action: notificationActions[key].action,
+            templateType: notificationActions[key].templateType,
+            language: notificationActions[key].language
+          }
+          await EventModel.create(newEvent)
+        }
       }
-      viewsArray.push(currentPosition)
-    })
-    return viewsArray
-  } catch (err) {
-    throw err
+    }
   }
 }
 
 const updateNotificationEndpointsFromResponse = async (name, notificationEndpoints) => {
   let result = []
-  try {
-    for (let notificationEndpoint of notificationEndpoints) {
+  let notificationEndPointObject = {}
+  for (let notificationEndpoint of notificationEndpoints) {
+    let notificationRecord = await NotificationEndpointModel.findOneAndUpdate({ name: name, type: notificationEndpoint.type }, notificationEndpoint)
+    if (!notificationRecord) {
       let action = Enums.notificationActionMap[notificationEndpoint.type] ? Enums.notificationActionMap[notificationEndpoint.type].action : ''
-      let notificationRecord = await NotificationEndpointModel
-        .findOneAndUpdate({
-          name,
-          type: notificationEndpoint.type
-        },
-        {
-          name,
-          type: notificationEndpoint.type,
-          value: notificationEndpoint.value,
-          action
-        }, {
-          upsert: true,
-          new: true
-        })
+      notificationEndPointObject = {
+        name,
+        type: notificationEndpoint.type,
+        value: notificationEndpoint.value,
+        action
+      }
+      let document = await NotificationEndpointModel.create(notificationEndPointObject)
+      result.push(document.toObject())
+    } else {
       result.push(notificationRecord.toObject())
     }
-  } catch (err) {
-    throw err
   }
+  console.log('getNotificationEndpointsFromResponse' + JSON.stringify(result))
   return result
 }
 
-// TODO rework per name and loop the message over from and to
 const getDfspNotificationEndpointsObservable = message => {
   return Rx.Observable.create(async observer => {
     const payerFsp = message.value.from
     const payeeFsp = message.value.to
     try {
       const [payerNotificationResponse, payeeNotificationResponse, hubNotificationResponse] = await Promise.all([
-        request({ uri: `http://${centralLedgerAdminURI}/participants/${payerFsp}/endpoints`, json: true }),
-        request({ uri: `http://${centralLedgerAdminURI}/participants/${payeeFsp}/endpoints`, json: true }),
-        request({ uri: `http://${centralLedgerAdminURI}/participants/hub/endpoints`, json: true })
+        request({ uri: `http://localhost:3001/participants/${payerFsp}/endpoints`, json: true }),
+        request({ uri: `http://localhost:3001/participants/${payeeFsp}/endpoints`, json: true }),
+        request({ uri: `http://localhost:3001/participants/hub/endpoints`, json: true })
       ])
       const payerNotificationEndpoints = await updateNotificationEndpointsFromResponse(payerFsp, payerNotificationResponse)
       const payeeNotificationEndpoints = await updateNotificationEndpointsFromResponse(payeeFsp, payeeNotificationResponse)
@@ -120,27 +160,62 @@ const getDfspNotificationEndpointsObservable = message => {
   })
 }
 
+const requestLimitPerName = async (name) => {
+  try {
+    const limit = await request({ uri: `http://localhost:3001/participants/${name}/limits`, json: true })
+    return limit
+  } catch (e) {
+    throw e
+  }
+}
+
+const getLimitPerNameObservable = (name) => {
+  return Rx.Observable.create(async observer => {
+    const limitResponse = await requestLimitPerName(name)
+    const limits = await updateLimitsFromResponse(name, limitResponse)
+    await createEventsForParticipant(name, limits)
+    observer.next(limits)
+    observer.complete()
+  })
+}
+
+// const getLimitObservable = ({ message }) => {
+//   const payerFsp = message.value.from
+//   const payeeFsp = message.value.to
+//   return Rx.Observable.create(observer => {
+//     let observables = [payerFsp, payeeFsp].map(name => getLimitPerNameObservable(name))
+//     let allFspsObservable = Rx.forkJoin(observables)
+//     allFspsObservable.subscribe(limitsArray => {
+//       let limits = {}
+//       for (let limit of limitsArray) {
+//         limits = Object.assign(limits, limit)
+//       }
+//       observer.next({ message, limits })
+//     })
+//   })
+// }
+
 const requestPositionPerName = async (name) => {
   try {
-    const position = await request({ uri: `http://${centralLedgerAdminURI}/participants/${name}/positions`, json: true })
+    const position = await request({ uri: `http://localhost:3001/participants/${name}/positions`, json: true })
     return position
   } catch (e) {
     throw e
   }
 }
 
-const getPositionsObservable = ({ message }) => {
+const getPositionsObservable = ({ message, limits }) => {
   const payerFsp = message.value.from
   const payeeFsp = message.value.to
   const transferId = message.value.id
+  const payerLimits = limits[payerFsp]
+  const payeeLimits = limits[payeeFsp]
   const messagePayload = JSON.stringify(message.value.content.payload)
   return Rx.Observable.create(async observer => {
     try {
-      const [payerPositionsResponse, payeePositionsResponse, payerLimits, payeeLimits] = await Promise.all([
+      const [payerPositionsResponse, payeePositionsResponse] = await Promise.all([
         requestPositionPerName(payerFsp),
-        requestPositionPerName(payeeFsp),
-        LimitModel.find({ name: payerFsp }),
-        LimitModel.find({ name: payeeFsp })
+        requestPositionPerName(payeeFsp)
       ]).catch(err => {
         throw err
       })
@@ -164,6 +239,8 @@ const getPositionsObservable = ({ message }) => {
 }
 
 module.exports = {
+  // getLimitObservable,
   getPositionsObservable,
+  getLimitPerNameObservable,
   getDfspNotificationEndpointsObservable
 }

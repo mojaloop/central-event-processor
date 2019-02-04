@@ -35,61 +35,57 @@ let engine = new RuleEngine.Engine()
 const createRules = async (limit) => {
   let rules = []
   let { name, currency, type } = limit
-  try {
-    let dbEvent = await EventModel.findOne({
-      name,
-      currency,
-      limitType: type,
-      notificationEndpointType: `${type}_ADJUSTMENT_EMAIL`,
-      isActive: true
-    })
+  let dbEvent = await EventModel.findOne({
+    name,
+    currency,
+    limitType: type,
+    notificationEndpointType: `${type}_ADJUSTMENT`,
+    isActive: true
+  })
 
-    let conditions = {
-      all: [{
-        fact: 'name',
-        operator: 'equal',
-        value: name
-      }, {
-        fact: 'type',
-        operator: 'equal',
-        value: limit.type
-      }, {
-        fact: 'value',
-        operator: 'notEqual',
-        value: limit.oldValue
-      }]
-    }
-
-    let event = {
-      type: `${type}_ADJUSTMENT_EMAIL`,
-      params: {
-        dfsp: name,
-        limitType: type,
-        value: limit.value,
-        currency: limit.currency,
-        triggeredBy: limit._id,
-        repetitionsAllowed: limit.repetitions,
-        fromEvent: dbEvent.id,
-        action: dbEvent.action,
-        notificationEndpointType: dbEvent.notificationEndpointType,
-        templateType: dbEvent.templateType,
-        language: dbEvent.language,
-        messageSubject: `${type} LIMIT ADJUSTMENT`
-      }
-    }
-    let adjustmentRule = new RuleEngine.Rule({ conditions, event })
-    rules.push(adjustmentRule)
-    return { rules, event }
-  } catch (err) {
-    throw err
+  let conditions = {
+    all: [{
+      fact: 'name',
+      operator: 'equal',
+      value: name
+    }, {
+      fact: 'type',
+      operator: 'equal',
+      value: limit.type
+    }, {
+      fact: 'value',
+      operator: 'notEqual',
+      value: limit.oldValue
+    }]
   }
+
+  let event = {
+    type: `${type}_ADJUSTMENT`,
+    params: {
+      dfsp: name,
+      limitType: type,
+      value: limit.value,
+      currency: limit.currency,
+      triggeredBy: limit._id,
+      repetitionsAllowed: limit.repetitions,
+      fromEvent: dbEvent.id,
+      action: dbEvent.action,
+      notificationEndpointType: dbEvent.notificationEndpointType,
+      templateType: dbEvent.templateType,
+      language: dbEvent.language,
+      messageSubject: `${type} LIMIT ADJUSTMENT`
+    }
+  }
+  let adjustmentRule = new RuleEngine.Rule({ conditions, event })
+  rules.push(adjustmentRule)
+  return { rules, event }
 }
 
-const ndcAdjustmentObservable = (limit) => {
-  return Rx.Observable.create(async observer => {
-    try {
+const ndcAdjustmentObservable = (limits) => {
+  for (let limit of limits) {
+    return Rx.Observable.create(async observer => {
       let { rules, event } = await createRules(limit)
-      rules.forEach(rule => engine.addRule(rule)) // TODO check if it is a loop atm and if not remove the forEach and push 
+      rules.forEach(rule => engine.addRule(rule))
       let actions = await engine.run(limit)
       if (actions.length) {
         actions.forEach(action => {
@@ -100,7 +96,7 @@ const ndcAdjustmentObservable = (limit) => {
         })
       } else {
         observer.next({ action: 'finish' })
-        let activeActions = await ActionModel.find({ fromEvent: event.params.fromEvent, isActive: true }) // TODO move this into the action observerbale
+        let activeActions = await ActionModel.find({ fromEvent: event.params.fromEvent, isActive: true })
         if (activeActions.length) {
           for (let activeAction of activeActions) {
             await ActionModel.findByIdAndUpdate(activeAction.id, { isActive: false })
@@ -109,10 +105,8 @@ const ndcAdjustmentObservable = (limit) => {
       }
       rules.forEach(rule => engine.removeRule(rule))
       observer.complete()
-    } catch (err) {
-      observer.error(err)
-    }
-  })
+    })
+  }
 }
 
 module.exports = {
