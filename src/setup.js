@@ -92,7 +92,7 @@ const setup = async () => {
   })
 
   const limitAdjustmentObservable = topicObservable
-    .pipe(filter(data => 'limit' in data.value.content.payload),
+    .pipe(filter(data => data.value.metadata.event.action === 'limit-adjustment' && 'limit' in data.value.content.payload),
       switchMap(Observables.Store.getLimitsPerNameObservable),
       switchMap(Observables.Rules.ndcAdjustmentObservable),
       switchMap(Observables.actionObservable)
@@ -114,6 +114,7 @@ const setup = async () => {
     .pipe(filter(data => data.value.metadata.event.action === 'settlement-transfer-position-change'),
       switchMap(Observables.CentralLedgerAPI.getParticipantEndpointsFromResponseObservable),
       switchMap(Observables.actionObservable))
+
   settlementTransferPositionChangeObservable.subscribe({
     next: async ({ actionResult, message }) => {
       if (!actionResult) {

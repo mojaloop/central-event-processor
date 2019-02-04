@@ -58,7 +58,7 @@ const notificationActionMap = {
     templateType: 'adjustment',
     language: 'en'
   },
-  SETTLEMENT_TRANSFER_POSITION_CHANGE: {
+  SETTLEMENT_TRANSFER_POSITION_CHANGE_EMAIL: {
     enum: 'SETTLEMENT_TRANSFER_POSITION_CHANGE_EMAIL',
     action: 'sendEmail',
     templateType: 'position',
@@ -123,6 +123,10 @@ const topicMap = {
       action: transferEventAction.EVENT
     },
     'email-notifier': {
+      functionality: transferEventType.NOTIFICATION,
+      action: transferEventAction.EVENT
+    },
+    'settlement-transfer-position-change': {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     }

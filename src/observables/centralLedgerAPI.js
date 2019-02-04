@@ -65,7 +65,7 @@ const getParticipantEndpointsFromMessageResponse = async participantName => {
 
 const createEventsForParticipantSettlementPositionChange = async (message) => {
   try {
-    let notificationActions = Enums.notificationActionMap['SETTLEMENT_TRANSFER_POSITION_CHANGE']
+    let notificationActions = Enums.notificationActionMap['SETTLEMENT_TRANSFER_POSITION_CHANGE_EMAIL']
 
     let eventRecord = await EventModel.findOne({
       name: message.value.to,
@@ -108,7 +108,7 @@ const storeCurrentPositionForSettlementChange = async (message) => {
         currency: message.value.content.payload.currency,
         positionValue: message.value.content.payload.value,
         transferId: message.value.id,
-        messagePayload: message.value.content.payload
+        messagePayload: JSON.stringify(message.value.content.payload)
       }
       await CurrentPositionModel.create(newCurrentPosition)
       return newCurrentPosition
