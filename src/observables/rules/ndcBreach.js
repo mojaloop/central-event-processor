@@ -61,7 +61,7 @@ const createRules = async (position) => {
     params: {
       dfsp: position.name,
       limitType: limit.type,
-      value: position.percentage,
+      value: position.percentage.toFixed(2),
       position: position.positionValue,
       triggeredBy: position.id,
       repetitionsAllowed: limit.repetitions,

@@ -110,7 +110,8 @@ const actionObservable = ({ action, params, message }) => {
       }
       if (previousAction) {
         if ((previousAction.timesTriggered < params.repetitionsAllowed) &&
-          (moment(previousAction.updatedAt).add(notificationInterval, 'minutes') < moment.now())) {
+          (moment(previousAction.updatedAt).add(notificationInterval, 'minutes') < moment.now()) &&
+          !(Config.get('notificationMinutes').oscilateEvents.includes(params.notificationEndpointType))) {
           actionResult = await actionBuilder(action)({ payload })
           previousAction.timesTriggered++
           previousAction.save()
@@ -119,8 +120,12 @@ const actionObservable = ({ action, params, message }) => {
         }
       } else {
         actionResult = await actionBuilder(action)({ payload }) // create new action
-        let actionCreated = await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent })
-        Rx.asyncScheduler.schedule(clearRepetitionTask, resetPeriod * 60 * 1000, actionCreated.id) // loading the scheduler
+        if (Config.get('notificationMinutes').oscilateEvents.includes(params.notificationEndpointType)) {
+          let actionCreated = await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent })
+          Rx.asyncScheduler.schedule(clearRepetitionTask, resetPeriod * 60 * 1000, actionCreated.id) // loading the scheduler
+        } else {
+          await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent, isActive: false })
+        }
       }
       return observer.complete({ actionResult, message })
     } catch (err) {

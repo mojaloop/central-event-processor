@@ -180,6 +180,7 @@ const prepareCurrentPosition = (name, positions, limits, transferId, messagePayl
         positionValue: positions[limit.currency],
         percentage,
         transferId,
+        positionType: 'transfer',
         messagePayload
       }
       viewsArray.push(currentPosition)
