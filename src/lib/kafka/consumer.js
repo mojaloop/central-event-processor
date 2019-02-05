@@ -65,6 +65,7 @@ const isConsumerAutoCommitEnabled = (topicName) => {
  */
 
 const createHandler = async (topicName, config) => {
+  Logger.info(`CreateHandle::connect - creating Consumer for topics: [${topicName}]`)
   let consumer = {}
   if (Array.isArray(topicName)) {
     consumer = new Consumer(topicName, config)
@@ -78,7 +79,7 @@ const createHandler = async (topicName, config) => {
   }
 
   await consumer.connect().then(async () => {
-    Logger.info(`CreateHandle::connect successful topic: ${topicName}`)
+    Logger.info(`CreateHandle::connect - successful connected to topics: [${topicName}]`)
     await consumer.consume()
     if (Array.isArray(topicName)) {
       for (let topic of topicName) { // NOT OK
@@ -94,8 +95,7 @@ const createHandler = async (topicName, config) => {
       }
     }
   }).catch((e) => {
-    Logger.error(e)
-    Logger.info('Consumer error has occurred')
+    Logger.error(`CreateHandle::connect - error: ${e}`)
     throw e
   })
 }
