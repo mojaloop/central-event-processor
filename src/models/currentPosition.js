@@ -40,6 +40,7 @@ const config = require('../lib/config')
 
 const currentPositionSchema = new mongoose.Schema({
   name: { type: String, required: true, index: true },
+  positionType: { type: String, required: true, enum: ['transfer', 'settlement'] }, // transfer or settlement
   currency: { type: String, required: true, index: true },
   positionValue: { type: Number, required: true },
   percentage: { type: Number },

@@ -31,7 +31,7 @@ const moment = require('moment')
 const Config = require('../lib/config')
 const Enum = require('../lib/enum')
 const TransferEventType = Enum.transferEventType
-const TransferEventAction = Enum.transferEventAction
+// const TransferEventAction = Enum.transferEventAction
 const Logger = require('@mojaloop/central-services-shared').Logger
 const ActionModel = require('../models/action').actionModel
 const NotificationModel = require('../models/notificationEndpoint').notificationEndpointModel
@@ -64,7 +64,7 @@ const createMessageProtocol = (payload, action, state = '', pp = '') => {
 }
 
 const dictionary = {
-  produceToKafkaTopic: async ({ payload, action, eventType = TransferEventType.NOTIFICATION, eventAction = TransferEventAction.EVENT }) => {
+  produceToKafkaTopic: async ({ payload, action, eventType = TransferEventType.NOTIFICATION, eventAction = 'email-notifier' }) => {
     try {
       await Utility.produceGeneralMessage(eventType, eventAction, createMessageProtocol(payload, action), Utility.ENUMS.STATE.SUCCESS)
     } catch (err) {
@@ -72,9 +72,9 @@ const dictionary = {
     }
   },
 
-  sendRequest: ({ method = 'GET', url, payload }) => {
+  /* sendRequest: ({ method = 'GET', url, payload }) => {
     return 'not implemented'
-  },
+  }, */
 
   sendEmail: ({ emailAddress, subject, body }) => {
     return 'not implemented'
@@ -82,7 +82,11 @@ const dictionary = {
 }
 
 const actionBuilder = (action) => {
-  return dictionary[action]
+  if (action in dictionary) {
+    return dictionary[action]
+  } else {
+    throw new Error('Action ' + action + ' are not supported')
+  }
 }
 
 const actionObservable = ({ action, params, message }) => {
@@ -91,13 +95,14 @@ const actionObservable = ({ action, params, message }) => {
       if (action === 'finish') {
         return observer.complete({ actionResult: true })
       }
+      let hubName = Config.get('HUB_PARTICIPANT').NAME
       let actionResult
       let previousAction = await ActionModel.findOne({ fromEvent: params.fromEvent, isActive: true })
       let recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType })
-      let hubDetails = await NotificationModel.findOne({ name: 'Hub', action: params.action, type: params.notificationEndpointType })
+      let hubDetails = await NotificationModel.findOne({ name: hubName, action: params.action, type: params.notificationEndpointType })
       let messageDetails = Object.assign({}, params, { notificationInterval, resetPeriod })
       const payload = {
-        from: 'SYSTEM',
+        from: hubName,
         to: params.dfsp,
         recepientDetails,
         hubDetails,
@@ -105,7 +110,8 @@ const actionObservable = ({ action, params, message }) => {
       }
       if (previousAction) {
         if ((previousAction.timesTriggered < params.repetitionsAllowed) &&
-          (moment(previousAction.updatedAt).add(notificationInterval, 'minutes') < moment.now())) {
+          (moment(previousAction.updatedAt).add(notificationInterval, 'minutes') < moment.now()) &&
+          !(Config.get('notificationMinutes').oscilateEvents.includes(params.notificationEndpointType))) {
           actionResult = await actionBuilder(action)({ payload })
           previousAction.timesTriggered++
           previousAction.save()
@@ -114,8 +120,12 @@ const actionObservable = ({ action, params, message }) => {
         }
       } else {
         actionResult = await actionBuilder(action)({ payload }) // create new action
-        let actionCreated = await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent })
-        Rx.asyncScheduler.schedule(clearRepetitionTask, resetPeriod * 60 * 1000, actionCreated.id) // loading the scheduler
+        if (Config.get('notificationMinutes').oscilateEvents.includes(params.notificationEndpointType)) {
+          let actionCreated = await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent })
+          Rx.asyncScheduler.schedule(clearRepetitionTask, resetPeriod * 60 * 1000, actionCreated.id) // loading the scheduler
+        } else {
+          await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent, isActive: false })
+        }
       }
       return observer.complete({ actionResult, message })
     } catch (err) {
@@ -126,12 +136,24 @@ const actionObservable = ({ action, params, message }) => {
 }
 
 const clearRepetitionTask = async function (actionId) { // clears the timesTriggered after delay is reached if action is still active
-  let action = await ActionModel.findById(actionId).populate('eventType')
-  let limit = await LimitModel.findOne({ type: action.eventType.limitType, name: action.eventType.name, currency: action.eventType.currency })
-  if (action.isActive && limit) {
-    action.timesTriggered = 1
-    action.save()
-    this.schedule(actionId, resetPeriod * 60 * 1000)
+  try {
+    let action = await ActionModel.findById(actionId).populate('eventType')
+    let limit = await LimitModel.findOne({
+      type: action.eventType.limitType,
+      name: action.eventType.name,
+      currency: action.eventType.currency
+    })
+    if (action.isActive && limit) {
+      action.timesTriggered = 1
+      action.save()
+
+      // `this` references currently executing Action,
+      // which we reschedule with new state and delay
+      // ref : https://github.com/ReactiveX/rxjs/blob/master/src/internal/scheduler/async.ts
+      this.schedule(actionId, resetPeriod * 60 * 1000)
+    }
+  } catch (err) {
+    throw new Error('Clear repetition for task id : ' + actionId + ' failed. Error : ' + err)
   }
 }
 
@@ -143,4 +165,4 @@ const getActions = () => {
   return actions
 }
 
-module.exports = { actionObservable, getActions }
+module.exports = { actionObservable, getActions, clearRepetitionTask }

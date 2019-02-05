@@ -1,7 +1,8 @@
 {
   "notificationMinutes": {
     "resetPeriod": 60,
-    "notificationInterval": 3
+    "notificationInterval": 3,
+    "oscilateEvents": ["NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL"]
   },
   "healthCheckPort": 3080,
   "swaggerOptions": {
@@ -95,5 +96,8 @@
         }
       }
     }
+  },
+  "HUB_PARTICIPANT": {
+    "NAME": "Hub"
   }
 }

@@ -6,13 +6,17 @@
   "dependencies": {
     "@mojaloop/central-services-error-handling": "0.5.1",
     "@mojaloop/central-services-shared": "^3.7.1-snapshot",
+    "@mojaloop/central-services-stream": "^3.9.0-snapshot",
+    "bluebird": "3.5.0",
     "config": "^3.0.0",
     "healthcheck-server": "^1.0.0",
     "json-rules-engine": "^2.3.0",
+    "leaked-handles": "^5.2.0",
     "moment": "^2.22.2",
-    "mongoose": "^5.3.8",
+    "mongoose": "^5.3.15",
     "mongoose-unique-validator": "^2.0.2",
     "mustache": "^3.0.0",
+    "proxyquire": "^2.1.0",
     "rc": "^1.2.8",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
@@ -21,8 +25,9 @@
     "uuid4": "^1.1.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "test": "nyc mocha test/unit/**/*.test.js --timeout=4000",
+    "test:coverage": "istanbul cover ./node_modules/.bin/_mocha test/unit/**/*.test.js --timeout=4000",
+    "start": "WITH_SASL=0&&LD_LIBRARY_PATH=$PWD/node_modules/node-rdkafka/build/deps&& node app.js"
   },
   "repository": {
     "type": "git",
@@ -33,5 +38,26 @@
   "bugs": {
     "url": "https://github.com/vgenev/central-notification/issues"
   },
-  "homepage": "https://github.com/vgenev/central-notification#readme"
+  "homepage": "https://github.com/mojaloop/central-event-processor#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "coveralls": "^3.0.2",
+    "faucet": "0.0.1",
+    "istanbul": "^1.1.0-alpha.1",
+    "istanbul-coveralls": "^1.0.3",
+    "jest": "^23.6.0",
+    "jsonpath": "^1.0.0",
+    "mocha": "^5.2.0",
+    "mockgoose": "^7.3.5",
+    "mongodb-memory-server": "^2.9.1",
+    "npm-run-all": "4.0.1",
+    "nyc": "^13.1.0",
+    "rewire": "^4.0.1",
+    "sinon": "^5.0.10",
+    "sinon-mongoose": "^2.2.1",
+    "standard": "8.5.0",
+    "tape": "4.6.2",
+    "tapes": "4.1.0"
+  }
 }
