@@ -21,7 +21,7 @@ const getLimitPerNameObservable = (message) => {
 }
 
 const createEventsForParticipant = async (name, limit) => {
-  try {
+  try { 
     let notificationActions = Enums.limitNotificationMap[limit.type]
     for (let key in notificationActions) {
       if (key !== 'enum') {
