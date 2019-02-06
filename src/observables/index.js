@@ -27,5 +27,6 @@
 module.exports = {
   actionObservable: require('./actions').actionObservable,
   Rules: require('./rules'),
-  CentralLedgerAPI: require('./centralLedgerAPI')
+  CentralLedgerAPI: require('./centralLedgerAPI'),
+  Store: require('./store')
 }
