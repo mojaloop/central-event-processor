@@ -1,5 +1,5 @@
 {
-  "name": "central-notification",
+  "name": "central-event-processor",
   "version": "0.0.1",
   "description": "CEP for Mojaloop Central-Ledger to monitor the notificaion kafka topic and act on it.",
   "main": "index.js",
@@ -49,7 +49,7 @@
     "jest": "^23.6.0",
     "jsonpath": "^1.0.0",
     "mocha": "^5.2.0",
-    "mockgoose": "^7.3.5",
+    "mockgoose": "^8.0.1",
     "mongodb-memory-server": "^2.9.1",
     "npm-run-all": "4.0.1",
     "nyc": "^13.1.0",

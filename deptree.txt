@@ -1,0 +1,685 @@
+central-event-processor@0.0.1
+│ /home/vgenev/mojaloop/central-event-processor
+│ CEP for Mojaloop Central-Ledger to monitor the notificaion kafka topic and act on it.
+│ git+https://github.com/vgenev/central-notification.git
+│ https://github.com/mojaloop/central-event-processor#readme
+├─┬ @mojaloop/central-services-error-handling@0.5.1
+│ │ Hapi error handling module
+│ │ git+https://github.com/mojaloop/central-services-error-handling.git
+│ │ https://github.com/mojaloop/central-services-error-handling#readme
+│ └─┬ @mojaloop/central-services-shared@0.4.0
+│   │ Shared code for central services
+│   │ git+https://github.com/mojaloop/central-services-shared.git
+│   │ https://github.com/mojaloop/central-services-shared#readme
+│   └─┬ winston@2.4.4
+│     │ A multi-transport async logging library for Node.js
+│     │ git+https://github.com/winstonjs/winston.git
+│     │ https://github.com/winstonjs/winston#readme
+│     ├── async@1.0.0
+│     │   Higher-order functions and common patterns for asynchronous code
+│     │   git+https://github.com/caolan/async.git
+│     │   https://github.com/caolan/async#readme
+│     ├── colors@1.0.3 deduped
+│     │   get colors in your node.js console
+│     │   git+ssh://git@github.com/Marak/colors.js.git
+│     │   https://github.com/Marak/colors.js
+│     ├── cycle@1.0.3 deduped
+│     │   decycle your json
+│     │   git+ssh://git@github.com/dscape/cycle.git
+│     │   https://github.com/douglascrockford/JSON-js
+│     ├── eyes@0.1.8 deduped
+│     │   a customizable value inspector
+│     ├── isstream@0.1.2 deduped
+│     │   Determine if an object is a Stream
+│     │   git+https://github.com/rvagg/isstream.git
+│     │   https://github.com/rvagg/isstream
+│     └── stack-trace@0.0.10 deduped
+│         Get v8 stack traces as an array of CallSite objects.
+│         git://github.com/felixge/node-stack-trace.git
+│         https://github.com/felixge/node-stack-trace
+├─┬ @mojaloop/central-services-shared@3.7.1-snapshot
+│ │ Shared code for central services
+│ │ git+https://github.com/mojaloop/central-services-shared.git
+│ │ https://github.com/mojaloop/central-services-shared#readme
+│ ├─┬ async@2.6.0
+│ │ │ Higher-order functions and common patterns for asynchronous code
+│ │ │ git+https://github.com/caolan/async.git
+│ │ │ https://caolan.github.io/async/
+│ │ └── lodash@4.17.11
+│ │     Lodash modular utilities.
+│ │     git+https://github.com/lodash/lodash.git
+│ │     https://lodash.com/
+│ ├── bluebird@3.5.1
+│ │   Full featured Promises/A+ implementation with exceptionally good performance
+│ │   git://github.com/petkaantonov/bluebird.git
+│ │   https://github.com/petkaantonov/bluebird
+│ ├─┬ debug@3.1.0
+│ │ │ small debugging utility
+│ │ │ git://github.com/visionmedia/debug.git
+│ │ │ https://github.com/visionmedia/debug#readme
+│ │ └── ms@2.0.0 deduped
+│ │     Tiny milisecond conversion utility
+│ │     git+https://github.com/zeit/ms.git
+│ │     https://github.com/zeit/ms#readme
+│ ├── events@3.0.0
+│ │   Node's event emitter for all engines.
+│ │   git://github.com/Gozala/events.git
+│ │   https://github.com/Gozala/events#readme
+│ ├─┬ node-rdkafka@2.4.2
+│ │ │ Node.js bindings for librdkafka
+│ │ │ git+ssh://git@github.com/Blizzard/node-rdkafka.git
+│ │ │ https://github.com/Blizzard/node-rdkafka#readme
+│ │ ├─┬ bindings@1.4.0
+│ │ │ │ Helper module for loading your native module's .node file
+│ │ │ │ git://github.com/TooTallNate/node-bindings.git
+│ │ │ │ https://github.com/TooTallNate/node-bindings
+│ │ │ └── file-uri-to-path@1.0.0
+│ │ │     Convert a file: URI to a file path
+│ │ │     git://github.com/TooTallNate/file-uri-to-path.git
+│ │ │     https://github.com/TooTallNate/file-uri-to-path
+│ │ └── nan@2.12.1
+│ │     Native Abstractions for Node.js: C++ header for Node 0.8 -> 11 compatibility
+│ │     git://github.com/nodejs/nan.git
+│ │     https://github.com/nodejs/nan#readme
+│ └─┬ winston@2.4.0
+│   │ A multi-transport async logging library for Node.js
+│   │ git+https://github.com/winstonjs/winston.git
+│   │ https://github.com/winstonjs/winston#readme
+│   ├── async@1.0.0
+│   │   Higher-order functions and common patterns for asynchronous code
+│   │   git+https://github.com/caolan/async.git
+│   │   https://github.com/caolan/async#readme
+│   ├── colors@1.0.3
+│   │   get colors in your node.js console
+│   │   git+ssh://git@github.com/Marak/colors.js.git
+│   │   https://github.com/Marak/colors.js
+│   ├── cycle@1.0.3
+│   │   decycle your json
+│   │   git+ssh://git@github.com/dscape/cycle.git
+│   │   https://github.com/douglascrockford/JSON-js
+│   ├── eyes@0.1.8
+│   │   a customizable value inspector
+│   ├── isstream@0.1.2 deduped
+│   │   Determine if an object is a Stream
+│   │   git+https://github.com/rvagg/isstream.git
+│   │   https://github.com/rvagg/isstream
+│   └── stack-trace@0.0.10
+│       Get v8 stack traces as an array of CallSite objects.
+│       git://github.com/felixge/node-stack-trace.git
+│       https://github.com/felixge/node-stack-trace
+├─┬ @mojaloop/central-services-stream@3.9.0-snapshot
+│ │ Streaming library code for central services
+│ │ git+https://github.com/mojaloop/central-services-stream.git
+│ │ https://github.com/mojaloop/central-services-stream#readme
+│ ├─┬ @mojaloop/central-services-shared@3.9.1-snapshot
+│ │ │ Shared code for central services
+│ │ │ git+https://github.com/mojaloop/central-services-shared.git
+│ │ │ https://github.com/mojaloop/central-services-shared#readme
+│ │ ├── async@2.6.0 deduped
+│ │ │   Higher-order functions and common patterns for asynchronous code
+│ │ │   git+https://github.com/caolan/async.git
+│ │ │   https://caolan.github.io/async/
+│ │ ├── debug@3.1.0 deduped
+│ │ │   small debugging utility
+│ │ │   git://github.com/visionmedia/debug.git
+│ │ │   https://github.com/visionmedia/debug#readme
+│ │ └─┬ winston@2.4.0
+│ │   │ A multi-transport async logging library for Node.js
+│ │   │ git+https://github.com/winstonjs/winston.git
+│ │   │ https://github.com/winstonjs/winston#readme
+│ │   ├── async@1.0.0
+│ │   │   Higher-order functions and common patterns for asynchronous code
+│ │   │   git+https://github.com/caolan/async.git
+│ │   │   https://github.com/caolan/async#readme
+│ │   ├── colors@1.0.3 deduped
+│ │   │   get colors in your node.js console
+│ │   │   git+ssh://git@github.com/Marak/colors.js.git
+│ │   │   https://github.com/Marak/colors.js
+│ │   ├── cycle@1.0.3 deduped
+│ │   │   decycle your json
+│ │   │   git+ssh://git@github.com/dscape/cycle.git
+│ │   │   https://github.com/douglascrockford/JSON-js
+│ │   ├── eyes@0.1.8 deduped
+│ │   │   a customizable value inspector
+│ │   ├── isstream@0.1.2 deduped
+│ │   │   Determine if an object is a Stream
+│ │   │   git+https://github.com/rvagg/isstream.git
+│ │   │   https://github.com/rvagg/isstream
+│ │   └── stack-trace@0.0.10 deduped
+│ │       Get v8 stack traces as an array of CallSite objects.
+│ │       git://github.com/felixge/node-stack-trace.git
+│ │       https://github.com/felixge/node-stack-trace
+│ ├─┬ async@2.6.0
+│ │ │ Higher-order functions and common patterns for asynchronous code
+│ │ │ git+https://github.com/caolan/async.git
+│ │ │ https://caolan.github.io/async/
+│ │ └── lodash@4.17.11 deduped
+│ │     Lodash modular utilities.
+│ │     git+https://github.com/lodash/lodash.git
+│ │     https://lodash.com/
+│ ├── bluebird@3.5.1 deduped
+│ │   Full featured Promises/A+ implementation with exceptionally good performance
+│ │   git://github.com/petkaantonov/bluebird.git
+│ │   https://github.com/petkaantonov/bluebird
+│ ├── debug@3.1.0 deduped
+│ │   small debugging utility
+│ │   git://github.com/visionmedia/debug.git
+│ │   https://github.com/visionmedia/debug#readme
+│ ├── events@3.0.0 deduped
+│ │   Node's event emitter for all engines.
+│ │   git://github.com/Gozala/events.git
+│ │   https://github.com/Gozala/events#readme
+│ └── node-rdkafka@2.4.2 deduped
+│     Node.js bindings for librdkafka
+│     git+ssh://git@github.com/Blizzard/node-rdkafka.git
+│     https://github.com/Blizzard/node-rdkafka#readme
+├── UNMET DEPENDENCY bluebird@3.5.0
+├─┬ config@3.0.1
+│ │ Configuration control for production node deployments
+│ │ git+ssh://git@github.com/lorenwest/node-config.git
+│ │ http://lorenwest.github.com/node-config
+│ └─┬ json5@1.0.1
+│   │ JSON for humans.
+│   │ git+https://github.com/json5/json5.git
+│   │ http://json5.org/
+│   └── minimist@1.2.0 deduped
+│       parse argument options
+│       git://github.com/substack/minimist.git
+│       https://github.com/substack/minimist
+├── healthcheck-server@1.0.0
+│   basic http healtcheck server
+│   git://github.com/icodeforlove/healthcheck-server.git
+│   https://github.com/icodeforlove/healthcheck-server#readme
+├─┬ json-rules-engine@2.3.2
+│ │ Rules Engine expressed in simple json
+│ │ git+https://github.com/cachecontrol/json-rules-engine.git
+│ │ https://github.com/cachecontrol/json-rules-engine
+│ ├── clone@2.1.2
+│ │   deep cloning of objects and arrays
+│ │   git://github.com/pvorb/node-clone.git
+│ │   https://github.com/pvorb/node-clone#readme
+│ ├─┬ debug@4.1.1
+│ │ │ small debugging utility
+│ │ │ git://github.com/visionmedia/debug.git
+│ │ │ https://github.com/visionmedia/debug#readme
+│ │ └── ms@2.1.1
+│ │     Tiny millisecond conversion utility
+│ │     git+https://github.com/zeit/ms.git
+│ │     https://github.com/zeit/ms#readme
+│ ├── lodash.isobjectlike@4.0.0
+│ │   The lodash method `_.isObjectLike` exported as a module.
+│ │   git+https://github.com/lodash/lodash.git
+│ │   https://lodash.com/
+│ ├── object-hash@1.3.1
+│ │   Generate hashes from javascript objects in node and the browser.
+│ │   git+https://github.com/puleos/object-hash.git
+│ │   https://github.com/puleos/object-hash
+│ └─┬ selectn@1.1.2
+│   │ Curried property accessor function that resolves deeply-nested object properties via dot/bracket-notation string path while mitigating TypeErrors via friendly and composable API.
+│   │ git+https://github.com/wilmoore/selectn.js.git
+│   │ https://github.com/wilmoore/selectn.js
+│   ├── brackets2dots@1.1.0
+│   │   Convert string with bracket notation to dot property notation for Node.js and the browser.
+│   │   git+https://github.com/wilmoore/brackets2dots.js.git
+│   │   https://github.com/wilmoore/brackets2dots.js#readme
+│   ├─┬ curry2@1.0.3
+│   │ │ Curry a binary function.
+│   │ │ git+https://github.com/wilmoore/curry2.js.git
+│   │ │ https://github.com/wilmoore/curry2.js
+│   │ └── fast-bind@1.0.0
+│   │     the fastest version of Function#bind I could make
+│   │     git://github.com/nathan7/fast-bind.git
+│   │     https://github.com/nathan7/fast-bind
+│   ├─┬ debug@2.6.9
+│   │ │ small debugging utility
+│   │ │ git://github.com/visionmedia/debug.git
+│   │ │ https://github.com/visionmedia/debug#readme
+│   │ └── ms@2.0.0 deduped
+│   │     Tiny milisecond conversion utility
+│   │     git+https://github.com/zeit/ms.git
+│   │     https://github.com/zeit/ms#readme
+│   └── dotsplit.js@1.1.0
+│       Transform dot-delimited strings to array of strings for Node.js and the browser.
+│       git+https://github.com/wilmoore/dotsplit.js.git
+│       https://github.com/wilmoore/dotsplit.js
+├── UNMET DEPENDENCY leaked-handles@^5.2.0
+├── moment@2.24.0
+│   Parse, validate, manipulate, and display dates
+│   git+https://github.com/moment/moment.git
+│   http://momentjs.com
+├─┬ mongoose@5.4.6
+│ │ Mongoose MongoDB ODM
+│ │ git://github.com/Automattic/mongoose.git
+│ │ http://mongoosejs.com
+│ ├─┬ async@2.6.1
+│ │ │ Higher-order functions and common patterns for asynchronous code
+│ │ │ git+https://github.com/caolan/async.git
+│ │ │ https://caolan.github.io/async/
+│ │ └── lodash@4.17.11 deduped
+│ │     Lodash modular utilities.
+│ │     git+https://github.com/lodash/lodash.git
+│ │     https://lodash.com/
+│ ├── bson@1.1.0
+│ │   A bson parser for node.js and the browser
+│ │   git+https://github.com/mongodb/js-bson.git
+│ │   https://github.com/mongodb/js-bson#readme
+│ ├── kareem@2.3.0
+│ │   Next-generation take on pre/post function hooks
+│ │   git://github.com/vkarpov15/kareem.git
+│ │   https://github.com/vkarpov15/kareem#readme
+│ ├─┬ mongodb@3.1.10
+│ │ │ The official MongoDB driver for Node.js
+│ │ │ git+ssh://git@github.com/mongodb/node-mongodb-native.git
+│ │ │ https://github.com/mongodb/node-mongodb-native
+│ │ ├── mongodb-core@3.1.9 deduped
+│ │ │   Core MongoDB driver functionality, no bells and whistles and meant for integration not end applications
+│ │ │   git://github.com/mongodb-js/mongodb-core.git
+│ │ │   https://github.com/mongodb-js/mongodb-core
+│ │ └── safe-buffer@5.1.2 deduped
+│ │     Safer Node.js Buffer API
+│ │     git://github.com/feross/safe-buffer.git
+│ │     https://github.com/feross/safe-buffer
+│ ├─┬ mongodb-core@3.1.9
+│ │ │ Core MongoDB driver functionality, no bells and whistles and meant for integration not end applications
+│ │ │ git://github.com/mongodb-js/mongodb-core.git
+│ │ │ https://github.com/mongodb-js/mongodb-core
+│ │ ├── bson@1.1.0 deduped
+│ │ │   A bson parser for node.js and the browser
+│ │ │   git+https://github.com/mongodb/js-bson.git
+│ │ │   https://github.com/mongodb/js-bson#readme
+│ │ ├─┬ require_optional@1.0.1
+│ │ │ │ Allows you declare optionalPeerDependencies that can be satisfied by the top level module but ignored if they are not.
+│ │ │ │ git+https://github.com/christkv/require_optional.git
+│ │ │ │ https://github.com/christkv/require_optional
+│ │ │ ├── resolve-from@2.0.0
+│ │ │ │   Resolve the path of a module like require.resolve() but from a given path
+│ │ │ │   git+https://github.com/sindresorhus/resolve-from.git
+│ │ │ │   https://github.com/sindresorhus/resolve-from#readme
+│ │ │ └── semver@5.6.0
+│ │ │     The semantic version parser used by npm.
+│ │ │     git+https://github.com/npm/node-semver.git
+│ │ │     https://github.com/npm/node-semver#readme
+│ │ ├── safe-buffer@5.1.2 deduped
+│ │ │   Safer Node.js Buffer API
+│ │ │   git://github.com/feross/safe-buffer.git
+│ │ │   https://github.com/feross/safe-buffer
+│ │ └─┬ saslprep@1.0.2
+│ │   │ SASLprep: Stringprep Profile for User Names and Passwords, rfc4013.
+│ │   │ git+https://github.com/reklatsmasters/saslprep.git
+│ │   │ https://github.com/reklatsmasters/saslprep#readme
+│ │   └─┬ sparse-bitfield@3.0.3
+│ │     │ Bitfield that allocates a series of small buffers to support sparse bits without allocating a massive buffer
+│ │     │ git+https://github.com/mafintosh/sparse-bitfield.git
+│ │     │ https://github.com/mafintosh/sparse-bitfield
+│ │     └── memory-pager@1.5.0
+│ │         Access memory using small fixed sized buffers
+│ │         git+https://github.com/mafintosh/memory-pager.git
+│ │         https://github.com/mafintosh/memory-pager
+│ ├── mongoose-legacy-pluralize@1.0.2
+│ │   Legacy pluralization logic for mongoose
+│ │   git+https://github.com/vkarpov15/mongoose-legacy-pluralize.git
+│ │   https://github.com/vkarpov15/mongoose-legacy-pluralize
+│ ├── mpath@0.5.1
+│ │   {G,S}et object values using MongoDB-like path notation
+│ │   git://github.com/aheckmann/mpath.git
+│ │   https://github.com/aheckmann/mpath#readme
+│ ├─┬ mquery@3.2.0
+│ │ │ Expressive query building for MongoDB
+│ │ │ git://github.com/aheckmann/mquery.git
+│ │ │ https://github.com/aheckmann/mquery/
+│ │ ├── bluebird@3.5.1 deduped
+│ │ │   Full featured Promises/A+ implementation with exceptionally good performance
+│ │ │   git://github.com/petkaantonov/bluebird.git
+│ │ │   https://github.com/petkaantonov/bluebird
+│ │ ├── debug@3.1.0 deduped
+│ │ │   small debugging utility
+│ │ │   git://github.com/visionmedia/debug.git
+│ │ │   https://github.com/visionmedia/debug#readme
+│ │ ├── regexp-clone@0.0.1 deduped
+│ │ │   Clone RegExps with options
+│ │ │   git://github.com/aheckmann/regexp-clone.git
+│ │ │   https://github.com/aheckmann/regexp-clone#readme
+│ │ ├── safe-buffer@5.1.2 deduped
+│ │ │   Safer Node.js Buffer API
+│ │ │   git://github.com/feross/safe-buffer.git
+│ │ │   https://github.com/feross/safe-buffer
+│ │ └── sliced@1.0.1 deduped
+│ │     A faster Node.js alternative to Array.prototype.slice.call(arguments)
+│ │     git://github.com/aheckmann/sliced.git
+│ │     https://github.com/aheckmann/sliced#readme
+│ ├── ms@2.0.0
+│ │   Tiny milisecond conversion utility
+│ │   git+https://github.com/zeit/ms.git
+│ │   https://github.com/zeit/ms#readme
+│ ├── regexp-clone@0.0.1
+│ │   Clone RegExps with options
+│ │   git://github.com/aheckmann/regexp-clone.git
+│ │   https://github.com/aheckmann/regexp-clone#readme
+│ ├── safe-buffer@5.1.2
+│ │   Safer Node.js Buffer API
+│ │   git://github.com/feross/safe-buffer.git
+│ │   https://github.com/feross/safe-buffer
+│ └── sliced@1.0.1
+│     A faster Node.js alternative to Array.prototype.slice.call(arguments)
+│     git://github.com/aheckmann/sliced.git
+│     https://github.com/aheckmann/sliced#readme
+├─┬ mongoose-unique-validator@2.0.2
+│ │ mongoose-unique-validator is a plugin which adds pre-save validation for unique fields within a Mongoose schema.
+│ │ git+https://github.com/blakehaswell/mongoose-unique-validator.git
+│ │ https://github.com/blakehaswell/mongoose-unique-validator#readme
+│ ├── lodash.foreach@4.5.0
+│ │   The lodash method `_.forEach` exported as a module.
+│ │   git+https://github.com/lodash/lodash.git
+│ │   https://lodash.com/
+│ └── lodash.get@4.4.2
+│     The lodash method `_.get` exported as a module.
+│     git+https://github.com/lodash/lodash.git
+│     https://lodash.com/
+├── mustache@3.0.1
+│   Logic-less {{mustache}} templates with JavaScript
+│   git+https://github.com/janl/mustache.js.git
+│   https://github.com/janl/mustache.js
+├── UNMET DEPENDENCY proxyquire@^2.1.0
+├─┬ rc@1.2.8
+│ │ hardwired configuration loader
+│ │ git+https://github.com/dominictarr/rc.git
+│ │ https://github.com/dominictarr/rc#readme
+│ ├── deep-extend@0.6.0
+│ │   Recursive object extending
+│ │   git://github.com/unclechu/node-deep-extend.git
+│ │   https://github.com/unclechu/node-deep-extend
+│ ├── ini@1.3.5
+│ │   An ini encoder/decoder for node
+│ │   git://github.com/isaacs/ini.git
+│ │   https://github.com/isaacs/ini#readme
+│ ├── minimist@1.2.0
+│ │   parse argument options
+│ │   git://github.com/substack/minimist.git
+│ │   https://github.com/substack/minimist
+│ └── strip-json-comments@2.0.1
+│     Strip comments from JSON. Lets you use comments in your JSON files!
+│     git+https://github.com/sindresorhus/strip-json-comments.git
+│     https://github.com/sindresorhus/strip-json-comments#readme
+├─┬ request@2.88.0
+│ │ Simplified HTTP request client.
+│ │ git+https://github.com/request/request.git
+│ │ https://github.com/request/request#readme
+│ ├── aws-sign2@0.7.0
+│ │   AWS signing. Originally pulled from LearnBoost/knox, maintained as vendor in request, now a standalone module.
+│ │   git+https://github.com/mikeal/aws-sign.git
+│ │   https://github.com/mikeal/aws-sign#readme
+│ ├── aws4@1.8.0
+│ │   Signs and prepares requests using AWS Signature Version 4
+│ │   git+https://github.com/mhart/aws4.git
+│ │   https://github.com/mhart/aws4#readme
+│ ├── caseless@0.12.0
+│ │   Caseless object set/get/has, very useful when working with HTTP headers.
+│ │   git+https://github.com/mikeal/caseless.git
+│ │   https://github.com/mikeal/caseless#readme
+│ ├─┬ combined-stream@1.0.7
+│ │ │ A stream that emits multiple other streams one after another.
+│ │ │ git://github.com/felixge/node-combined-stream.git
+│ │ │ https://github.com/felixge/node-combined-stream
+│ │ └── delayed-stream@1.0.0
+│ │     Buffers events from a stream until you are ready to handle them.
+│ │     git://github.com/felixge/node-delayed-stream.git
+│ │     https://github.com/felixge/node-delayed-stream
+│ ├── extend@3.0.2
+│ │   Port of jQuery.extend for node.js and the browser
+│ │   git+https://github.com/justmoon/node-extend.git
+│ │   https://github.com/justmoon/node-extend#readme
+│ ├── forever-agent@0.6.1
+│ │   HTTP Agent that keeps socket connections alive between keep-alive requests. Formerly part of mikeal/request, now a standalone module.
+│ │   git+https://github.com/mikeal/forever-agent.git
+│ │   https://github.com/mikeal/forever-agent#readme
+│ ├─┬ form-data@2.3.3
+│ │ │ A library to create readable "multipart/form-data" streams. Can be used to submit forms and file uploads to other web applications.
+│ │ │ git://github.com/form-data/form-data.git
+│ │ │ https://github.com/form-data/form-data#readme
+│ │ ├── asynckit@0.4.0
+│ │ │   Minimal async jobs utility library, with streams support
+│ │ │   git+https://github.com/alexindigo/asynckit.git
+│ │ │   https://github.com/alexindigo/asynckit#readme
+│ │ ├── combined-stream@1.0.7 deduped
+│ │ │   A stream that emits multiple other streams one after another.
+│ │ │   git://github.com/felixge/node-combined-stream.git
+│ │ │   https://github.com/felixge/node-combined-stream
+│ │ └── mime-types@2.1.21 deduped
+│ │     The ultimate javascript content-type utility.
+│ │     git+https://github.com/jshttp/mime-types.git
+│ │     https://github.com/jshttp/mime-types#readme
+│ ├─┬ har-validator@5.1.3
+│ │ │ Extremely fast HTTP Archive (HAR) validator using JSON Schema
+│ │ │ git+https://github.com/ahmadnassri/node-har-validator.git
+│ │ │ https://github.com/ahmadnassri/node-har-validator
+│ │ ├─┬ ajv@6.7.0
+│ │ │ │ Another JSON Schema Validator
+│ │ │ │ git+https://github.com/epoberezkin/ajv.git
+│ │ │ │ https://github.com/epoberezkin/ajv
+│ │ │ ├── fast-deep-equal@2.0.1
+│ │ │ │   Fast deep equal
+│ │ │ │   git+https://github.com/epoberezkin/fast-deep-equal.git
+│ │ │ │   https://github.com/epoberezkin/fast-deep-equal#readme
+│ │ │ ├── fast-json-stable-stringify@2.0.0
+│ │ │ │   deterministic `JSON.stringify()` - a faster version of substack's json-stable-strigify without jsonify
+│ │ │ │   git://github.com/epoberezkin/fast-json-stable-stringify.git
+│ │ │ │   https://github.com/epoberezkin/fast-json-stable-stringify
+│ │ │ ├── json-schema-traverse@0.4.1
+│ │ │ │   Traverse JSON Schema passing each schema object to callback
+│ │ │ │   git+https://github.com/epoberezkin/json-schema-traverse.git
+│ │ │ │   https://github.com/epoberezkin/json-schema-traverse#readme
+│ │ │ └─┬ uri-js@4.2.2
+│ │ │   │ An RFC 3986/3987 compliant, scheme extendable URI/IRI parsing/validating/resolving library for JavaScript.
+│ │ │   │ git+ssh://git@github.com/garycourt/uri-js.git
+│ │ │   │ https://github.com/garycourt/uri-js
+│ │ │   └── punycode@2.1.1
+│ │ │       A robust Punycode converter that fully complies to RFC 3492 and RFC 5891, and works on nearly all JavaScript platforms.
+│ │ │       git+https://github.com/bestiejs/punycode.js.git
+│ │ │       https://mths.be/punycode
+│ │ └── har-schema@2.0.0
+│ │     JSON Schema for HTTP Archive (HAR)
+│ │     git+https://github.com/ahmadnassri/har-schema.git
+│ │     https://github.com/ahmadnassri/har-schema
+│ ├─┬ http-signature@1.2.0
+│ │ │ Reference implementation of Joyent's HTTP Signature scheme.
+│ │ │ git://github.com/joyent/node-http-signature.git
+│ │ │ https://github.com/joyent/node-http-signature/
+│ │ ├── assert-plus@1.0.0
+│ │ │   Extra assertions on top of node's assert module
+│ │ │   git+https://github.com/mcavage/node-assert-plus.git
+│ │ │   https://github.com/mcavage/node-assert-plus#readme
+│ │ ├─┬ jsprim@1.4.1
+│ │ │ │ utilities for primitive JavaScript types
+│ │ │ │ git://github.com/joyent/node-jsprim.git
+│ │ │ │ https://github.com/joyent/node-jsprim#readme
+│ │ │ ├── assert-plus@1.0.0 deduped
+│ │ │ │   Extra assertions on top of node's assert module
+│ │ │ │   git+https://github.com/mcavage/node-assert-plus.git
+│ │ │ │   https://github.com/mcavage/node-assert-plus#readme
+│ │ │ ├── extsprintf@1.3.0
+│ │ │ │   extended POSIX-style sprintf
+│ │ │ │   git://github.com/davepacheco/node-extsprintf.git
+│ │ │ │   https://github.com/davepacheco/node-extsprintf#readme
+│ │ │ ├── json-schema@0.2.3
+│ │ │ │   JSON Schema validation and specifications
+│ │ │ │   git+ssh://git@github.com/kriszyp/json-schema.git
+│ │ │ │   https://github.com/kriszyp/json-schema#readme
+│ │ │ └─┬ verror@1.10.0
+│ │ │   │ richer JavaScript errors
+│ │ │   │ git://github.com/davepacheco/node-verror.git
+│ │ │   │ https://github.com/davepacheco/node-verror#readme
+│ │ │   ├── assert-plus@1.0.0 deduped
+│ │ │   │   Extra assertions on top of node's assert module
+│ │ │   │   git+https://github.com/mcavage/node-assert-plus.git
+│ │ │   │   https://github.com/mcavage/node-assert-plus#readme
+│ │ │   ├── core-util-is@1.0.2
+│ │ │   │   The `util.is*` functions introduced in Node v0.12.
+│ │ │   │   git://github.com/isaacs/core-util-is.git
+│ │ │   │   https://github.com/isaacs/core-util-is#readme
+│ │ │   └── extsprintf@1.3.0 deduped
+│ │ │       extended POSIX-style sprintf
+│ │ │       git://github.com/davepacheco/node-extsprintf.git
+│ │ │       https://github.com/davepacheco/node-extsprintf#readme
+│ │ └─┬ sshpk@1.16.1
+│ │   │ A library for finding and using SSH public keys
+│ │   │ git+https://github.com/joyent/node-sshpk.git
+│ │   │ https://github.com/arekinath/node-sshpk#readme
+│ │   ├─┬ asn1@0.2.4
+│ │   │ │ Contains parsers and serializers for ASN.1 (currently BER only)
+│ │   │ │ git://github.com/joyent/node-asn1.git
+│ │   │ │ https://github.com/joyent/node-asn1#readme
+│ │   │ └── safer-buffer@2.1.2 deduped
+│ │   │     Modern Buffer API polyfill without footguns
+│ │   │     git+https://github.com/ChALkeR/safer-buffer.git
+│ │   │     https://github.com/ChALkeR/safer-buffer#readme
+│ │   ├── assert-plus@1.0.0 deduped
+│ │   │   Extra assertions on top of node's assert module
+│ │   │   git+https://github.com/mcavage/node-assert-plus.git
+│ │   │   https://github.com/mcavage/node-assert-plus#readme
+│ │   ├─┬ bcrypt-pbkdf@1.0.2
+│ │   │ │ Port of the OpenBSD bcrypt_pbkdf function to pure JS
+│ │   │ │ git://github.com/joyent/node-bcrypt-pbkdf.git
+│ │   │ │ https://github.com/joyent/node-bcrypt-pbkdf#readme
+│ │   │ └── tweetnacl@0.14.5 deduped
+│ │   │     Port of TweetNaCl cryptographic library to JavaScript
+│ │   │     git+https://github.com/dchest/tweetnacl-js.git
+│ │   │     https://tweetnacl.js.org
+│ │   ├─┬ dashdash@1.14.1
+│ │   │ │ A light, featureful and explicit option parsing library.
+│ │   │ │ git://github.com/trentm/node-dashdash.git
+│ │   │ │ https://github.com/trentm/node-dashdash#readme
+│ │   │ └── assert-plus@1.0.0 deduped
+│ │   │     Extra assertions on top of node's assert module
+│ │   │     git+https://github.com/mcavage/node-assert-plus.git
+│ │   │     https://github.com/mcavage/node-assert-plus#readme
+│ │   ├─┬ ecc-jsbn@0.1.2
+│ │   │ │ ECC JS code based on JSBN
+│ │   │ │ git+https://github.com/quartzjer/ecc-jsbn.git
+│ │   │ │ https://github.com/quartzjer/ecc-jsbn
+│ │   │ ├── jsbn@0.1.1 deduped
+│ │   │ │   The jsbn library is a fast, portable implementation of large-number math in pure JavaScript, enabling public-key crypto and other applications on desktop and mobile browsers.
+│ │   │ │   git+https://github.com/andyperlitch/jsbn.git
+│ │   │ │   https://github.com/andyperlitch/jsbn#readme
+│ │   │ └── safer-buffer@2.1.2 deduped
+│ │   │     Modern Buffer API polyfill without footguns
+│ │   │     git+https://github.com/ChALkeR/safer-buffer.git
+│ │   │     https://github.com/ChALkeR/safer-buffer#readme
+│ │   ├─┬ getpass@0.1.7
+│ │   │ │ getpass for node.js
+│ │   │ │ git+https://github.com/arekinath/node-getpass.git
+│ │   │ │ https://github.com/arekinath/node-getpass#readme
+│ │   │ └── assert-plus@1.0.0 deduped
+│ │   │     Extra assertions on top of node's assert module
+│ │   │     git+https://github.com/mcavage/node-assert-plus.git
+│ │   │     https://github.com/mcavage/node-assert-plus#readme
+│ │   ├── jsbn@0.1.1
+│ │   │   The jsbn library is a fast, portable implementation of large-number math in pure JavaScript, enabling public-key crypto and other applications on desktop and mobile browsers.
+│ │   │   git+https://github.com/andyperlitch/jsbn.git
+│ │   │   https://github.com/andyperlitch/jsbn#readme
+│ │   ├── safer-buffer@2.1.2
+│ │   │   Modern Buffer API polyfill without footguns
+│ │   │   git+https://github.com/ChALkeR/safer-buffer.git
+│ │   │   https://github.com/ChALkeR/safer-buffer#readme
+│ │   └── tweetnacl@0.14.5
+│ │       Port of TweetNaCl cryptographic library to JavaScript
+│ │       git+https://github.com/dchest/tweetnacl-js.git
+│ │       https://tweetnacl.js.org
+│ ├── is-typedarray@1.0.0
+│ │   Detect whether or not an object is a Typed Array
+│ │   git://github.com/hughsk/is-typedarray.git
+│ │   https://github.com/hughsk/is-typedarray
+│ ├── isstream@0.1.2
+│ │   Determine if an object is a Stream
+│ │   git+https://github.com/rvagg/isstream.git
+│ │   https://github.com/rvagg/isstream
+│ ├── json-stringify-safe@5.0.1
+│ │   Like JSON.stringify, but doesn't blow up on circular refs.
+│ │   git://github.com/isaacs/json-stringify-safe.git
+│ │   https://github.com/isaacs/json-stringify-safe
+│ ├─┬ mime-types@2.1.21
+│ │ │ The ultimate javascript content-type utility.
+│ │ │ git+https://github.com/jshttp/mime-types.git
+│ │ │ https://github.com/jshttp/mime-types#readme
+│ │ └── mime-db@1.37.0
+│ │     Media Type Database
+│ │     git+https://github.com/jshttp/mime-db.git
+│ │     https://github.com/jshttp/mime-db#readme
+│ ├── oauth-sign@0.9.0
+│ │   OAuth 1 signing. Formerly a vendor lib in mikeal/request, now a standalone module.
+│ │   git+https://github.com/mikeal/oauth-sign.git
+│ │   https://github.com/mikeal/oauth-sign#readme
+│ ├── performance-now@2.1.0
+│ │   Implements performance.now (based on process.hrtime).
+│ │   git://github.com/braveg1rl/performance-now.git
+│ │   https://github.com/braveg1rl/performance-now
+│ ├── qs@6.5.2
+│ │   A querystring parser that supports nesting and arrays, with a depth limit
+│ │   git+https://github.com/ljharb/qs.git
+│ │   https://github.com/ljharb/qs
+│ ├── safe-buffer@5.1.2 deduped
+│ │   Safer Node.js Buffer API
+│ │   git://github.com/feross/safe-buffer.git
+│ │   https://github.com/feross/safe-buffer
+│ ├─┬ tough-cookie@2.4.3
+│ │ │ RFC6265 Cookies and Cookie Jar for node.js
+│ │ │ git://github.com/salesforce/tough-cookie.git
+│ │ │ https://github.com/salesforce/tough-cookie
+│ │ ├── psl@1.1.31
+│ │ │   Domain name parser based on the Public Suffix List
+│ │ │   git+ssh://git@github.com/wrangr/psl.git
+│ │ │   https://github.com/wrangr/psl#readme
+│ │ └── punycode@1.4.1
+│ │     A robust Punycode converter that fully complies to RFC 3492 and RFC 5891, and works on nearly all JavaScript platforms.
+│ │     git+https://github.com/bestiejs/punycode.js.git
+│ │     https://mths.be/punycode
+│ ├─┬ tunnel-agent@0.6.0
+│ │ │ HTTP proxy tunneling agent. Formerly part of mikeal/request, now a standalone module.
+│ │ │ git+https://github.com/mikeal/tunnel-agent.git
+│ │ │ https://github.com/mikeal/tunnel-agent#readme
+│ │ └── safe-buffer@5.1.2 deduped
+│ │     Safer Node.js Buffer API
+│ │     git://github.com/feross/safe-buffer.git
+│ │     https://github.com/feross/safe-buffer
+│ └── uuid@3.3.2
+│     RFC4122 (v1, v4, and v5) UUIDs
+│     git+https://github.com/kelektiv/node-uuid.git
+│     https://github.com/kelektiv/node-uuid#readme
+├─┬ request-promise@4.2.2
+│ │ The simplified HTTP request client 'request' with Promise support. Powered by Bluebird.
+│ │ git+https://github.com/request/request-promise.git
+│ │ https://github.com/request/request-promise#readme
+│ ├── bluebird@3.5.1 deduped
+│ │   Full featured Promises/A+ implementation with exceptionally good performance
+│ │   git://github.com/petkaantonov/bluebird.git
+│ │   https://github.com/petkaantonov/bluebird
+│ ├─┬ request-promise-core@1.1.1
+│ │ │ Core Promise support implementation for the simplified HTTP request client 'request'.
+│ │ │ git+https://github.com/request/promise-core.git
+│ │ │ https://github.com/request/promise-core#readme
+│ │ └── lodash@4.17.11 deduped
+│ │     Lodash modular utilities.
+│ │     git+https://github.com/lodash/lodash.git
+│ │     https://lodash.com/
+│ ├── stealthy-require@1.1.1
+│ │   The closest you can get to require something with bypassing the require cache
+│ │   git+https://github.com/analog-nico/stealthy-require.git
+│ │   https://github.com/analog-nico/stealthy-require#readme
+│ └── tough-cookie@2.4.3 deduped
+│     RFC6265 Cookies and Cookie Jar for node.js
+│     git://github.com/salesforce/tough-cookie.git
+│     https://github.com/salesforce/tough-cookie
+├─┬ rxjs@6.3.3
+│ │ Reactive Extensions for modern JavaScript
+│ │ git+https://github.com/reactivex/rxjs.git
+│ │ https://github.com/ReactiveX/RxJS
+│ └── tslib@1.9.3
+│     Runtime library for TypeScript helper functions
+│     git+https://github.com/Microsoft/tslib.git
+│     http://typescriptlang.org/
+├── rxjs-compat@6.3.3
+│   <img src="doc/asset/Rx_Logo_S.png" alt="RxJS Logo" width="86" height="86"> RxJS: Reactive Extensions For JavaScript ======================================
+└── uuid4@1.1.4
+    Node UUID v4 Generator
+    git+https://github.com/tracker1/node-uuid4.git
+    https://github.com/tracker1/node-uuid4
+
