@@ -227,7 +227,7 @@ const getDfspNotificationEndpointsObservable = message => {
       const [payerNotificationResponse, payeeNotificationResponse, hubNotificationResponse] = await Promise.all([
         request({ uri: `http://${centralLedgerAdminURI}/participants/${payerFsp}/endpoints`, json: true }),
         request({ uri: `http://${centralLedgerAdminURI}/participants/${payeeFsp}/endpoints`, json: true }),
-        request({ uri: `http://${centralLedgerAdminURI}/participants/hub/endpoints`, json: true })
+        request({ uri: `http://${centralLedgerAdminURI}/participants/${Config.get('HUB_PARTICIPANT').NAME}/endpoints`, json: true })
       ])
       const payerNotificationEndpoints = await updateNotificationEndpointsFromResponse(payerFsp, payerNotificationResponse)
       const payeeNotificationEndpoints = await updateNotificationEndpointsFromResponse(payeeFsp, payeeNotificationResponse)
@@ -235,6 +235,30 @@ const getDfspNotificationEndpointsObservable = message => {
       const notifications = {}
       notifications[payerFsp] = payerNotificationEndpoints
       notifications[payeeFsp] = payeeNotificationEndpoints
+      notifications.Hub = hubNotificationEndpoints
+      observer.next({
+        message,
+        notifications
+      })
+    } catch (err) {
+      Logger.info(`DfspNotificationEndpoints failed with error: ${err}`)
+      observer.error(err)
+    }
+  })
+}
+
+const getDfspNotificationEndpointsForLimitObservable = message => {
+  return Rx.Observable.create(async observer => {
+    const fsp = message.value.from
+    try {
+      const [fspNotificationResponse, hubNotificationResponse] = await Promise.all([
+        request({ uri: `http://${centralLedgerAdminURI}/participants/${fsp}/endpoints`, json: true }),
+        request({ uri: `http://${centralLedgerAdminURI}/participants/${Config.get('HUB_PARTICIPANT').NAME}/endpoints`, json: true })
+      ])
+      const fspNotificationEndpoints = await updateNotificationEndpointsFromResponse(fsp, fspNotificationResponse)
+      const hubNotificationEndpoints = await updateNotificationEndpointsFromResponse(hubName, hubNotificationResponse)
+      const notifications = {}
+      notifications[fsp] = fspNotificationEndpoints
       notifications.Hub = hubNotificationEndpoints
       observer.next({
         message,
@@ -293,5 +317,6 @@ const getPositionsObservable = ({ message }) => {
 module.exports = {
   getPositionsObservable,
   getDfspNotificationEndpointsObservable,
-  getParticipantEndpointsFromResponseObservable
+  getParticipantEndpointsFromResponseObservable,
+  getDfspNotificationEndpointsForLimitObservable
 }

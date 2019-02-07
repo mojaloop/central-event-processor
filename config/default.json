@@ -10,7 +10,7 @@
     "adminPort": 3001,
     "apiHost": "localhost",
     "apiPort": 3000
-  },
+  },  
   "swaggerOptions": {
     "info": {
       "title": "Central notification system API Documentation",

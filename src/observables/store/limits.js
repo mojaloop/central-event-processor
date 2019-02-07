@@ -4,7 +4,7 @@ const LimitModel = require('../../models/limits').limitModel
 const EventModel = require('../../models/events').eventModel
 const Enums = require('../../lib/enum')
 
-const getLimitPerNameObservable = (message) => {
+const getLimitPerNameObservable = ({message}) => {
   return Rx.Observable.create(async observer => {
     try {
       let { limit, currency } = message.value.content.payload
