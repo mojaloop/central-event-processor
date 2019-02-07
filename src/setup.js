@@ -93,6 +93,7 @@ const setup = async () => {
 
   const limitAdjustmentObservable = topicObservable
     .pipe(filter(data => data.value.metadata.event.action === 'limit-adjustment' && 'limit' in data.value.content.payload),
+      switchMap(Observables.CentralLedgerAPI.getDfspNotificationEndpointsForLimitObservable),
       switchMap(Observables.Store.getLimitsPerNameObservable),
       switchMap(Observables.Rules.ndcAdjustmentObservable),
       switchMap(Observables.actionObservable)
