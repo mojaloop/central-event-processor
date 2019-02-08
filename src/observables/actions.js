@@ -111,7 +111,7 @@ const actionObservable = ({ action, params, message }) => {
       if (previousAction) {
         if ((previousAction.timesTriggered < params.repetitionsAllowed) &&
           (moment(previousAction.updatedAt).add(notificationInterval, 'minutes') < moment.now()) &&
-          !(Config.get('notificationMinutes').oscilateEvents.includes(params.notificationEndpointType))) {
+          (Config.get('notificationMinutes').oscilateEvents.includes(params.notificationEndpointType))) {
           actionResult = await actionBuilder(action)({ payload })
           previousAction.timesTriggered++
           previousAction.save()
