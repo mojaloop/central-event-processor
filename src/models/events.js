@@ -30,7 +30,7 @@
  */
 const mongoose = require('mongoose')
 const config = require('../lib/config')
-const getActions = require('../observables/actions').getActions
+// const getActions = require('../observables/actions').getActions
 /**
  * @const limitSchema
  *
@@ -39,14 +39,14 @@ const getActions = require('../observables/actions').getActions
  * @link https://mongoosejs.com , https://github.com/Automattic/mongoose
  */
 
-let actions = getActions()
+// let actions = getActions()
 
 const eventSchema = new mongoose.Schema({
   name: { type: String, required: true, index: true },
   currency: { type: String, required: true, index: true },
   limitType: { type: String, required: true },
   notificationEndpointType: { type: String, required: true },
-  action: { type: String, required: true, enum: actions }, // always sendToKafkaTopic
+  action: { type: String, required: true, enum: ['produceToKafkaTopic', 'sendEmail'] }, // always sendToKafkaTopic
   templateType: { type: String, required: true },
   language: { type: String, required: true },
   isActive: { type: Boolean, default: true }

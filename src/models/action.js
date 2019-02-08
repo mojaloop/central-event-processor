@@ -36,7 +36,7 @@ const config = require('../lib/config')
 const actionSchema = new mongoose.Schema({
   triggeredBy: { type: mongoose.Schema.Types.ObjectId }, // this will show artefact (ndc breach, limit change, etc) in the past
   timesTriggered: { type: Number, default: 1 },
-  fromEvent: { type: mongoose.Schema.Types.ObjectId, ref: 'eventSchema' },
+  fromEvent: { type: mongoose.Schema.Types.ObjectId, ref: config.mongo.eventCollection },
   isActive: { type: Boolean, default: true }
 }, { timestamps: true })
 

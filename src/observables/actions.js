@@ -122,7 +122,7 @@ const actionObservable = ({ action, params, message }) => {
         actionResult = await actionBuilder(action)({ payload }) // create new action
         if (Config.get('notificationMinutes').oscilateEvents.includes(params.notificationEndpointType)) {
           let actionCreated = await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent })
-          Rx.asyncScheduler.schedule(clearRepetitionTask, resetPeriod * 60 * 1000, actionCreated.id) // loading the scheduler
+          Rx.asyncScheduler.schedule(clearRepetitionTask, resetPeriod * 60 * 1000, actionCreated.id) // loading the scheduler, clearRepetitionTask is executed after the period and actionCreated.id is sent as a parameter
         } else {
           await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent, isActive: false })
         }
@@ -137,11 +137,11 @@ const actionObservable = ({ action, params, message }) => {
 
 const clearRepetitionTask = async function (actionId) { // clears the timesTriggered after delay is reached if action is still active
   try {
-    let action = await ActionModel.findById(actionId).populate('eventType')
+    let action = await ActionModel.findById(actionId).populate('fromEvent')
     let limit = await LimitModel.findOne({
-      type: action.eventType.limitType,
-      name: action.eventType.name,
-      currency: action.eventType.currency
+      type: action.fromEvent.limitType,
+      name: action.fromEvent.name,
+      currency: action.fromEvent.currency
     })
     if (action.isActive && limit) {
       action.timesTriggered = 1
