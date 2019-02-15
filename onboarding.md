@@ -2,16 +2,25 @@
 
 ***
 
-### Introduction 
-In this document we'll walk through the setup for the Mojaloop Central Event Processor. It consists of three sections:
+### 1. Introduction 
+In this document we'll walk through the setup for the Mojaloop Central Event Processor. It consists of the following sections:
 
-* [Software List](#software-list)
-* [Setup](#setup)
-* [Errors On Setup](#errors-on-setup)
+* [Software List](#2-software-list)
+* [Pre-requirements](#3-pre-requirements)
+* [Setup](#4-setup)
+  * [Installing brew](#41-installing-brew)
+  * [Installing Docker](#42-installing-docker)
+  * [MangoDB](#43-mangodb)
+  * [Postman](#44-postman)
+  * [nvm](#45-nvm)
+  * [npm](#46-npm)
+  * [Installing ZenHub for GitHub](#47-installing-zenhub-for-github)
+  * [Run Postman](#48-run-postman)
+* [Errors On Setup](#5-errors-on-setup)
 
 ***
 
-### Software List
+### 2. Software List
 1. Github
 2. brew
 3. Docker
@@ -20,146 +29,103 @@ In this document we'll walk through the setup for the Mojaloop Central Event Pro
 6. nvm
 7. npm
 8. Zenhub
-9. central_ledger
-10. JavaScript IDE
+9. central-event-processor
+10. central-ledger
+11. ml-api-adapter
+12. JavaScript IDE
+
 ***
 
-### Setup
-Make sure you have access to [Mojaloop on Github](https://github.com/mojaloop/central-event-processor) and clone the project.
+### 3. Pre-requirements
+Make sure you have access to [Mojaloop on Github](https://github.com/mojaloop).
 
-#### Installing brew
-##### macOS
+The Central-Event-Processing service is part of the greater Mojaloop project.
+
+***
+
+### 4. Setup
+Clone the Central Event Processor project.
+```http request
+https://github.com/mojaloop/central-event-processor
 ```
+
+#### 4.1. Installing brew
+##### macOS
+```bash
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
-
 ##### Ubuntu
-To install Linuxbrew, follow these [instructions](http://linuxbrew.sh/#install-linuxbrew)
-
-#### Installing Docker
-To install Docker, follow these instructions: [Docker for Mac](https://docs.docker.com/docker-for-mac/), [Docker for Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository)
-
-#### Installing MySQL
-
-##### Docker
-Run the following commands in your terminal. Please ensure that you run the MySQL statements with the semicolon at the end.
-```
-DBUSER=central_ledger; DBPASS=password; SLEEPTIME=15; docker stop mysql; docker rm mysql; docker run -p 3306:3306 -d --name mysql -e MYSQL_USER=$DBUSER -e MYSQL_PASSWORD=$DBPASS -e MYSQL_DATABASE=$DBUSER -e MYSQL_ALLOW_EMPTY_PASSWORD=true mysql/mysql-server; sleep $SLEEPTIME; docker exec -it mysql mysql -uroot -e "ALTER USER '$DBUSER'@'%' IDENTIFIED WITH mysql_native_password BY '$DBPASS';"
+Install Linuxbrew.
+```http request
+http://linuxbrew.sh/#install-linuxbrew)
 ```
 
-#### Installing MySQLWorkBench
-##### macOS
+#### 4.2. Installing Docker
+Install Docker. 
+- Docker for Mac
+  ```http request
+  https://docs.docker.com/docker-for-mac/
+  ```
+- Docker for Ubuntu
+  ```http request
+  https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository
+  ```
+
+#### 4.3. MangoDB
+Installing and running MangoBD as a docker image.
+```bash
+docker run --name mongo --restart=always -d -p 27017:27017 mongo mongod
+
+docker exec -i -t mongo bash
 ```
-Go to and follow the instructions
-https://dev.mysql.com/downloads/workbench/
+
+#### 4.4. Postman
+##### Installing Postman
+Please, follow these instructions:
+```http request
+https://www.getpostman.com/postman)
 ```
-##### Ubuntu
-For pgAdmin 4 v2.1 on Ubuntu, according to the [download page](https://www.pgadmin.org/download/pgadmin-4-python-wheel):
-
-Install dependencies, create a virtual environment, download, install & configure:
-```
-sudo apt-get install virtualenv python-pip libpq-dev python-dev
-
-cd
-virtualenv pgadmin4
-cd pgadmin4
-source bin/activate
-
-pip install https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v2.1/pip/pgadmin4-2.1-py2.py3-none-any.whl
-```
-Override default paths and set it to single-user mode in the [local configuration file](https://www.pgadmin.org/docs/pgadmin4/dev/server_deployment.html):
-```
-nano lib/python2.7/site-packages/pgadmin4/config_local.py
-```
-*Write:*
-```
-import os
-DATA_DIR = os.path.realpath(os.path.expanduser(u'~/.pgadmin/'))
-LOG_FILE = os.path.join(DATA_DIR, 'pgadmin4.log')
-SQLITE_PATH = os.path.join(DATA_DIR, 'pgadmin4.db')
-SESSION_DB_PATH = os.path.join(DATA_DIR, 'sessions')
-STORAGE_DIR = os.path.join(DATA_DIR, 'storage')
-SERVER_MODE = False
-```
-Make a shortcut:
-```
-touch ~/pgadmin4/start
-chmod +x ~/pgadmin4/start
-nano ~/pgadmin4/start
-```
-*Write:*
-```
-#!/bin/bash
-cd ~/pgadmin4
-source bin/activate
-python lib/python2.7/site-packages/pgadmin4/pgAdmin4.py
-```
-Run with `~/pgadmin4/start`
- and access at [http://localhost:5050](http://localhost:5050)
-
-##### Setup MySQLWorkbench
-Please follow the below instructions:
-
-a. Click the add (+) icon 
-
- ![](images/MySQL_Help_a.png)
-
-b. Enter the Connection name and username as per image and click test connection
-
- ![](images/MySQL_Help_2.png)
-
-c. Enter the password => 'password' click OK
-
- ![](images/MySQL_Help_3.png)
-
-d. You should see this click OK
-
- ![](images/MySQL_Help_4.png)
-
-e. This should now be shown on you MySQLWorkbench dashboard
-
- ![](images/MySQL_Help_5.png)
-
-f. You should see the central_ledger database under schema no tables will be present but will get populated when you start your server
-
-![](images/MySQL_Help_6.png)
-
-#### Installing Postman
-Please, follow these instructions: [Get Postman](https://www.getpostman.com/postman)
-
 Alternatively on **Ubuntu** you may run:
-```
+```bash
 wget https://dl.pstmn.io/download/latest/linux64 -O postman.tar.gz
+
 sudo tar -xzf postman.tar.gz -C /opt
+
 rm postman.tar.gz
+
 sudo ln -s /opt/Postman/Postman /usr/bin/postman
 ```
 
 ##### Setup Postman
-* Download this file https://raw.githubusercontent.com/mojaloop/postman/master/Mojaloop.postman_collection.json
+* Download the *Mojaloop.postman_collection.json* file
+  ```http request
+  https://raw.githubusercontent.com/mojaloop/postman/master/Mojaloop.postman_collection.json
+  ```
 * Open **Postman**
 * Click **Import** and then **Import File**
 * Select the *Mojaloop.postman_collection.json* file you downloaded
-* You'll now need to import environment variables. For local testing, download this file https://raw.githubusercontent.com/mojaloop/postman/master/environments/MojaloopLocal.postman_environment.json
+* You'll now need to import environment variables. For local testing, download
+  ```http request
+  https://raw.githubusercontent.com/mojaloop/postman/master/environments/MojaloopLocal.postman_environment.json
+  ```
 * Click **Import** and then **Import File**
 * Select the *MojaloopLocal.postman_environment.json* file you downloaded
 * In the imported collection, navigate to the *central_ledger* directory  
 
-#### nvm 
+#### 4.5. nvm
+###### (This is optional, you can install node directly from the website, node version manager(nvm) isn't really needed unless you want to use multiple versions of node)
 
-######(This is optional, you can install node directly from the website, node version manager(nvm) isn't really needed unless you want to use multiple versions of node)
-
-If you don't have cURL already installed, on **Ubuntu** run `sudo apt install curl`
-
-Download the nvm install via Homebrew:
-
+If you don't have cURL already installed, on **Ubuntu** run 
+```bash
+sudo apt install curl
 ```
+Download the nvm install via Homebrew:
+```bash
 brew update
 brew install nvm
 mkdir ~/.nvm
 vi ~/.bash_profile
 ```
-
 * Ensure that nvm was installed correctly with `nvm --version`, which should return the version of nvm installed
 * Install the version (at time of publish 8.9.4 current LTS) of Node.js you want:
   * Install the latest LTS version with `nvm install --lts`
@@ -169,90 +135,51 @@ vi ~/.bash_profile
   * If necessary, fallback to `nvm install 8.9.4`
 
 ##### Setup nvm
-Create a *.bash_profile* file with `touch ~/.bash_profile`, then `nano ~/.bash_profile` and *write*:
+Create a *.bash_profile* file with 
+```bash
+touch ~/.bash_profile
 ```
+then open the file for editing
+```bash
+nano ~/.bash_profile
+``` 
+write
+```text
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
 ```
 
-#### npm
+#### 4.6. npm
 By installing *node* during *nvm* installation above, you should have the corresponding npm version installed
 
 ##### Setup npm
 * The _.npmrc_ file in your user root just needs to be present as the repository it will use is 
-http://npmjs.org If it doesn't exist just create it.
+  ```http request
+  http://npmjs.org
+  ```
+  If it doesn't exist just create it.
 
-#### Installing ZenHub for GitHub
-Open Google Chrome browser and navigate to [Zenhub Extension](https://chrome.google.com/webstore/detail/zenhub-for-github/ogcgkffhplmphkaahpmffcafajaocjbd)
-
-#### Installing central_ledger
-* **cd** into the central_ledger project and run subsequently the following commands:
+All that done, let's run the central event processor!
+Make sure you are in the central-event-processor directory, then run:
+```bash
+npm start
 ```
-npm install -g node-gyp (needs to be done once)
-brew install libtool autoconf automake (needs to be done once)
-npm install
-source ~/.bash_profile
-npm rebuild
-```
-* set *CLEDG_DATABASE_URI* environment variable:
-```
-export CLEDG_DATABASE_URI=mysql://central_ledger:password@localhost:3306/central_ledger
-```
-* disable SIDECAR in **config/default.json** temporary by setting `"SIDECAR": { "DISABLED": "true", ...`
-
-Now, we setup Kafka. Navigate `test/util/scripts` and run the script `restartKafka-johnnypark.sh`:
-
-```
-cd test/util/scripts
-./restartKafka-johnnypark.sh
-```
-
-That done, let's setup and populate database. While still in the same directory, run:
-
-```
-./restartDb.sh
-./populateTestData.sh
-```
-
-Lastly, let's start a mock server:
-
-```
-./restartMockServer.sh
-```
-All that done, let's run the central ledger!
-***cd*** into the central_ledger directory (`cd ../../..` if you were in the scripts folder) then run:
-
-`npm start` *(to run it locally)* or `npm run dev` *(to run it on your Docker host)*
-
 Your output should look similar to:
-
 ```
-> @mojaloop/ml-api-adapter@4.4.1 start /fullpath/to/ml-api-adapter
-> run-p start:api
+> central-event-processor@5.1.0 start /fullpath/central-event-processor
+> WITH_SASL=0&&LD_LIBRARY_PATH=$PWD/node_modules/node-rdkafka/build/deps&& node app.js
 
-
-> @mojaloop/ml-api-adapter@4.4.1 start:api /fullpath/to/ml-api-adapter
-> node src/api/index.js
-
-http://hostname.local:4000
-  GET    /                              Metadata
-  GET    /documentation
-  GET    /health                        Status of adapter
-  GET    /metrics                       Prometheus metrics endpoint
-  GET    /swagger.json
-  GET    /swaggerui/{path*}
-  GET    /swaggerui/extend.js
-  POST   /transfers                     Transfer API.
-  GET    /transfers/{id}                Get a transfer by Id
-  PUT    /transfers/{id}                Fulfil a transfer
-
-2019-02-01T13:30:30.454Z - info: participantEndpointCache::initializeCache::start
-2019-02-01T13:30:30.456Z - info: participantEndpointCache::initializeCache::Cache initialized successfully
-2019-02-01T13:30:30.457Z - info: Notification::startConsumer
-2019-02-01T13:30:30.458Z - info: Notification::startConsumer - starting Consumer for topicNames: [topic-notification-event]
+2019-02-15T08:18:41.323Z - info: Connection with database succeeded.
+2019-02-15T08:18:41.332Z - info: CreateHandle::connect - creating Consumer for topics: [topic-notification-event]
 ```
 
-##### Run Postman
+#### 4.7. Installing ZenHub for GitHub
+Open Google Chrome browser and navigate to Zenhub Extension
+```http request
+https://chrome.google.com/webstore/detail/zenhub-for-github/ogcgkffhplmphkaahpmffcafajaocjbd)
+```
+
+#### 4.8. Run Postman
 * Use the postman collection from the [postman repo](https://github.com/mojaloop/postman)
 * To use this collection, the ml-api-adapter service needs to be running along with the central-ledger service (preferably central-timeout , cental-settlement as well, but they are optional)
 * click on **mojaloop v1.0** and then **6.a. Transfer Prepare Request**
@@ -261,7 +188,9 @@ http://hostname.local:4000
 * You can also then select the **7.a. Transfer Fulfil Request** and perform a corresponding fulfilment request
 * You can check the database to see the transfer state, status changes, positions and other such information. After this if everything looks good, you should be ready to go.
 
-### Errors On Setup
+***
+
+### 5. Errors On Setup
 * `./src/argon2_node.cpp:6:10: fatal error: 'tuple' file not found` 
   - resolved by running `CXX='clang++ -std=c++11 -stdlib=libc++' npm rebuild`
 * sodium v1.2.3 can't compile during npm install
@@ -276,3 +205,5 @@ Undefined symbols for architecture x86_64:
 clang: error: linker command failed with exit code 1 (use -v to see invocation) 
 `
   - resolved by installing openssl `brew install openssl` and then running: `CFLAGS=-I/usr/local/opt/openssl/include LDFLAGS=-L/usr/local/opt/openssl/lib npm install --save node-rdkafka`
+  
+***
