@@ -1,14 +1,22 @@
-# Notification service
+# Central Event Processor Service
 [![Git Commit](https://img.shields.io/github/last-commit/mojaloop/central-event-processor.svg?style=flat)](https://github.com/mojaloop/central-event-processor/commits/master)
 [![Git Releases](https://img.shields.io/github/release/mojaloop/central-event-processor.svg?style=flat)](https://github.com/mojaloop/central-event-processor/releases)
 [![Docker pulls](https://img.shields.io/docker/pulls/mojaloop/central-event-processor.svg?style=flat)](https://hub.docker.com/r/mojaloop/central-event-processor)
 [![CircleCI](https://circleci.com/gh/mojaloop/central-event-processor.svg?style=svg)](https://circleci.com/gh/mojaloop/central-event-processor)
 
-The Central Event Processor service  will provide notification(s) to participating FSPs and the Hub Operator for changes to Net Debit Cap or Position adjustments. Notification(s) are also provided for approaching the Net Debit Cap threshold that is configurable.
+The Central Event Processor (CEP) service provides the capability to monitor for a pre-defined/configured set of business rules or patterns such as breaching the threshold set for a particular limit (or Net Debit Cap) or a Position Adjustment based on a Settlement.
+
+In the current iteration, the rules are set to monitor for three criteria:
+
+1. Breaching of a threshold on the Limit of Net Debit Cap (which may be set as part of on-boarding)
+2. Adjustment of the limit - Net Debit Cap
+3. Adjust of position based on a Settlement.
+
+The CEP can then be integrated with a notifier service, to send out notifications or alerts. In this instance, it integrates with the email-notifier to send out alerts based on the aforementioned criteria.
 
 ## Contents
 * [Deployment](#1-deployment)
-* [Stories](#2-stories)
+* [Notes](#2-notes)
 * [Tasks](#3-tasks)
 * [Reacts on](#4-reacts-on)
 * [Used technologies](#5-used-technologies)
@@ -28,10 +36,7 @@ The Central Event Processor service  will provide notification(s) to participati
 ## 1. Deployment
 See the [onboarding guide](onboarding.md) for running the service locally.
 
-## 2. Stories
-### Central Event Processor
-
-### stories
+## 2. Notes
 
 * [#517 - Notification for changes to NetDebitCap or Position adjustments](https://github.com/mojaloop/project/issues/517)
 * [#518 - Notification for approaching Net Debit Cap Threshold](https://github.com/mojaloop/project/issues/518)
