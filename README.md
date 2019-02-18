@@ -68,7 +68,7 @@ The service is developed using [RxJS](https://github.com/ReactiveX/rxjs) for obs
 
 ## 8. Architecture and Technologies Overview
 
-![ArchTechOverview](docs/architechDiagrams/CEPArchTechOverview.svg)
+![ArchTechOverview](docs/architechDiagrams/CEPArchTechOverview.png)
 
 [Architecture and Technologies Overview](docs/architechDiagrams/CEPArchTechOverview.svg)
 
