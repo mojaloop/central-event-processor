@@ -14,15 +14,16 @@ The Central Event Processor service  will provide notification(s) to participati
 * [Used technologies](#5-used-technologies)
 * [Local storage](#6-local-storage)
 * [Architecture overview](#7-architecture-overview)
-* [General process overview](#8-general-process-overview)
-  * [enums](#81-enums)
-  * [Rules](#82-rules)
-  * [Config](#83-config)
-* [Limit Adjustment Rules flow](#9-limit-adjustment-rules-flow)
-* [Limit Position Threshold Breach flow](#10-limit-position-threshold-breach-flow)
-* [Actions Agent flow](#11-actions-agent-flow)
-* [Scheduler flow](#12-scheduler-flow)
-* [Notifier flow (separate service)](#13-notifier-flow-separate-service)
+* [Architecture and Technologies Overview](#8-architecture-and-technologies-overview)
+* [General process overview](#9-general-process-overview)
+  * [enums](#91-enums)
+  * [Rules](#92-rules)
+  * [Config](#93-config)
+* [Limit Adjustment Rules flow](#10-limit-adjustment-rules-flow)
+* [Limit Position Threshold Breach flow](#11-limit-position-threshold-breach-flow)
+* [Actions Agent flow](#12-actions-agent-flow)
+* [Scheduler flow](#13-scheduler-flow)
+* [Notifier flow (separate service)](#14-notifier-flow-separate-service)
 
 ## 1. Deployment
 See the [onboarding guide](onboarding.md) for running the service locally.
@@ -65,7 +66,13 @@ This is standalone service which is connected to Kafka Notification topic into t
 
 The service is developed using [RxJS](https://github.com/ReactiveX/rxjs) for observing the system and acting accordingly. The decisions for actions are taken by the [json-rule-engine](https://github.com/cachecontrol/json-rules-engine). 
 
-## 8. General process overview
+## 8. Architecture and Technologies Overview
+
+![ArchTechOverview](docs/architechDiagrams/CEPArchTechOverview.svg)
+
+[Architecture and Technologies Overview](docs/architechDiagrams/CEPArchTechOverview.svg)
+
+## 9. General process overview
 
 ![process](docs/images/2.png)
 
@@ -75,7 +82,7 @@ The rules validations are triggered upon commited transfers. As soon as a commit
 
 The data for performing rules validation is requested from the central-ledger admin API calls using observables, available [here](src/observables/centralLedgerAPI.js) some mapping and wiring is done through below [enums](src/lib/enum.js) properties:
 
-### 8.1. enums
+### 9.1. enums
 ```javascript
 const notificationActionMap = {
   NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL: {
@@ -101,7 +108,7 @@ const limitNotificationMap = {
 }
 ```
 
-### 8.2. Rules
+### 9.2. Rules
 Currently two separate Rules are validated: 
 1. [Limit Adjustment Rule](src/observables/rules/ndcAdjustment.js)
 2. [Limit Position Threshold Breach Rule](src/observables/rules/ndcBreach.js) 
@@ -109,14 +116,14 @@ Currently two separate Rules are validated:
 In the current implementation for each separate rule, an observable has to be created, like the couple above, and configured when and how to trigger it into the [setup](src/setup.js)
 The Rules outputs should be chained to common Action Agent.
 
-### 8.3. Config
+### 9.3. Config
 
 The default [config](config/config.json)
 
 To use Environmental Variables for MongoDB URI and database name use: 
 `CEP_MONGO_URI` and `CEP_MONGO_DATABASE`
 
-## 9. Limit Adjustment Rules flow
+## 10. Limit Adjustment Rules flow
 
 ![limitAdjustment](docs/sequenceDiagrams/seq-cep-10.2-adjustment-rule-validation.svg)
 
@@ -125,7 +132,7 @@ To use Environmental Variables for MongoDB URI and database name use:
 This rule is triggered on each limit response from the central-ledger admin API. 
 
 
-## 10. Limit Position Threshold Breach flow
+## 11. Limit Position Threshold Breach flow
 
 ![limitPositionThresholdBreach](docs/sequenceDiagrams/seq-cep-10.3-breaching-threshold-percentage-limit.svg)
 
@@ -133,7 +140,7 @@ This rule is triggered on each limit response from the central-ledger admin API.
 
 This rule is triggered when all data for the participants in the current transfer is received.
 
-## 11. Actions Agent flow
+## 12. Actions Agent flow
 
 ![actionAgent](docs/sequenceDiagrams/seq-cep-10.4-action-flow.svg)
 
@@ -141,7 +148,7 @@ This rule is triggered when all data for the participants in the current transfe
 
 The [Action Agent](src/observables/actions) - takes care of action preparation regrding the data from central-ledger admin API and various settings.
 
-## 12. Scheduler flow
+## 13. Scheduler flow
 
 ![schedulerFlow](docs/sequenceDiagrams/seq-cep-10.5-scheduler-flow.svg)
 
@@ -149,7 +156,7 @@ The [Action Agent](src/observables/actions) - takes care of action preparation r
 
 The scheduler coordinates the Action Object that requires to be dispatched. It would typically action a scheduled event that qualifies by insure only the prescribed number of notifications are dispatched within the set time frame defined.
 
-## 13. Notifier flow (separate service)
+## 14. Notifier flow (separate service)
 
 ![notifier](docs/images/6.png)
 
