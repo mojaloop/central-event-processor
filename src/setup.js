@@ -32,7 +32,7 @@ const Consumer = require('./lib/kafka/consumer')
 const Utility = require('./lib/utility')
 const Logger = require('@mojaloop/central-services-shared').Logger
 const Rx = require('rxjs')
-const { filter, switchMap } = require('rxjs/operators')
+const { filter, flatMap, catchError } = require('rxjs/operators')
 const Enum = require('./lib/enum')
 const TransferEventType = Enum.transferEventType
 const TransferEventAction = Enum.transferEventAction
@@ -63,7 +63,7 @@ const setup = async () => {
 
   const topicObservable = Rx.Observable.create((observer) => {
     consumer.on('message', async (data) => {
-      Logger.info(`Central-Event-Processor :: Topic ${topicName} :: Payload: \n${JSON.stringify(data.value, null, 2)}`)
+      // Logger.info(`Central-Event-Processor :: Topic ${topicName} :: Payload: \n${JSON.stringify(data.value, null, 2)}`)
       observer.next(data)
       if (!Consumer.isConsumerAutoCommitEnabled(topicName)) {
         consumer.commitMessageSync(data)
@@ -73,10 +73,14 @@ const setup = async () => {
 
   const generalObservable = topicObservable
     .pipe(filter(data => data.value.metadata.event.action === 'commit'),
-      switchMap(Observables.CentralLedgerAPI.getDfspNotificationEndpointsObservable),
-      switchMap(Observables.CentralLedgerAPI.getPositionsObservable),
-      switchMap(Observables.Rules.ndcBreachObservable),
-      switchMap(Observables.actionObservable))
+      flatMap(Observables.CentralLedgerAPI.getDfspNotificationEndpointsObservable),
+      flatMap(Observables.CentralLedgerAPI.getPositionsObservable),
+      flatMap(Observables.Rules.ndcBreachObservable),
+      flatMap(Observables.actionObservable),
+      catchError(e => {
+        return Rx.onErrorResumeNext(generalObservable)
+      })
+    )
 
   generalObservable.subscribe({
     next: async ({ actionResult, message }) => {
@@ -93,10 +97,13 @@ const setup = async () => {
 
   const limitAdjustmentObservable = topicObservable
     .pipe(filter(data => data.value.metadata.event.action === 'limit-adjustment' && 'limit' in data.value.content.payload),
-      switchMap(Observables.CentralLedgerAPI.getDfspNotificationEndpointsForLimitObservable),
-      switchMap(Observables.Store.getLimitsPerNameObservable),
-      switchMap(Observables.Rules.ndcAdjustmentObservable),
-      switchMap(Observables.actionObservable)
+      flatMap(Observables.CentralLedgerAPI.getDfspNotificationEndpointsForLimitObservable),
+      flatMap(Observables.Store.getLimitsPerNameObservable),
+      flatMap(Observables.Rules.ndcAdjustmentObservable),
+      flatMap(Observables.actionObservable),
+      catchError(e => {
+        return Rx.onErrorResumeNext(limitAdjustmentObservable)
+      })
     )
 
   limitAdjustmentObservable.subscribe({
@@ -113,11 +120,18 @@ const setup = async () => {
 
   const settlementTransferPositionChangeObservable = topicObservable
     .pipe(filter(data => data.value.metadata.event.action === 'settlement-transfer-position-change'),
-      switchMap(Observables.CentralLedgerAPI.getParticipantEndpointsFromResponseObservable),
-      switchMap(Observables.actionObservable))
+      flatMap(Observables.CentralLedgerAPI.getParticipantEndpointsFromResponseObservable),
+      flatMap(Observables.actionObservable),
+      // retry()
+      catchError(e => {
+        console.error(e)
+        return Rx.onErrorResumeNext(settlementTransferPositionChangeObservable)
+      })
+    )
 
   settlementTransferPositionChangeObservable.subscribe({
     next: async ({ actionResult, message }) => {
+      Logger.info('WE ARE IN')
       if (!actionResult) {
         Logger.info(`action unsuccessful. Publishing the message to topic ${topicName}`)
         // TODO we should change the state and produce error message instead of republish?
