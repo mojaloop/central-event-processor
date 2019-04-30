@@ -24,84 +24,97 @@
 
 'use strict'
 
-const Expect = require('chai').expect
+const Test = require('tapes')(require('tape'))
+const Sinon = require('sinon')
+// const P = require('bluebird')
+// const Mongoose = require('mongoose').Mongoose
+// const mongoose = new Mongoose()
+// const Mockgoose = require('mockgoose').Mockgoose
+// const mockgoose = new Mockgoose(mongoose)
+// const Database = require('../../../src/lib/database').db
+// const config = require('../../../src/lib/config')
+// const Logger = require('@mojaloop/central-services-shared').Logger
 const ActionSchema = require('../../../src/models/action').actionModel
 
-describe('Mongo actionModel', () => {
+Test('Action model', ActionModelTest => {
+  let sandbox
 
-  // Db field isActive
-  it('Field isActive should throw error if invalid object is created', (done) => {
-    var actionModel = new ActionSchema({isActive: 'test' })
+  ActionModelTest.beforeEach(test => {
+    sandbox = Sinon.createSandbox()
+    test.end()
+  })
 
-    actionModel.validate((err) => {
-      Expect(err.errors.isActive).to.exist;
-      done();
-    });
-  });
+  ActionModelTest.afterEach(test => {
+    sandbox.restore()
+    test.end()
+  })
 
-  it('Field isActive should succeed if an object is created', (done) => {
-    var actionModel = new ActionSchema({isActive: true })
+  const validRecord = {
+    isActive: true,
+    timesTriggered: 1,
+    fromEvent: '5cab41eee0b9297d0f6df878',
+    triggeredBy: '5cab41eee0b9297d0f6df878'
+  }
 
-    actionModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
+  ActionModelTest.test('Action model should', isActiveFieldTest => {
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let actionModel = new ActionSchema(Object.assign({}, validRecord, { isActive: 'test' }))
+      try {
+        await actionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'isActive' in e.errors, `Error: ${e.errors.isActive}`)
+        test.end()
+      }
+    })
 
-  // Db field timesTriggered
-  it('Field timesTriggered should throw error if invalid object is created', (done) => {
-    var actionModel = new ActionSchema({timesTriggered: 'A' })
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let actionModel = new ActionSchema(Object.assign({}, validRecord, { timesTriggered: 'test' }))
+      try {
+        await actionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'timesTriggered' in e.errors, `Error: ${e.errors.timesTriggered}`)
+        test.end()
+      }
+    })
 
-    actionModel.validate((err) => {
-      Expect(err.errors.timesTriggered).to.exist;
-      done();
-    });
-  });
-
-  it('Field timesTriggered should succeed if an object is created', (done) => {
-    var actionModel = new ActionSchema({timesTriggered: 1 })
-
-    actionModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-
-  // Db field fromEvent
-  it('Field fromEvent should throw error if invalid object is created', (done) => {
-    var actionModel = new ActionSchema({fromEvent: 'A' })
-
-    actionModel.validate((err) => {
-      Expect(err.errors.fromEvent).to.exist;
-      done();
-    });
-  });
-
-  it('Field fromEvent should succeed if an object is created', (done) => {
-    var actionModel = new ActionSchema({fromEvent: Object })
-
-    actionModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-
-  // Db field triggeredBy
-  it('Field triggeredBy should throw error if invalid object is created', (done) => {
-    var actionModel = new ActionSchema({triggeredBy: 1 })
-
-    actionModel.validate((err) => {
-      Expect(err.errors.triggeredBy).to.exist;
-      done();
-    });
-  });
-
-  it('Field triggeredBy should succeed if an object is created', (done) => {
-    var actionModel = new ActionSchema({triggeredBy: '435c6890-376f-4947-9d70-7063dd3745d4' })
-
-    actionModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-});
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let actionModel = new ActionSchema(Object.assign({}, validRecord, { fromEvent: 'test' }))
+      try {
+        await actionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'fromEvent' in e.errors, `Error: ${e.errors.fromEvent}`)
+        test.end()
+      }
+    })
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let actionModel = new ActionSchema(Object.assign({}, validRecord, { triggeredBy: 1 }))
+      try {
+        await actionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'triggeredBy' in e.errors, `Error: ${e.errors.triggeredBy}`)
+        test.end()
+      }
+    })
+    isActiveFieldTest.test('create object', async test => {
+      let actionModel = new ActionSchema(Object.assign({}, validRecord))
+      try {
+        await actionModel.validate()
+        test.pass('with valid field values')
+        test.end()
+      } catch (e) {
+        test.fail(`${e} thrown`)
+        test.end()
+      }
+    })
+    isActiveFieldTest.end()
+  })
+  ActionModelTest.end()
+})

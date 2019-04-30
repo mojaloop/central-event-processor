@@ -122,7 +122,7 @@ const actionObservable = ({ action, params, message }) => {
         actionResult = await actionBuilder(action)({ payload }) // create new action
         if (Config.get('notificationMinutes').oscilateEvents.includes(params.notificationEndpointType)) {
           let actionCreated = await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent })
-          Rx.asyncScheduler.schedule(clearRepetitionTask, resetPeriod * 60 * 1000, actionCreated.id) // loading the scheduler, clearRepetitionTask is executed after the period and actionCreated.id is sent as a parameter
+          !params.isTest && Rx.asyncScheduler.schedule(clearRepetitionTask, resetPeriod * 60 * 1000, actionCreated.id) // loading the scheduler, clearRepetitionTask is executed after the period and actionCreated.id is sent as a parameter
         } else {
           await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent, isActive: false })
         }
@@ -132,6 +132,7 @@ const actionObservable = ({ action, params, message }) => {
       Logger.info(`action observer failed with error - ${err}`)
       observer.error(err)
     }
+    return
   })
 }
 
@@ -157,12 +158,4 @@ const clearRepetitionTask = async function (actionId) { // clears the timesTrigg
   }
 }
 
-const getActions = () => {
-  let actions = []
-  for (let action in dictionary) {
-    actions.push(action)
-  }
-  return actions
-}
-
-module.exports = { actionObservable, getActions, clearRepetitionTask }
+module.exports = { actionObservable, clearRepetitionTask }

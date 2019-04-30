@@ -24,141 +24,129 @@
 
 'use strict'
 
-const Expect = require('chai').expect
 const LimitSchema = require('../../../src/models/limits').limitModel
+const Test = require('tapes')(require('tape'))
+const Sinon = require('sinon')
 
-describe('Mongo limits model', () => {
+Test('Limit model', LimitModelTest => {
+  let sandbox
 
-  // Db field name
-  it('Field name should throw error if invalid name is created', (done) => {
-    var limitModel = new LimitSchema({name: '' })
+  LimitModelTest.beforeEach(test => {
+    sandbox = Sinon.createSandbox()
+    test.end()
+  })
 
-    limitModel.validate((err) => {
-      Expect(err.errors.name).to.exist;
-      done();
-    });
-  });
+  LimitModelTest.afterEach(test => {
+    sandbox.restore()
+    test.end()
+  })
 
-  it('Field name should succeed if valid name is created', (done) => {
-    var limitModel = new LimitSchema({name: 'dfsp1' })
+  const validRecord = {
+    name: 'dfsp1',
+    currency: 'USD',
+    oldValue: 100,
+    type: 'limitType',
+    value: 100,
+    repetitions: 3,
+    threshold: 40
+  }
+  LimitModelTest.test('Action model should', isActiveFieldTest => {
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { name: '' }))
+      try {
+        await limitModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'name' in e.errors, `Error: ${e.errors.name}`)
+        test.end()
+      }
+    })
 
-    limitModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { currency: '' }))
+      try {
+        await limitModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'currency' in e.errors, `Error: ${e.errors.currency}`)
+        test.end()
+      }
+    })
 
-  // Db field currency
-  it('Field currency should throw error if invalid currency is created', (done) => {
-    var limitModel = new LimitSchema({currency: '' })
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { oldValue: 'test' }))
+      try {
+        await limitModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'oldValue' in e.errors, `Error: ${e.errors.oldValue}`)
+        test.end()
+      }
+    })
 
-    limitModel.validate((err) => {
-      Expect(err.errors.currency).to.exist;
-      done();
-    });
-  });
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { type: null }))
+      try {
+        await limitModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'type' in e.errors, `Error: ${e.errors.type}`)
+        test.end()
+      }
+    })
 
-  it('Field currency should succeed if currency is created', (done) => {
-    var limitModel = new LimitSchema({currency: 'USD' })
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { value: 'test' }))
+      try {
+        await limitModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'value' in e.errors, `Error: ${e.errors.value}`)
+        test.end()
+      }
+    })
 
-    limitModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { repetitions: 'test' }))
+      try {
+        await limitModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'repetitions' in e.errors, `Error: ${e.errors.repetitions}`)
+        test.end()
+      }
+    })
 
-  // Db field oldValue
-  it('Field oldValue should throw error if invalid oldValue is created', (done) => {
-    var limitModel = new LimitSchema({oldValue: 'A' })
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { threshold: null }))
+      try {
+        await limitModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'threshold' in e.errors, `Error: ${e.errors.threshold}`)
+        test.end()
+      }
+    })
 
-    limitModel.validate((err) => {
-      Expect(err.errors.oldValue).to.exist;
-      done();
-    });
-  });
-
-  it('Field oldValue should succeed if oldValue is created', (done) => {
-    var limitModel = new LimitSchema({oldValue: 1 })
-
-    limitModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-
-  // Db field type
-  it('Field type should throw error if invalid type is created', (done) => {
-    var limitModel = new LimitSchema({type: '' })
-
-    limitModel.validate((err) => {
-      Expect(err.errors.type).to.exist;
-      done();
-    });
-  });
-
-  it('Field type should succeed if type is created', (done) => {
-    var limitModel = new LimitSchema({type: 'Test Type' })
-
-    limitModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-
-  // Db field value
-  it('Field value should throw error if invalid value is created', (done) => {
-    var limitModel = new LimitSchema({value: 'A' })
-
-    limitModel.validate((err) => {
-      Expect(err.errors.value).to.exist;
-      done();
-    });
-  });
-
-  it('Field value should succeed if a value is created', (done) => {
-    var limitModel = new LimitSchema({value: 5 })
-
-    limitModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-
-  // Db field repetitions
-  it('Field repetitions should throw error if invalid repetitions is created', (done) => {
-    var limitModel = new LimitSchema({repetitions: 'a' })
-
-    limitModel.validate((err) => {
-      Expect(err.errors.repetitions).to.exist;
-      done();
-    });
-  });
-
-  it('Field repetitions should succeed if a repetitions is created', (done) => {
-    var limitModel = new LimitSchema({repetitions: 3 })
-
-    limitModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-
-  // Db field threshold
-  it('Field threshold should throw error if invalid threshold is created', (done) => {
-    var limitModel = new LimitSchema({threshold: 'a' })
-
-    limitModel.validate((err) => {
-      Expect(err.errors.threshold).to.exist;
-      done();
-    });
-  });
-
-  it('Field threshold should succeed if a threshold is created', (done) => {
-    var limitModel = new LimitSchema({threshold: 3 })
-
-    limitModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-});
+    isActiveFieldTest.test('create object', async test => {
+      let limitModel = new LimitSchema(Object.assign({}, validRecord))
+      try {
+        await limitModel.validate()
+        test.pass('with valid field values')
+        test.end()
+      } catch (e) {
+        test.fail(`${e} thrown`)
+        test.end()
+      }
+    })
+    isActiveFieldTest.end()
+  })
+  LimitModelTest.end()
+})
