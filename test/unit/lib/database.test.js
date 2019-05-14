@@ -86,12 +86,14 @@ test('Mongo Database tests', async dbTest => {
       let result = await Database()
       assert.deepEquals(result.$initialConnection, expectedResult.$initialConnection)
       assert.pass('Db connection successful')
+
       process.nextTick(() => {
-        mongoose.connection.close(() => {
-          console.log('closing Mock databases')
-          process.exit(0)
-        })
+        // mongoose.connection.close(() => {
+        //   console.log('closing Mock databases')
+        //   process.exit(0)
+        // })
       })
+
       assert.end()
     } catch (err) {
       assert.fail('Db connection failed')
