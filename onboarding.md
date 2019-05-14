@@ -10,7 +10,7 @@ In this document we'll walk through the setup for the Mojaloop Central Event Pro
 * [Setup](#4-setup)
   * [Installing brew](#41-installing-brew)
   * [Installing Docker](#42-installing-docker)
-  * [MangoDB](#43-mangodb)
+  * [MongooDB](#43-mongodb)
   * [Postman](#44-postman)
   * [nvm](#45-nvm)
   * [npm](#46-npm)
@@ -71,8 +71,8 @@ Install Docker.
   https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository
   ```
 
-#### 4.3. MangoDB
-Installing and running MangoBD as a docker image.
+#### 4.3. MongoDB
+Installing and running MongoBD as a docker image.
 ```bash
 docker run --name mongo --restart=always -d -p 27017:27017 mongo mongod
 
@@ -127,12 +127,12 @@ mkdir ~/.nvm
 vi ~/.bash_profile
 ```
 * Ensure that nvm was installed correctly with `nvm --version`, which should return the version of nvm installed
-* Install the version (at time of publish 8.9.4 current LTS) of Node.js you want:
+* Install the version (at time of publish v10.15.1 current LTS) of Node.js you want:
   * Install the latest LTS version with `nvm install --lts`
   * Use the latest LTS verison with `nvm use --lts`
   * Install the latest version with `nvm install node`
   * Use the latest version with `nvm use node`
-  * If necessary, fallback to `nvm install 8.9.4`
+  * If necessary, fallback to `nvm install v10.15.1`
 
 ##### Setup nvm
 Create a *.bash_profile* file with 
