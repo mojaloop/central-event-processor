@@ -127,7 +127,7 @@ mkdir ~/.nvm
 vi ~/.bash_profile
 ```
 * Ensure that nvm was installed correctly with `nvm --version`, which should return the version of nvm installed
-* Install the version (at time of publish v10.15.1 current LTS) of Node.js you want:
+* Install the version (at time of publish v10.15.3 current LTS) of Node.js you want:
   * Install the latest LTS version with `nvm install --lts`
   * Use the latest LTS verison with `nvm use --lts`
   * Install the latest version with `nvm install node`

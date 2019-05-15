@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:10.15.1
+FROM mhart/alpine-node:10.15.3
 USER root
 
 WORKDIR /opt/central-event-processor
