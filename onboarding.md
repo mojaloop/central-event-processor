@@ -132,7 +132,7 @@ vi ~/.bash_profile
   * Use the latest LTS verison with `nvm use --lts`
   * Install the latest version with `nvm install node`
   * Use the latest version with `nvm use node`
-  * If necessary, fallback to `nvm install v10.15.1`
+  * If necessary, fallback to `nvm install v10.15.3`
 
 ##### Setup nvm
 Create a *.bash_profile* file with 
