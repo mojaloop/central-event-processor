@@ -28,7 +28,7 @@
  * @module src/lib/kafka/consumer
  */
 
-const Consumer = require('@mojaloop/central-services-shared').Kafka.Consumer
+const Consumer = require('@mojaloop/central-services-stream').Kafka.Consumer
 const Logger = require('@mojaloop/central-services-shared').Logger
 const Utility = require('../utility')
 let listOfConsumers = {}
