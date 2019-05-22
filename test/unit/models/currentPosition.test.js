@@ -24,122 +24,124 @@
 
 'use strict'
 
-const Expect = require('chai').expect
 const CurrentPositionSchema = require('../../../src/models/currentPosition').currentPositionModel
+const Test = require('tapes')(require('tape'))
+const Sinon = require('sinon')
 
-describe('Mongo currentPosition model', () => {
+Test('curentPosition model test', currentPositionModelTest => {
+  let sandbox
+  currentPositionModelTest.beforeEach(test => {
+    sandbox = Sinon.createSandbox()
+    test.end()
+  })
 
-  // Db field name
-  it('Field name should throw error if invalid name is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({name: '' })
+  currentPositionModelTest.afterEach(test => {
+    sandbox.restore()
+    test.end()
+  })
 
-    currentpositionModel.validate((err) => {
-      Expect(err.errors.name).to.exist;
-      done();
-    });
-  });
+  const validRecord = {
+    name: 'dfsp1',
+    positionType: 'transfer',
+    currency: 'USD',
+    positionValue: 100,
+    transferId: '435c6890-376f-4947-9d70-7063dd3745d4',
+    messagePayload: 'payload'
+  }
 
-  it('Field name should succeed if valid name is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({name: 'dfsp1' })
+  currentPositionModelTest.test('Action model should', isActiveFieldTest => {
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { name: '' }))
+      try {
+        await currentPositionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'name' in e.errors, `Error: ${e.errors.name}`)
+        test.end()
+      }
+    })
 
-    currentpositionModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { currency: '' }))
+      try {
+        await currentPositionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'currency' in e.errors, `Error: ${e.errors.currency}`)
+        test.end()
+      }
+    })
 
-  // Db field currency
-  it('Field currency should throw error if invalid currency is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({currency: '' })
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { positionValue: 'A' }))
+      try {
+        await currentPositionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'positionValue' in e.errors, `Error: ${e.errors.positionValue}`)
+        test.end()
+      }
+    })
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { percentage: 'A' }))
+      try {
+        await currentPositionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'percentage' in e.errors, `Error: ${e.errors.percentage}`)
+        test.end()
+      }
+    })
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { transferId: '' }))
+      try {
+        await currentPositionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'transferId' in e.errors, `Error: ${e.errors.transferId}`)
+        test.end()
+      }
+    })
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { positionType: 'test' }))
+      try {
+        await currentPositionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'positionType' in e.errors, `Error: ${e.errors.positionType}`)
+        test.end()
+      }
+    })
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { messagePayload: null }))
+      try {
+        await currentPositionModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'messagePayload' in e.errors, `Error: ${e.errors.messagePayload}`)
+        test.end()
+      }
+    })
+    isActiveFieldTest.test('create object', async test => {
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord))
+      try {
+        await currentPositionModel.validate()
+        test.pass('with valid field values')
+        test.end()
+      } catch (e) {
+        test.fail(`${e} thrown`)
+        test.end()
+      }
+    })
 
-    currentpositionModel.validate((err) => {
-      Expect(err.errors.currency).to.exist;
-      done();
-    });
-  });
-
-  it('Field currency should succeed if currency is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({currency: 'USD' })
-
-    currentpositionModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-
-  // Db field positionValue
-  it('Field positionValue should throw error if invalid positionValue is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({positionValue: 'A' })
-
-    currentpositionModel.validate((err) => {
-      Expect(err.errors.positionValue).to.exist;
-      done();
-    });
-  });
-
-  it('Field positionValue should succeed if positionValue is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({positionValue: 1 })
-
-    currentpositionModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-
-  // Db field percentage
-  it('Field percentage should throw error if invalid percentage is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({percentage: 'A' })
-
-    currentpositionModel.validate((err) => {
-      Expect(err.errors.percentage).to.exist;
-      done();
-    });
-  });
-
-  it('Field percentage should succeed if percentage is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({percentage: 90 })
-
-    currentpositionModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-
-  // Db field transferId
-  it('Field transferId should throw error if invalid transferId is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({transferId: '' })
-
-    currentpositionModel.validate((err) => {
-      Expect(err.errors.transferId).to.exist;
-      done();
-    });
-  });
-
-  it('Field transferId should succeed if a transferId is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({transferId: '435c6890-376f-4947-9d70-7063dd3745d4' })
-
-    currentpositionModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-
-  // Db field messagePayload
-  it('Field messagePayload should throw error if invalid payload is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({messagePayload: '' })
-
-    currentpositionModel.validate((err) => {
-      Expect(err.errors.messagePayload).to.exist;
-      done();
-    });
-  });
-
-  it('Field messagePayload should succeed if a payload is created', (done) => {
-    var currentpositionModel = new CurrentPositionSchema({messagePayload: '435c6890-376f' })
-
-    currentpositionModel.validate((err) => {
-      Expect(!err);
-      done();
-    });
-  });
-});
+    isActiveFieldTest.end()
+  })
+  currentPositionModelTest.end()
+})

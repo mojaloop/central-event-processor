@@ -63,6 +63,8 @@ test('Mongo Database tests', async dbTest => {
     }
   })
 
+  const timeout = ms => new Promise((resolve, reject) => setTimeout(resolve, ms))
+
   await dbTest.test('successful connection', async (assert) => {
     try {
       let connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
@@ -86,13 +88,13 @@ test('Mongo Database tests', async dbTest => {
       let result = await Database()
       assert.deepEquals(result.$initialConnection, expectedResult.$initialConnection)
       assert.pass('Db connection successful')
+      await assert.end()
       process.nextTick(() => {
-        mongoose.connection.close(() => {
+        mongoose.connection.close(async () => {
           console.log('closing Mock databases')
           process.exit(0)
         })
       })
-      assert.end()
     } catch (err) {
       assert.fail('Db connection failed')
       assert.end()

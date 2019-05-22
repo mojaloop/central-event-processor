@@ -42,7 +42,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   Sinon.config = {
     useFakeTimers: false
   }
-
+  let clearMock = Sinon.expectation.create(['ClearRepetitionTask'])
   let sandbox
   let actionModelJSON = {
     timesTriggered: 1,
@@ -56,13 +56,13 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     name: 'dfsp2',
     type: 'NET_DEBIT_CAP_ADJUSTMENT_EMAIL',
     value: 'dfsp.knows@gmail.com',
-    action: 'sendEmail'
+    action: 'produceToKafkaTopic'
   }
   let hubNotificationEndpointModelJSON = {
     name: 'Hub',
     type: 'NET_DEBIT_CAP_ADJUSTMENT_EMAIL',
     value: 'hub.knows@gmail.com',
-    action: 'sendEmail'
+    action: 'produceToKafkaTopic'
   }
 
   actionTest.beforeEach(test => {
@@ -169,6 +169,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     ActionObservable({ action, params, mockMessage }).subscribe(
       result => {
         assert.deepEqual(result, { actionResult: true })
+        this.unsubscribe()
         assert.end()
       },
 
@@ -193,7 +194,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       repetitionsAllowed: 0
     }
 
-    let action = 'sendEmail'
+    let action = 'produceToKafkaTopic'
     let mockMessage = {
       'value': {
         'from': 'SYSTEM',
@@ -287,6 +288,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     ActionObservable({ action, params, mockMessage }).subscribe(
       result => {
         assert.deepEqual(result, { actionResult: true })
+        this.unsubscribe()
         assert.end()
       },
 
@@ -311,7 +313,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       repetitionsAllowed: 1
     }
 
-    let action = 'sendEmail'
+    let action = 'produceToKafkaTopic'
     let mockMessage = {
       'value': {
         'from': 'SYSTEM',
@@ -404,7 +406,8 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
 
     ActionObservable({ action, params, mockMessage }).subscribe(
       result => {
-        assert.ok
+        assert.ok()
+        this.unsubscribe()
         assert.end()
       },
 
@@ -523,6 +526,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     ActionObservable({ action, params, mockMessage }).subscribe(
       result => {
         assert.fail()
+        this.unsubscribe()
         assert.end()
       },
 
@@ -547,7 +551,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       repetitionsAllowed: 3
     }
 
-    let action = 'sendEmail'
+    let action = 'produceToKafkaTopic'
     let mockMessage = {
       'value': {
         'from': 'SYSTEM',
@@ -640,7 +644,8 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
 
     ActionObservable({ action, params, mockMessage }).subscribe(
       result => {
-        assert.ok
+        assert.ok()
+        this.unsubscribe()
         assert.end()
       },
 
@@ -659,6 +664,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
 
     let params = {
       triggeredBy: '51bb793aca2ab77a3200000e',
+      isTest: true,
       fromEvent: '51bb793aca2ab77a3200000d',
       dfsp: 'dfsp2',
       action: 'sendmail',
@@ -666,7 +672,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       repetitionsAllowed: 0
     }
 
-    let action = 'sendEmail'
+    let action = 'produceToKafkaTopic'
     let mockMessage = {
       'value': {
         'from': 'SYSTEM',
@@ -765,6 +771,8 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     ActionObservable({ action, params, mockMessage }).subscribe(
       result => {
         assert.deepEqual(result, { actionResult: true })
+        this.unsubscribe()
+        assert.fail()
         assert.end()
       },
 
@@ -775,48 +783,47 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
 
       () => {
         assert.ok('Observer completed')
-        process.nextTick(() => {
-            process.exit(0)
-        })
         assert.end()
+        // process.nextTick(() => {
+        //   process.exit(0)
+        // })
       })
   })
 
-  /*await actionTest.test('Clear repetition tasks', async assert => {
+  // await actionTest.test('Clear repetition tasks', async assert => {
 
-    let action = {
-      isActive: true,
-      timesTriggered: 1,
-      eventType: {
-        limitType : 'NET_DEBIT_CAP',
-        name: 'event',
-        currency: 'USD'
-      },
-      save: () => {return P.resolve()}
-    }
+  //   let action = {
+  //     isActive: true,
+  //     timesTriggered: 1,
+  //     fromEvent: {
+  //       limitType: 'NET_DEBIT_CAP',
+  //       name: 'event',
+  //       currency: 'USD'
+  //     },
+  //     save: () => { return P.resolve() }
+  //   }
 
-    Sinon.mock(ActionModel)
-      .expects('findById')
-      .chain('populate').withArgs('eventType')
-      .chain('exec')
-      .resolves(action)
+  //   Sinon.mock(ActionModel)
+  //     .expects('findById').withArgs()
+  //     .chain('populate').withArgs('fromEvent')
+  //     .chain('exec')
+  //     .resolves(action)
 
-    Sinon.mock(LimitModel)
-      .expects('findOne').withArgs()
-      .chain('exec')
-      .resolves(actionModelJSON)
+  //   Sinon.mock(LimitModel)
+  //     .expects('findOne').withArgs()
+  //     .chain('exec')
+  //     .resolves(actionModelJSON)
 
-    try {
-      ClearRepetitionTask('5bf5480ba305f9801a6d59df')
+  //   try {
+  //     ClearRepetitionTask('5bf5480ba305f9801a6d59df')
 
-      assert.end()
-      console.log('result ' + result)
-    } catch (err) {
-      Logger.error('Error ' + err)
-      assert.fail('err !!' + err)
-      assert.end()
-    }
-  })*/
+  //     assert.end()
+  //   } catch (err) {
+  //     Logger.error('Error ' + err)
+  //     assert.fail('err !!' + err)
+  //     assert.end()
+  //   }
+  // })
 
-  actionTest.end()
+  await actionTest.end()
 })

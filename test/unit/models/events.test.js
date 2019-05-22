@@ -23,142 +23,143 @@
  ******/
 
 'use strict'
-
-const Expect = require('chai').expect
+const Test = require('tapes')(require('tape'))
+const Sinon = require('sinon')
 const EventSchema = require('../../../src/models/events').eventModel
 
-describe('Mongo eventModel', () => {
+Test('Event model', EventModelTest => {
+  let sandbox
 
-  // Db field name
-  it('Field name should throw error if invalid name is created', (done) => {
-    var eventModel = new EventSchema({ name: '' })
-
-    eventModel.validate((err) => {
-      Expect(err.errors.name).to.exist
-      done()
-    })
+  EventModelTest.beforeEach(test => {
+    sandbox = Sinon.createSandbox()
+    test.end()
   })
 
-  it('Field name should succeed if name is created', (done) => {
-    var eventModel = new EventSchema({ name: 'dfsp1' })
-
-    eventModel.validate((err) => {
-      Expect(!err)
-      done()
-    })
+  EventModelTest.afterEach(test => {
+    sandbox.restore()
+    test.end()
   })
 
-  // Db field currency
-  it('Field timesTriggered should throw error if invalid object is created', (done) => {
-    var eventModel = new EventSchema({ currency: '' })
+  const validRecord = {
+    isActive: true,
+    name: 'dfsp1',
+    currency: 'USD',
+    limitType: 'limitType',
+    notificationEndpointType: 'notificationEndpointType',
+    action: 'produceToKafkaTopic',
+    templateType: 'email',
+    language: 'english'
+  }
 
-    eventModel.validate((err) => {
-      Expect(err.errors.currency).to.exist
-      done()
+  EventModelTest.test('Event model should', isActiveFieldTest => {
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { isActive: 'test' }))
+      try {
+        await eventModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'isActive' in e.errors, `Error: ${e.errors.isActive}`)
+        test.end()
+      }
     })
-  })
 
-  it('Field timesTriggered should succeed if an object is created', (done) => {
-    var eventModel = new EventSchema({ currency: 'USD' })
-
-    eventModel.validate((err) => {
-      Expect(!err)
-      done()
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { name: '' }))
+      try {
+        await eventModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'name' in e.errors, `Error: ${e.errors.name}`)
+        test.end()
+      }
     })
-  })
 
-  // Db field limitType
-  it('Field limitType should throw error if invalid object is created', (done) => {
-    var eventModel = new EventSchema({ limitType: '' })
-
-    eventModel.validate((err) => {
-      Expect(err.errors.limitType).to.exist
-      done()
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { currency: '' }))
+      try {
+        await eventModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'currency' in e.errors, `Error: ${e.errors.currency}`)
+        test.end()
+      }
     })
-  })
 
-  it('Field limitType should succeed if an object is created', (done) => {
-    var eventModel = new EventSchema({ limitType: Object })
-
-    eventModel.validate((err) => {
-      Expect(!err)
-      done()
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { limitType: null }))
+      try {
+        await eventModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'limitType' in e.errors, `Error: ${e.errors.limitType}`)
+        test.end()
+      }
     })
-  })
 
-  // Db field action
-  it('Field action should throw error if invalid action is created', (done) => {
-    var eventModel = new EventSchema({ action: '' })
-
-    eventModel.validate((err) => {
-      Expect(err.errors.action).to.exist
-      done()
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { notificationEndpointType: null }))
+      try {
+        await eventModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'notificationEndpointType' in e.errors, `Error: ${e.errors.notificationEndpointType}`)
+        test.end()
+      }
     })
-  })
 
-  it('Field action should succeed if action is created', (done) => {
-    var eventModel = new EventSchema({ action: 'Test' })
-
-    eventModel.validate((err) => {
-      Expect(!err)
-      done()
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { action: 1 }))
+      try {
+        await eventModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'action' in e.errors, `Error: ${e.errors.action}`)
+        test.end()
+      }
     })
-  })
 
-  // Db field templateType
-  it('Field templateType should throw error if invalid templateType is created', (done) => {
-    var eventModel = new EventSchema({ templateType: '' })
-
-    eventModel.validate((err) => {
-      Expect(err.errors.templateType).to.exist
-      done()
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { templateType: null }))
+      try {
+        await eventModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'templateType' in e.errors, `Error: ${e.errors.templateType}`)
+        test.end()
+      }
     })
-  })
 
-  it('Field templateType should succeed if templateType is created', (done) => {
-    var eventModel = new EventSchema({ templateType: 'Test' })
-
-    eventModel.validate((err) => {
-      Expect(!err)
-      done()
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { language: null }))
+      try {
+        await eventModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'language' in e.errors, `Error: ${e.errors.language}`)
+        test.end()
+      }
     })
-  })
 
-  // Db field language
-  it('Field language should throw error if invalid language is created', (done) => {
-    var eventModel = new EventSchema({ language: '' })
-
-    eventModel.validate((err) => {
-      Expect(err.errors.language).to.exist
-      done()
+    isActiveFieldTest.test('create object', async test => {
+      let eventModel = new EventSchema(Object.assign({}, validRecord))
+      try {
+        await eventModel.validate()
+        test.pass('with valid field values')
+        test.end()
+      } catch (e) {
+        test.fail(`${e} thrown`)
+        test.end()
+      }
     })
+    isActiveFieldTest.end()
   })
-
-  it('Field language should succeed if language is created', (done) => {
-    var eventModel = new EventSchema({ language: 'EN' })
-
-    eventModel.validate((err) => {
-      Expect(!err)
-      done()
-    })
-  })
-
-  // Db field isActive
-  it('Field isActive should throw error if invalid isActive is created', (done) => {
-    var eventModel = new EventSchema({ isActive: 'Test' })
-
-    eventModel.validate((err) => {
-      Expect(err.errors.isActive).to.exist
-      done()
-    })
-  })
-
-  it('Field isActive should succeed if isActive is created', (done) => {
-    var eventModel = new EventSchema({ isActive: true })
-
-    eventModel.validate((err) => {
-      Expect(!err)
-      done()
-    })
-  })
+  EventModelTest.end()
 })

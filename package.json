@@ -6,7 +6,7 @@
   "dependencies": {
     "@mojaloop/central-services-error-handling": "5.2.0",
     "@mojaloop/central-services-shared": "5.2.0",
-    "@mojaloop/central-services-stream": "5.2.0",
+    "@mojaloop/central-services-stream": "6.2.1",
     "bluebird": "3.5.4",
     "config": "3.1.0",
     "healthcheck-server": "1.0.0",
@@ -26,7 +26,7 @@
   },
   "scripts": {
     "test": "nyc mocha test/unit/**/*.test.js --timeout=4000",
-    "test:coverage": "istanbul cover ./node_modules/.bin/_mocha test/unit/**/*.test.js --timeout=4000",
+    "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js'",
     "start": "WITH_SASL=0&&LD_LIBRARY_PATH=$PWD/node_modules/node-rdkafka/build/deps&& node app.js"
   },
   "repository": {
@@ -47,7 +47,6 @@
     "istanbul": "1.1.0-alpha.1",
     "jest": "24.8.0",
     "jsonpath": "1.0.1",
-    "mocha": "6.1.4",
     "mockgoose": "8.0.1",
     "mongodb-memory-server": "5.1.1",
     "npm-run-all": "4.1.5",

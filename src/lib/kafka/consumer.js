@@ -65,39 +65,44 @@ const isConsumerAutoCommitEnabled = (topicName) => {
  */
 
 const createHandler = async (topicName, config) => {
-  Logger.info(`CreateHandle::connect - creating Consumer for topics: [${topicName}]`)
-  let consumer = {}
-  if (Array.isArray(topicName)) {
-    consumer = new Consumer(topicName, config)
-  } else {
-    consumer = new Consumer([topicName], config)
-  }
-
-  let autoCommitEnabled = true
-  if (config.rdkafkaConf !== undefined && config.rdkafkaConf['enable.auto.commit'] !== undefined) {
-    autoCommitEnabled = config.rdkafkaConf['enable.auto.commit']
-  }
-
-  await consumer.connect().then(async () => {
-    Logger.info(`CreateHandle::connect - successful connected to topics: [${topicName}]`)
-    await consumer.consume()
+  try {
+    Logger.info(`CreateHandle::connect - creating Consumer for topics: [${topicName}]`)
+    let consumer = {}
     if (Array.isArray(topicName)) {
-      for (let topic of topicName) { // NOT OK
-        listOfConsumers[topic] = {
+      consumer = new Consumer(topicName, config)
+    } else {
+      consumer = new Consumer([topicName], config)
+    }
+
+    let autoCommitEnabled = true
+    if (config.rdkafkaConf !== undefined && config.rdkafkaConf['enable.auto.commit'] !== undefined) {
+      autoCommitEnabled = config.rdkafkaConf['enable.auto.commit']
+    }
+
+    await consumer.connect().then(async () => {
+      Logger.info(`CreateHandle::connect - successful connected to topics: [${topicName}]`)
+      await consumer.consume()
+      if (Array.isArray(topicName)) {
+        for (let topic of topicName) { // NOT OK
+          listOfConsumers[topic] = {
+            consumer: consumer,
+            autoCommitEnabled: autoCommitEnabled
+          }
+        }
+      } else {
+        listOfConsumers[topicName] = {
           consumer: consumer,
           autoCommitEnabled: autoCommitEnabled
         }
       }
-    } else {
-      listOfConsumers[topicName] = {
-        consumer: consumer,
-        autoCommitEnabled: autoCommitEnabled
-      }
-    }
-  }).catch((e) => {
+    }).catch((e) => {
+      Logger.error(`CreateHandle::connect - error: ${e}`)
+      throw e
+    })
+  } catch (e) {
     Logger.error(`CreateHandle::connect - error: ${e}`)
     throw e
-  })
+  }
 }
 
 /**

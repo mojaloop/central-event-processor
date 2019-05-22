@@ -24,85 +24,77 @@
 
 'use strict'
 
-const Expect = require('chai').expect
-const Assert = require('chai').assert
 const NotificationEndpointSchema = require('../../../src/models/notificationEndpoint').notificationEndpointModel
+const Test = require('tapes')(require('tape'))
+const Sinon = require('sinon')
 
-describe('Mongo notificationEndpointModel', () => {
+Test('NotificationEndpoint model', NotificationEndpointModelTest => {
+  let sandbox
 
-  // Db field name
-  it('Field name should throw error if invalid name is created', (done) => {
-    var notificationEndpointModel = new NotificationEndpointSchema({ name: '' })
-
-    notificationEndpointModel.validate((err) => {
-      Expect(err.errors.name).to.exist
-      done()
-    })
+  NotificationEndpointModelTest.beforeEach(test => {
+    sandbox = Sinon.createSandbox()
+    test.end()
   })
 
-  it('Field name should succeed if name is created', (done) => {
-    var notificationEndpointModel = new NotificationEndpointSchema({ name: 'dfsp1' })
-
-    notificationEndpointModel.validate((err) => {
-      Expect(!err)
-      done()
-    })
+  NotificationEndpointModelTest.afterEach(test => {
+    sandbox.restore()
+    test.end()
   })
 
-  // Db field type
-  it('Field type should throw error if invalid object is created', (done) => {
-    var notificationEndpointModel = new NotificationEndpointSchema({ type: '' })
-
-    notificationEndpointModel.validate((err) => {
-      Expect(err.errors.type).to.exist
-      done()
+  const validRecord = {
+    name: 'dfsp1',
+    type: 'limitType',
+    value: 100
+  }
+  NotificationEndpointModelTest.test('Action model should', isActiveFieldTest => {
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord, { name: '' }))
+      try {
+        await notificationEndpointModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'name' in e.errors, `Error: ${e.errors.name}`)
+        test.end()
+      }
     })
-  })
 
-  it('Field type should succeed if an object is created', (done) => {
-    var notificationEndpointModel = new NotificationEndpointSchema({ type: Object })
-
-    notificationEndpointModel.validate((err) => {
-      Expect(!err)
-      done()
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord, { type: null }))
+      try {
+        await notificationEndpointModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'type' in e.errors, `Error: ${e.errors.type}`)
+        test.end()
+      }
     })
-  })
 
-  // Db field action
-  it('Field action should throw error if invalid action is created', (done) => {
-    var notificationEndpointModel = new NotificationEndpointSchema()
-
-    notificationEndpointModel.validate((err) => {
-      Assert.isUndefined(notificationEndpointModel.action, 'no action defined')
-      done()
+    isActiveFieldTest.test('throw error if invalid object is created', async test => {
+      let notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord, { value: null }))
+      try {
+        await notificationEndpointModel.validate()
+        test.fail()
+        test.end()
+      } catch (e) {
+        test.ok(e instanceof Error && 'value' in e.errors, `Error: ${e.errors.value}`)
+        test.end()
+      }
     })
-  })
 
-  it('Field action should succeed if action is created', (done) => {
-    var notificationEndpointModel = new NotificationEndpointSchema({ action: 'Test' })
-
-    notificationEndpointModel.validate((err) => {
-      Expect(!err)
-      done()
+    isActiveFieldTest.test('create object', async test => {
+      let notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord))
+      try {
+        await notificationEndpointModel.validate()
+        test.pass('with valid field values')
+        test.end()
+      } catch (e) {
+        test.fail(`${e} thrown`)
+        test.end()
+      }
     })
+    isActiveFieldTest.end()
   })
-
-  // Db field value
-  it('Field value should throw error if invalid value is created', (done) => {
-    var notificationEndpointModel = new NotificationEndpointSchema({ value: '' })
-
-    notificationEndpointModel.validate((err) => {
-      Expect(err.errors.value).to.exist
-      done()
-    })
-  })
-
-  it('Field value should succeed if value is created', (done) => {
-    var notificationEndpointModel = new NotificationEndpointSchema({ value: true })
-
-    notificationEndpointModel.validate((err) => {
-      Expect(!err)
-      done()
-    })
-  })
+  NotificationEndpointModelTest.end()
 })
