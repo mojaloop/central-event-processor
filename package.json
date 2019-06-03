@@ -27,7 +27,8 @@
   "scripts": {
     "test": "nyc mocha test/unit/**/*.test.js --timeout=4000",
     "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js'",
-    "start": "WITH_SASL=0&&LD_LIBRARY_PATH=$PWD/node_modules/node-rdkafka/build/deps&& node app.js"
+    "start": "WITH_SASL=0&&LD_LIBRARY_PATH=$PWD/node_modules/node-rdkafka/build/deps&& node app.js",
+    "docker:up": "docker-compose -f docker-compose.yml up"
   },
   "repository": {
     "type": "git",

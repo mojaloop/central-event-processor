@@ -1,100 +1,221 @@
-# Central Event Processor Setup
 
-***
+>*Note:* Before completing this guide, make sure you have completed the _general_ onboarding guide in the [base mojaloop repository](https://github.com/mojaloop/mojaloop/blob/master/onboarding.md#mojaloop-onboarding).
 
-### 1. Introduction 
-In this document we'll walk through the setup for the Mojaloop Central Event Processor. It consists of the following sections:
+## Contents
 
-* [Software List](#2-software-list)
-* [Pre-requirements](#3-pre-requirements)
-* [Setup](#4-setup)
-  * [Installing brew](#41-installing-brew)
-  * [Installing Docker](#42-installing-docker)
-  * [MongooDB](#43-mongodb)
-  * [Postman](#44-postman)
-  * [nvm](#45-nvm)
-  * [npm](#46-npm)
-  * [Installing ZenHub for GitHub](#47-installing-zenhub-for-github)
-  * [Run Postman](#48-run-postman)
-* [Errors On Setup](#5-errors-on-setup)
+<!-- vscode-markdown-toc -->
+1. [Prerequisites](#Prerequisites)
+2. [Installing and Building](#InstallingandBuilding)
+3. [Running Locally](#RunningLocally)
+4. [Running Inside Docker](#RunningInsideDocker)
+5. [Testing](#Testing)
+6. [Common Errors/FAQs](#CommonErrorsFAQs)
 
-***
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
 
-### 2. Software List
-1. Github
-2. brew
-3. Docker
-4. MongoBD
-5. Postman
-6. nvm
-7. npm
-8. Zenhub
-9. central-event-processor
-10. central-ledger
-11. ml-api-adapter
-12. JavaScript IDE
+#  1. <a name='Prerequisites'></a>Prerequisites
 
-***
+If you have followed the [general onboarding guide](https://github.com/mojaloop/mojaloop/blob/master/onboarding.md#mojaloop-onboarding), you should already have the following cli tools installed:
 
-### 3. Pre-requirements
-Make sure you have access to [Mojaloop on Github](https://github.com/mojaloop).
+* `brew` (macOS), [todo: windows package manager]
+* `curl`, `wget`
+* `docker` + `docker-compose`
+* `node`, `npm` and (optionally) `nvm`
 
-The Central-Event-Processing service is part of the greater Mojaloop project.
+In addition to the above cli tools, you will need to install the following to build and run the `central-event-processor`:
 
-***
 
-### 4. Setup
-Clone the Central Event Processor project.
-```http request
-https://github.com/mojaloop/central-event-processor
-```
-
-#### 4.1. Installing brew
-##### macOS
+###  1.1. <a name='macOS'></a>macOS
 ```bash
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
-##### Ubuntu
-Install Linuxbrew.
-```http request
-http://linuxbrew.sh/#install-linuxbrew)
+#none - you have everything you need!
 ```
 
-#### 4.2. Installing Docker
-Install Docker. 
-- Docker for Mac
-  ```http request
-  https://docs.docker.com/docker-for-mac/
-  ```
-- Docker for Ubuntu
-  ```http request
-  https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository
-  ```
+###  1.2. <a name='Linux'></a>Linux
 
-#### 4.3. MongoDB
-Installing and running MongoBD as a docker image.
+[todo]
+
+###  1.3. <a name='Windows'></a>Windows
+
+[todo]
+
+
+##  2. <a name='InstallingandBuilding'></a>Installing and Building
+
+Firstly, clone your fork of the `central-event-processor` onto your local machine:
 ```bash
-docker run --name mongo --restart=always -d -p 27017:27017 mongo mongod
-
-docker exec -i -t mongo bash
+git clone https://github.com/<your_username>/central-event-processor.git
 ```
 
-#### 4.4. Postman
-##### Installing Postman
-Please, follow these instructions:
-```http request
-https://www.getpostman.com/postman)
-```
-Alternatively on **Ubuntu** you may run:
+Then `cd` into the directory and install the node modules:
 ```bash
-wget https://dl.pstmn.io/download/latest/linux64 -O postman.tar.gz
-
-sudo tar -xzf postman.tar.gz -C /opt
-
-rm postman.tar.gz
-
-sudo ln -s /opt/Postman/Postman /usr/bin/postman
+cd central-event-processor
+npm install
 ```
+
+> If you run into problems running `npm install`, make sure to check out the [Common Errors/FAQs](#CommonErrorsFAQs) below.
+
+##  3. <a name='RunningLocally'></a>Running Locally (with dependencies inside of docker)
+
+In this method, we will run core dependencies (`mongodb`, `kafka`) inside of docker containers, while running the `central-event-processor` server on your local machine.
+
+> Alternatively, you can run the `central-event-processor` inside of `docker-compose` with the rest of the dependencies to make the setup a little easier: [Running Inside Docker](#RunningInsideDocker).
+
+<!-- 
+**1. Set up the MySQL container, and give it time to initialize**
+>*Note:* Before starting all of the containers, start the `mysql` container alone, to give it some more time to set up the necessary permissions (this only needs to be done once, or every time you remove and re-create the container). 
+
+```bash
+docker-compose up mysql
+``` -->
+
+**1. Run the dependencies in `docker-compose`:**
+
+```bash
+# start the dependencies inside of docker
+docker-compose up mongo kafka
+
+```
+
+**3. Configure the default files and run the server**
+```bash
+# start the server
+npm run start
+```
+
+Upon running `npm run start`, your output should look similar to:
+
+```bash
+
+> central-event-processor@6.2.0 start /<path_to>/central-event-processor
+> WITH_SASL=0&&LD_LIBRARY_PATH=$PWD/node_modules/node-rdkafka/build/deps&& node app.js
+
+2019-06-03T07:23:27.850Z - info: Connection with database succeeded.
+2019-06-03T07:23:27.863Z - info: CreateHandle::connect - creating Consumer for topics: [topic-notification-event]
+2019-06-03T07:23:28.116Z - info: CreateHandle::connect - successful connected to topics: [topic-notification-event]
+healthcheck is listening on port 3080
+
+```
+
+##  4. <a name='RunningInsideDocker'></a>Running Inside Docker
+
+We use `docker-compose` to manage and run the `central-event-processor` along with its dependencies with one command.
+
+<!-- >*Note:* Before starting all of the containers however, start the `mysql` container alone, to give it some more time to set up the necessary permissions (this only needs to be done once). This is a short-term workaround because the `central-ledger` (which is a dependency of `central-event-processsor`) doesn't retry it's connection to MySQL. -->
+
+
+**1. First run the mysql container, then run the test of the containers**
+```bash
+docker-compose up mysql #first time only - the initial mysql load takes a while, and if it's not up in time, the central-ledger will just crash
+
+npm run docker:up
+```
+
+This will do the following:
+* `docker pull` down any dependencies defined in the `docker-compose.yml` file
+* `docker build` the `central-event-processor` image based on the `Dockerfile` defined in this repo
+* run all of the containers together (`central-ledger`, `ml-api-adapter`, `central-event-processor`)
+
+
+### 4.1 Handy Docker Compose Tips
+
+You can run `docker-compose` in 'detached' mode as follows:
+
+```bash
+npm run docker:up -- -d
+```
+
+And then attach to the logs with:
+```bash
+docker-compose logs -f
+```
+
+When you're done, don't forget to stop your containers however:
+```bash
+npm run docker:stop
+```
+
+##  5. <a name='Testing'></a>Testing
+
+We use `npm` scripts as a common entrypoint for running the tests.
+```bash
+# unit tests:
+npm run test:unit
+
+# integration tests
+npm run test:integration
+
+# check test coverage
+npm run test:coverage
+```
+
+### 5.1 Testing the `central-event-processor` API with Postman
+
+>Note: Make sure you have installed Postman and cloned the `mojaloop/postman` repo, which contains all the required collections and environments. You can find detailed instructions for this in the [general onboarding guide](https://github.com/mojaloop/mojaloop/blob/master/onboarding.md#2-postman).
+
+
+#### Prerequisites:
+* `ml-api-adapter` and `central-ledger` services running (follow the [Running Inside Docker guide](#RunningInsideDocker) to get these services up and running)
+
+
+* _Optionally_, run `central-timeout` , `cental-settlement` as well.
+
+
+#### Running Example Requests
+
+[todo: update]
+
+<!-- * Use the postman collection from the [postman repo](https://github.com/mojaloop/postman)
+* To use this collection, the ml-api-adapter service needs to be running along with the central-ledger service (preferably central-timeout , cental-settlement as well, but they are optional)
+* click on **mojaloop v1.0** and then **6.a. Transfer Prepare Request**
+* click **Send**
+* if you get a valid response, it is a good first step.
+* You can also then select the **7.a. Transfer Fulfil Request** and perform a corresponding fulfilment request
+* You can check the database to see the transfer state, status changes, positions and other such information. After this if everything looks good, you should be ready to go. -->
+
+
+1. Import the **Mojaloop v0.1 draft** collection, and open `API Examples` > `mojaloop v1.0` > `6.a. Transfer Prepare Request`
+2. Click **Send**
+3. If you get a valid response, continue to the next step, otherwise it reveals an issue in your configuration. 
+4. Select the `7.a. Transfer Fulfil Request` and perform a corresponding fulfilment request
+5. You can check the database to see the transfer state, status changes, positions and other such information. After this if everything looks good, you should be ready to go.
+
+
+##  6. <a name='CommonErrorsFAQs'></a>Common Errors/FAQs
+
+#### 6.1 `sodium v1.2.3` can't compile during npm install
+
+Resolved by installing v2.0.3 `npm install sodium@2.0.3`
+
+
+#### 6.2 `./src/argon2_node.cpp:6:10: fatal error: 'tuple' file not found` 
+
+Resolved by running `CXX='clang++ -std=c++11 -stdlib=libc++' npm rebuild`
+
+
+#### 6.3 On macOS, `npm install` fails with the following error
+```
+Undefined symbols for architecture x86_64:
+  "_CRYPTO_cleanup_all_ex_data", referenced from:
+      _rd_kafka_transport_ssl_term in rdkafka_transport.o
+  "_CRYPTO_num_locks", referenced from:
+  ........
+  ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation) 
+```
+
+Resolved by installing openssl `brew install openssl` and then running: 
+  ```bash
+  export CFLAGS=-I/usr/local/opt/openssl/include 
+  export LDFLAGS=-L/usr/local/opt/openssl/lib 
+  npm install
+  ```  
+
+
+
 
 ##### Setup Postman
 * Download the *Mojaloop.postman_collection.json* file
@@ -112,98 +233,4 @@ sudo ln -s /opt/Postman/Postman /usr/bin/postman
 * Select the *MojaloopLocal.postman_environment.json* file you downloaded
 * In the imported collection, navigate to the *central_ledger* directory  
 
-#### 4.5. nvm
-###### (This is optional, you can install node directly from the website, node version manager(nvm) isn't really needed unless you want to use multiple versions of node)
 
-If you don't have cURL already installed, on **Ubuntu** run 
-```bash
-sudo apt install curl
-```
-Download the nvm install via Homebrew:
-```bash
-brew update
-brew install nvm
-mkdir ~/.nvm
-vi ~/.bash_profile
-```
-* Ensure that nvm was installed correctly with `nvm --version`, which should return the version of nvm installed
-* Install the version (at time of publish v10.15.3 current LTS) of Node.js you want:
-  * Install the latest LTS version with `nvm install --lts`
-  * Use the latest LTS verison with `nvm use --lts`
-  * Install the latest version with `nvm install node`
-  * Use the latest version with `nvm use node`
-  * If necessary, fallback to `nvm install v10.15.3`
-
-##### Setup nvm
-Create a *.bash_profile* file with 
-```bash
-touch ~/.bash_profile
-```
-then open the file for editing
-```bash
-nano ~/.bash_profile
-``` 
-write
-```text
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
-```
-
-#### 4.6. npm
-By installing *node* during *nvm* installation above, you should have the corresponding npm version installed
-
-##### Setup npm
-* The _.npmrc_ file in your user root just needs to be present as the repository it will use is 
-  ```http request
-  http://npmjs.org
-  ```
-  If it doesn't exist just create it.
-
-All that done, let's run the central event processor!
-Make sure you are in the central-event-processor directory, then run:
-```bash
-npm start
-```
-Your output should look similar to:
-```
-> central-event-processor@5.1.0 start /fullpath/central-event-processor
-> WITH_SASL=0&&LD_LIBRARY_PATH=$PWD/node_modules/node-rdkafka/build/deps&& node app.js
-
-2019-02-15T08:18:41.323Z - info: Connection with database succeeded.
-2019-02-15T08:18:41.332Z - info: CreateHandle::connect - creating Consumer for topics: [topic-notification-event]
-```
-
-#### 4.7. Installing ZenHub for GitHub
-Open Google Chrome browser and navigate to Zenhub Extension
-```http request
-https://chrome.google.com/webstore/detail/zenhub-for-github/ogcgkffhplmphkaahpmffcafajaocjbd)
-```
-
-#### 4.8. Run Postman
-* Use the postman collection from the [postman repo](https://github.com/mojaloop/postman)
-* To use this collection, the ml-api-adapter service needs to be running along with the central-ledger service (preferably central-timeout , cental-settlement as well, but they are optional)
-* click on **mojaloop v1.0** and then **6.a. Transfer Prepare Request**
-* click **Send**
-* if you get a valid response, it is a good first step.
-* You can also then select the **7.a. Transfer Fulfil Request** and perform a corresponding fulfilment request
-* You can check the database to see the transfer state, status changes, positions and other such information. After this if everything looks good, you should be ready to go.
-
-***
-
-### 5. Errors On Setup
-* `./src/argon2_node.cpp:6:10: fatal error: 'tuple' file not found` 
-  - resolved by running `CXX='clang++ -std=c++11 -stdlib=libc++' npm rebuild`
-* sodium v1.2.3 can't compile during npm install
-  - resolved by installing v2.0.3 `npm install sodium@2.0.3`
-* `
-Undefined symbols for architecture x86_64:
-  "_CRYPTO_cleanup_all_ex_data", referenced from:
-      _rd_kafka_transport_ssl_term in rdkafka_transport.o
-  "_CRYPTO_num_locks", referenced from:
-  ........
-  ld: symbol(s) not found for architecture x86_64
-clang: error: linker command failed with exit code 1 (use -v to see invocation) 
-`
-  - resolved by installing openssl `brew install openssl` and then running: `CFLAGS=-I/usr/local/opt/openssl/include LDFLAGS=-L/usr/local/opt/openssl/lib npm install --save node-rdkafka`
-  
-***
