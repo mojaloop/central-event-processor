@@ -1,3 +1,4 @@
+# Onboarding
 
 >*Note:* Before completing this guide, make sure you have completed the _general_ onboarding guide in the [base mojaloop repository](https://github.com/mojaloop/mojaloop/blob/master/onboarding.md#mojaloop-onboarding).
 
@@ -159,23 +160,10 @@ npm run test:coverage
 
 #### Prerequisites:
 * `ml-api-adapter` and `central-ledger` services running (follow the [Running Inside Docker guide](#RunningInsideDocker) to get these services up and running)
-
-
 * _Optionally_, run `central-timeout` , `cental-settlement` as well.
 
 
 #### Running Example Requests
-
-[todo: update]
-
-<!-- * Use the postman collection from the [postman repo](https://github.com/mojaloop/postman)
-* To use this collection, the ml-api-adapter service needs to be running along with the central-ledger service (preferably central-timeout , cental-settlement as well, but they are optional)
-* click on **mojaloop v1.0** and then **6.a. Transfer Prepare Request**
-* click **Send**
-* if you get a valid response, it is a good first step.
-* You can also then select the **7.a. Transfer Fulfil Request** and perform a corresponding fulfilment request
-* You can check the database to see the transfer state, status changes, positions and other such information. After this if everything looks good, you should be ready to go. -->
-
 
 1. Import the **Mojaloop v0.1 draft** collection, and open `API Examples` > `mojaloop v1.0` > `6.a. Transfer Prepare Request`
 2. Click **Send**
@@ -212,25 +200,4 @@ Resolved by installing openssl `brew install openssl` and then running:
   export CFLAGS=-I/usr/local/opt/openssl/include 
   export LDFLAGS=-L/usr/local/opt/openssl/lib 
   npm install
-  ```  
-
-
-
-
-##### Setup Postman
-* Download the *Mojaloop.postman_collection.json* file
-  ```http request
-  https://raw.githubusercontent.com/mojaloop/postman/master/Mojaloop.postman_collection.json
-  ```
-* Open **Postman**
-* Click **Import** and then **Import File**
-* Select the *Mojaloop.postman_collection.json* file you downloaded
-* You'll now need to import environment variables. For local testing, download
-  ```http request
-  https://raw.githubusercontent.com/mojaloop/postman/master/environments/MojaloopLocal.postman_environment.json
-  ```
-* Click **Import** and then **Import File**
-* Select the *MojaloopLocal.postman_environment.json* file you downloaded
-* In the imported collection, navigate to the *central_ledger* directory  
-
-
+  ``` 

@@ -45,13 +45,13 @@ services:
 
   mockserver:
     image: jamesdbloom/mockserver
-    container_name: mockserver
+    container_name: cep-mockserver
     ports:
       - "1080:1080"
 
   temp_curl:
     image: byrnedo/alpine-curl
-    container_name: cl_temp_curl
+    container_name: cep-temp-curl
     links:
       - mockserver
     volumes:
@@ -61,7 +61,7 @@ services:
       - /opt/wait-for-mockserver.sh
     environment:
       - MOCK_HOST=mockserver
-      
+
   mongo:
     image: mongo
     container_name: cep-mongo
