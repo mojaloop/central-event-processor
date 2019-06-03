@@ -65,14 +65,6 @@ In this method, we will run core dependencies (`mongodb`, `kafka`) inside of doc
 
 > Alternatively, you can run the `central-event-processor` inside of `docker-compose` with the rest of the dependencies to make the setup a little easier: [Running Inside Docker](#RunningInsideDocker).
 
-<!-- 
-**1. Set up the MySQL container, and give it time to initialize**
->*Note:* Before starting all of the containers, start the `mysql` container alone, to give it some more time to set up the necessary permissions (this only needs to be done once, or every time you remove and re-create the container). 
-
-```bash
-docker-compose up mysql
-``` -->
-
 **1. Run the dependencies in `docker-compose`:**
 
 ```bash
@@ -105,7 +97,7 @@ healthcheck is listening on port 3080
 
 We use `docker-compose` to manage and run the `central-event-processor` along with its dependencies with one command.
 
-<!-- >*Note:* Before starting all of the containers however, start the `mysql` container alone, to give it some more time to set up the necessary permissions (this only needs to be done once). This is a short-term workaround because the `central-ledger` (which is a dependency of `central-event-processsor`) doesn't retry it's connection to MySQL. -->
+>*Note:* Before starting all of the containers however, start the `mysql` container alone, to give it some more time to set up the necessary permissions (this only needs to be done once). This is a short-term workaround because the `central-ledger` (which is a dependency of `central-event-processsor`) doesn't retry it's connection to MySQL.
 
 
 **1. First run the mysql container, then run the test of the containers**
