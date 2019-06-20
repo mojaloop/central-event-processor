@@ -61,6 +61,7 @@ const getSubServiceHealthDatastore = async () => {
   // const consumerTopics = Consumer.getListOfTopics()
   let status = statusEnum.OK
   try {
+    //TODO: implement
     // await Promise.all(consumerTopics.map(t => Consumer.isConsumerConnected(t)))
   } catch (err) {
     Logger.debug(`getSubServiceHealthDatastore failed with error ${err.message}.`)

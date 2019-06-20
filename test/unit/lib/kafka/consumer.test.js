@@ -29,13 +29,14 @@
 'use strict'
 
 const src = '../../../../src'
-const Sinon = require('sinon')
 const Test = require('tapes')(require('tape'))
-const Consumer = require(`${src}/lib/kafka/consumer`)
+const Sinon = require('sinon')
+const rewire = require('rewire')
 const KafkaConsumer = require('@mojaloop/central-services-stream').Kafka.Consumer
+
+const Consumer = require(`${src}/lib/kafka/consumer`)
 const Utility = require(`${src}/lib/utility`)
 
-const rewire = require('rewire')
 
 Test('Consumer', ConsumerTest => {
   let sandbox
@@ -46,6 +47,7 @@ Test('Consumer', ConsumerTest => {
     sandbox.stub(KafkaConsumer.prototype, 'connect').resolves()
     sandbox.stub(KafkaConsumer.prototype, 'consume').resolves()
     sandbox.stub(KafkaConsumer.prototype, 'commitMessageSync').resolves()
+    sandbox.stub(KafkaConsumer.prototype, 'getMetadata').resolves()
     test.end()
   })
 
@@ -54,22 +56,105 @@ Test('Consumer', ConsumerTest => {
     test.end()
   })
 
+  ConsumerTest.test('isConsumerConnected should', isConsumerConnectedTest => {
+    isConsumerConnectedTest.test('return true if connected', async test => {
+        // Arrange
+      const topicName = 'admin'
+      const config = { rdkafkaConf: {} }
+      var getMetadataPromiseStub = sandbox.stub()
+      const metadata = {
+        orig_broker_id: 0,
+        orig_broker_name: 'kafka:9092/0',
+        topics: [
+          { name: 'admin', partitions: [] }
+        ],
+        brokers: [{ id: 0, host: 'kafka', port: 9092 }]
+      }
+      getMetadataPromiseStub.returns(Promise.resolve(metadata))
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      ConsumerProxy.__set__('getMetadataPromise', getMetadataPromiseStub)
+
+      // Act
+      await ConsumerProxy.createHandler(topicName, config)
+      const result = await ConsumerProxy.isConsumerConnected(topicName)
+
+      // Assert
+      test.equal(result, true, 'The consumer is connected')
+      test.end()
+    })
+
+    isConsumerConnectedTest.test('throw if the topic cannot be found', async test => {
+      // Arrange
+      const topicName = 'random-topic'
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      // Don't register any topics
+
+      // Act
+      try {
+        await ConsumerProxy.isConsumerConnected(topicName)
+        test.fail('should have thrown an exception')
+      } catch (err) {
+        test.equal(err.message, `No consumer found for topic ${topicName}`, 'The error messages match.')
+        test.pass('Threw an exception when the topic was not found')
+      }
+
+      // Assert
+      test.end()
+    })
+
+    isConsumerConnectedTest.test('throw if not connected', async test => {
+      // Arrange
+      const topicName = 'admin'
+      const config = { rdkafkaConf: {} }
+      var getMetadataPromiseStub = sandbox.stub()
+      const metadata = {
+        orig_broker_id: 0,
+        orig_broker_name: 'kafka:9092/0',
+        topics: [
+          { name: 'not-admin', partitions: [] }
+        ],
+        brokers: [{ id: 0, host: 'kafka', port: 9092 }]
+      }
+      getMetadataPromiseStub.returns(Promise.resolve(metadata))
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      ConsumerProxy.__set__('getMetadataPromise', getMetadataPromiseStub)
+
+      // Act
+      await ConsumerProxy.createHandler(topicName, config)
+
+      try {
+        await ConsumerProxy.isConsumerConnected(topicName)
+        test.fail('should have thrown an exception')
+      } catch (err) {
+        test.equal(err.message, `Connected to consumer, but ${topicName} not found.`, 'The error messages match.')
+        test.pass('Threw an exception when the topic was not found')
+      }
+
+      // Assert
+      test.end()
+    })
+
+    isConsumerConnectedTest.end()
+  })
+
   ConsumerTest.test('createHandler should', createHandlerTest => {
-    createHandlerTest.test('throw error', async (test) => {
+    createHandlerTest.test('not throw error if it fails to connect', async (test) => {
       const topicName = 'admin'
       const config = { rdkafkaConf: {} }
       KafkaConsumer.prototype.constructor.throws(new Error())
       KafkaConsumer.prototype.connect.throws(new Error())
+
       try {
         await Consumer.createHandler(topicName, config)
-        test.fail('Error not thrown!')
+        test.pass('Created handler in spite of failure to connect.')
       } catch (err) {
-        test.pass()
+        test.fail(`Should not have thrown err: ${err.message}`)
       }
+
       test.end()
     })
 
-    createHandlerTest.test('array topic', async (test) => {
+    createHandlerTest.test('handle arrays', async (test) => {
       const topicName = ['admin2', 'admin1']
       const config = { rdkafkaConf: {} }
       try {
@@ -81,20 +166,89 @@ Test('Consumer', ConsumerTest => {
       test.end()
     })
 
-    createHandlerTest.test('array topic throws error', async (test) => {
+    createHandlerTest.test('topic is still added if fails to connect', async (test) => {
+      // Arrange
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const topicName = 'admin'
+      const config = { rdkafkaConf: {} }
+      KafkaConsumer.prototype.connect.throws(new Error())
+
+      // Act
+      await ConsumerProxy.createHandler(topicName, config)
+      const topics = ConsumerProxy.getListOfTopics()
+
+      // Assert
+      test.deepEqual(topics, [topicName], 'Topic should still be in list even if consumer failed to connect.')
+      test.end()
+    })
+
+    createHandlerTest.test('should have a timestamp of 0 if couldn\'t connect', async test => {
+      // Arrange
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
       const topicName = ['admin2', 'admin1']
       const config = { rdkafkaConf: {} }
-      KafkaConsumer.prototype.consume.throws(new Error())
-      try {
-        await Consumer.createHandler(topicName, config)
-        test.fail('Error Not Thrown')
-      } catch (err) {
-        test.pass('passed')
-      }
+      KafkaConsumer.prototype.connect.throws(new Error())
+
+      // Act
+      await ConsumerProxy.createHandler(topicName, config)
+      const result = ConsumerProxy.__get__('listOfConsumers')
+      const timestamps = Object.keys(result).map(k => result[k].connectedTimeStamp)
+
+      // Assert
+      test.deepEqual(timestamps, [0, 0], 'Timestamps should be 0')
+      test.end()
+    })
+
+    createHandlerTest.test('should contain a timestamp of when it connected', async test => {
+      // Arrange
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const topicName = ['admin2', 'admin1']
+      const config = { rdkafkaConf: {} }
+      // KafkaConsumer.prototype.connect.throws(new Error())
+
+      // Act
+      await ConsumerProxy.createHandler(topicName, config)
+      const result = ConsumerProxy.__get__('listOfConsumers')
+      const timestamps = Object.keys(result).map(k => result[k].connectedTimeStamp)
+
+      // Assert
+      timestamps.forEach(ts => test.ok(ts > 0, 'Timestamp should be greater than 0'))
       test.end()
     })
 
     createHandlerTest.end()
+  })
+
+  ConsumerTest.test('getListOfTopics should', getListOfTopicsTest => {
+    getListOfTopicsTest.test('return an empty array when there are no topics', test => {
+        // Arrange
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      ConsumerProxy.__set__('listOfConsumers', {})
+      const expected = []
+
+      // Act
+      const result = ConsumerProxy.getListOfTopics()
+
+      // Assert
+      test.deepEqual(result, expected, 'Should return an empty array')
+      test.end()
+    })
+
+    getListOfTopicsTest.test('return a list of topics', test => {
+      // Arrange
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      ConsumerProxy.__set__('listOfConsumers', { admin1: {}, admin2: {} })
+      const expected = ['admin1', 'admin2']
+
+      // Act
+      const result = ConsumerProxy.getListOfTopics()
+
+      // Assert
+      test.deepEqual(result, expected, 'Should return an empty array')
+      test.end()
+    })
+
+    getListOfTopicsTest.end()
   })
 
   ConsumerTest.test('getConsumer should', getConsumerTest => {
@@ -118,8 +272,9 @@ Test('Consumer', ConsumerTest => {
     })
 
     getConsumerTest.test('throw error', async (test) => {
+      let ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
       try {
-        await Consumer.getConsumer(topicName)
+        await ConsumerProxy.getConsumer(topicName)
         test.fail('Error not thrown!')
       } catch (err) {
         test.pass()
@@ -134,8 +289,9 @@ Test('Consumer', ConsumerTest => {
     const topicName = 'admin'
 
     isConsumerAutoCommitEnabledTest.test('throw error', async (test) => {
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
       try {
-        await Consumer.isConsumerAutoCommitEnabled(topicName)
+        await ConsumerProxy.isConsumerAutoCommitEnabled(topicName)
         test.fail('Error not thrown!')
         test.end()
       } catch (err) {
@@ -145,11 +301,20 @@ Test('Consumer', ConsumerTest => {
     })
 
     isConsumerAutoCommitEnabledTest.test('return result', async (test) => {
+       // Arrange
+      const topics = ['admin2', 'admin1']
+      const config = { rdkafkaConf: {} }
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      await ConsumerProxy.createHandler(topics, config)
+
+      // Act
       try {
-        let result = await Consumer.isConsumerAutoCommitEnabled('admin1')
-        test.ok(result, true, 'correct result')
+        let result = await ConsumerProxy.isConsumerAutoCommitEnabled('admin1')
+
+        // Assert
+        test.equal(result, true, 'isConsumerAutoCommitEnabled is true')
       } catch (err) {
-        test.fail()
+        test.fail(`Should not have thrown err: ${err.message}`)
       }
       test.end()
     })
@@ -158,27 +323,44 @@ Test('Consumer', ConsumerTest => {
   })
 
   ConsumerTest.test('registerNotificationHandler should', async registerTests => {
-    try {
-      await Consumer.registerNotificationHandler()
-      registerTests.pass()
-      registerTests.end()
-    } catch (err) {
-      registerTests.fail()
-      registerTests.end()
-    }
-  })
-
-  ConsumerTest.test('registerNotificationHandler should', async registerTests => {
-    try {
+    registerTests.test('fail if the Consumer fails to connect', async test => {
+      // Arrange
       KafkaConsumer.prototype.constructor.throws(new Error())
-      KafkaConsumer.prototype.connect.throws(new Error())
-      await Consumer.registerNotificationHandler()
-      registerTests.fail()
-      registerTests.end()
-    } catch (err) {
-      registerTests.pass()
-      registerTests.end()
-    }
+      KafkaConsumer.prototype.connect.throws(new Error('Failed to connect'))
+      KafkaConsumer.prototype.getMetadata.throws(new Error('Failed to get metadata'))
+
+      // Act
+      try {
+        await Consumer.registerNotificationHandler()
+        test.fail('Should have thrown an error')
+      } catch (err) {
+        // Assert
+        test.pass('Successfully threw error when attempting to connect to consumer')
+      }
+
+      test.end()
+    })
+
+    registerTests.test('connect to the consumer', async test => {
+      // Arrange
+      var isConsumerConnectedStub = sandbox.stub()
+      isConsumerConnectedStub.returns(Promise.resolve(true))
+      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      ConsumerProxy.__set__('isConsumerConnected', isConsumerConnectedStub)
+
+      // Act
+      try {
+        await ConsumerProxy.registerNotificationHandler()
+        // Assert
+        test.pass('Successfully connected to the consumer')
+      } catch (err) {
+        test.fail('Should not have thrown an error')
+      }
+
+      test.end()
+    })
+
+    registerTests.end()
   })
 
   ConsumerTest.end()
