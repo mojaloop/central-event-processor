@@ -37,7 +37,6 @@ const KafkaConsumer = require('@mojaloop/central-services-stream').Kafka.Consume
 const Consumer = require(`${src}/lib/kafka/consumer`)
 const Utility = require(`${src}/lib/utility`)
 
-
 Test('Consumer', ConsumerTest => {
   let sandbox
 
@@ -58,7 +57,7 @@ Test('Consumer', ConsumerTest => {
 
   ConsumerTest.test('isConsumerConnected should', isConsumerConnectedTest => {
     isConsumerConnectedTest.test('return true if connected', async test => {
-        // Arrange
+      // Arrange
       const topicName = 'admin'
       const config = { rdkafkaConf: {} }
       var getMetadataPromiseStub = sandbox.stub()
@@ -221,7 +220,7 @@ Test('Consumer', ConsumerTest => {
 
   ConsumerTest.test('getListOfTopics should', getListOfTopicsTest => {
     getListOfTopicsTest.test('return an empty array when there are no topics', test => {
-        // Arrange
+      // Arrange
       const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
       ConsumerProxy.__set__('listOfConsumers', {})
       const expected = []
@@ -301,7 +300,7 @@ Test('Consumer', ConsumerTest => {
     })
 
     isConsumerAutoCommitEnabledTest.test('return result', async (test) => {
-       // Arrange
+      // Arrange
       const topics = ['admin2', 'admin1']
       const config = { rdkafkaConf: {} }
       const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)

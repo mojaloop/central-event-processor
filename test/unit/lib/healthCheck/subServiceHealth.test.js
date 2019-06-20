@@ -2,7 +2,7 @@
 
 const Test = require('tapes')(require('tape'))
 const Sinon = require('sinon')
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const { statusEnum, serviceName } = require('@mojaloop/central-services-shared').HealthCheck.HealthCheckEnums
 
@@ -19,7 +19,7 @@ Test('SubServiceHealth test', function (subServiceHealthTest) {
     sandbox = Sinon.createSandbox()
     sandbox.stub(Consumer, 'getListOfTopics')
     sandbox.stub(Consumer, 'isConsumerConnected')
-    
+
     t.end()
   })
 
@@ -34,12 +34,12 @@ Test('SubServiceHealth test', function (subServiceHealthTest) {
       sandbox.stub(mongoose, 'connection').value({ readyState: 1 })
       const expected = { name: serviceName.datastore, status: statusEnum.OK }
 
-      // Act 
+      // Act
       const result = await getSubServiceHealthDatastore()
 
       // Assert
       test.deepEqual(result, expected, 'getSubServiceHealthDatastore should match expected result')
-      test.end();
+      test.end()
     })
 
     datastoreTest.test('datastore test fails when the mongoose state is not 1', async test => {
@@ -47,25 +47,25 @@ Test('SubServiceHealth test', function (subServiceHealthTest) {
       sandbox.stub(mongoose, 'connection').value({ readyState: 0 })
       const expected = { name: serviceName.datastore, status: statusEnum.DOWN }
 
-      // Act 
+      // Act
       const result = await getSubServiceHealthDatastore()
 
       // Assert
       test.deepEqual(result, expected, 'getSubServiceHealthDatastore should match expected result')
-      test.end();
+      test.end()
     })
 
     datastoreTest.test('datastore test fails when the mongoose state is undefined', async test => {
       // Arrange
-      sandbox.stub(mongoose, 'connection').value({readyState: undefined})
+      sandbox.stub(mongoose, 'connection').value({ readyState: undefined })
       const expected = { name: serviceName.datastore, status: statusEnum.DOWN }
 
-      // Act 
+      // Act
       const result = await getSubServiceHealthDatastore()
 
       // Assert
       test.deepEqual(result, expected, 'getSubServiceHealthDatastore should match expected result')
-      test.end();
+      test.end()
     })
 
     datastoreTest.end()

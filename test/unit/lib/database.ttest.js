@@ -46,7 +46,6 @@ const config = require('../../../src/lib/config')
 const Logger = require('@mojaloop/central-services-shared').Logger
 
 test('Mongo Database tests', async dbTest => {
-
   dbTest.beforeEach(async t => {
     await mockgoose.helper.reset()
     t.end()
@@ -67,8 +66,8 @@ test('Mongo Database tests', async dbTest => {
 
   await dbTest.test('successful connection', async (assert) => {
     try {
-      let connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
-        `mongodb://${config.mongo.uri}/${config.mongo.database}`
+      let connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}`
+        : `mongodb://${config.mongo.uri}/${config.mongo.database}`
 
       await mockgoose.prepareStorage().then(() => {
         mongoose.connect(`${connectionString}`, {
