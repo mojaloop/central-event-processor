@@ -24,6 +24,7 @@
  ******/
 'use strict'
 
+const mongoose = require('mongoose');
 const { statusEnum, serviceName } = require('@mojaloop/central-services-shared').HealthCheck.HealthCheckEnums
 const Logger = require('@mojaloop/central-services-shared').Logger
 
@@ -54,17 +55,20 @@ const getSubServiceHealthBroker = async () => {
 /**
  * @function getSubServiceHealthDatastore
  *
- * @description Gets the health for the datastore
+ * @description
+ *   Gets the health for the mongo connection. Checks the connection state on the
+ *   mongoose singleton
+ * 
+ *   Ref: https://mongoosejs.com/docs/api.html#connection_Connection-readyState
+ * 
  * @returns Promise<SubServiceHealth> The SubService health object for the broker
  */
 const getSubServiceHealthDatastore = async () => {
-  // const consumerTopics = Consumer.getListOfTopics()
+  const mongooseState = mongoose.connection.readyState
   let status = statusEnum.OK
-  try {
-    //TODO: implement
-    // await Promise.all(consumerTopics.map(t => Consumer.isConsumerConnected(t)))
-  } catch (err) {
-    Logger.debug(`getSubServiceHealthDatastore failed with error ${err.message}.`)
+
+  if (mongooseState !== 1) {
+    Logger.debug(`getSubServiceHealthDatastore mongooseState: ${mongooseState}.`)
     status = statusEnum.DOWN
   }
 
