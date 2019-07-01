@@ -7,7 +7,7 @@
     "@hapi/boom": "7.4.2",
     "@hapi/hapi": "18.3.1",
     "@mojaloop/central-services-error-handling": "5.2.0",
-    "@mojaloop/central-services-shared": "vessels-tech/central-services-shared#876a80e7e508580bbf639195bea646462ea22a38",
+    "@mojaloop/central-services-shared": "6.4.0",
     "@mojaloop/central-services-stream": "6.2.1",
     "bluebird": "3.5.4",
     "config": "3.1.0",

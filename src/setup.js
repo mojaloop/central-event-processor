@@ -39,7 +39,6 @@ const Enum = require('./lib/enum')
 const TransferEventType = Enum.transferEventType
 const TransferEventAction = Enum.transferEventAction
 const Observables = require('./observables')
-const createHealthcheck = require('healthcheck-server')
 const Config = require('./lib/config')
 const { createHealthCheckServer, defaultHealthHandler } = require('./lib/healthCheck/HealthCheckServer')
 const { getSubServiceHealthBroker, getSubServiceHealthDatastore } = require('./lib/healthCheck/subServiceHealth')
