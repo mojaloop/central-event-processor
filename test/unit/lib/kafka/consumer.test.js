@@ -203,7 +203,6 @@ Test('Consumer', ConsumerTest => {
       const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
       const topicName = ['admin2', 'admin1']
       const config = { rdkafkaConf: {} }
-      // KafkaConsumer.prototype.connect.throws(new Error())
 
       // Act
       await ConsumerProxy.createHandler(topicName, config)
