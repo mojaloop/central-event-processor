@@ -31,7 +31,7 @@ const Observables = require('../../src/observables')
 const Logger = require('@mojaloop/central-services-shared').Logger
 const Test = require('tapes')(require('tape'))
 const Sinon = require('sinon')
-//const Setup = require('../../src/setup')
+// const Setup = require('../../src/setup')
 const P = require('bluebird')
 const Config = require('../../src/lib/config')
 const Utility = require('../../src/lib/utility')
@@ -72,8 +72,7 @@ Test('RxJs Observable Tests ( setup.js ) : ', async setupTest => {
         './observables': ObservableStub,
         './lib/config': ConfigStub
       })
-
-    } catch (err){
+    } catch (err) {
       Logger.error(`setupTest failed with error - ${err}`)
       console.error(err.message)
     }

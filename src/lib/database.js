@@ -55,7 +55,7 @@ const setupDb = (connectionString = defaultConnectionString) => {
       return reject(err)
     })
 
-    db.once('open', function callback() {
+    db.once('open', function callback () {
       Logger.info('Connection with database succeeded.')
       return resolve(db)
     })

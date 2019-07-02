@@ -50,7 +50,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     triggeredBy: '5bf5480ba305f9801a6d59df',
     fromEvent: '5bf5480ba305f9801a6d59e3',
     updatedAt: '2018-11-21T13:55:24.791Z',
-    save: () => {return P.resolve()}
+    save: () => { return P.resolve() }
   }
   let dfspNotificationEndpointModelJSON = {
     name: 'dfsp2',
@@ -67,15 +67,15 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
 
   actionTest.beforeEach(test => {
     sandbox = Sinon.createSandbox()
-    //sandbox.stub(LimitModel, 'findOne')
+    // sandbox.stub(LimitModel, 'findOne')
     sandbox.stub(NotificationModel, 'findOne')
     sandbox.stub(ActionModel, 'findOne')
 
-   /* sandbox.stub(Rx, 'asyncScheduler')
-    Rx.asyncScheduler.returns({schedule: () => {return P.resolve()}})*/
-    /*sandbox
+    /* sandbox.stub(Rx, 'asyncScheduler')
+    Rx.asyncScheduler.returns({schedule: () => {return P.resolve()}}) */
+    /* sandbox
       .stub(ClearRepetitiontask,'Rx.Scheduler.async.schedule')
-      .returns(P.resolve());*/
+      .returns(P.resolve()); */
 
     // sandbox.stub(Rx.prototype, 'asyncScheduler')
 
@@ -185,7 +185,6 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should return completed when only a previous action exist and triggered times and updated at times fail', async assert => {
-
     let params = {
       fromEvent: '51bb793aca2ab77a3200000d',
       dfsp: 'dfsp2',
@@ -304,7 +303,6 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should stop sending messages when times triggered has been met', async assert => {
-
     let params = {
       fromEvent: '51bb793aca2ab77a3200000d',
       dfsp: 'dfsp2',
@@ -423,7 +421,6 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should throw an error when incorrect action are used', async assert => {
-
     let params = {
       fromEvent: '51bb793aca2ab77a3200000d',
       dfsp: 'dfsp2',
@@ -542,7 +539,6 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should save previous action if times triggered has not been met', async assert => {
-
     let params = {
       fromEvent: '51bb793aca2ab77a3200000d',
       dfsp: 'dfsp2',
@@ -661,7 +657,6 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should create a new action if no previous action exist', async assert => {
-
     let params = {
       triggeredBy: '51bb793aca2ab77a3200000e',
       isTest: true,
