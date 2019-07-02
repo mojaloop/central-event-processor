@@ -40,7 +40,7 @@ const TransferEventType = Enum.transferEventType
 const TransferEventAction = Enum.transferEventAction
 const Observables = require('./observables')
 const Config = require('./lib/config')
-const { createHealthCheckServer, defaultHealthHandler } = require('./lib/healthCheck/HealthCheckServer')
+const { createHealthCheckServer, defaultHealthHandler } = require('@vesselstech/central-services-health')
 const { getSubServiceHealthBroker, getSubServiceHealthDatastore } = require('./lib/healthCheck/subServiceHealth')
 const packageJson = require('../package.json')
 

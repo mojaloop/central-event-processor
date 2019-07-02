@@ -9,6 +9,7 @@
     "@mojaloop/central-services-error-handling": "5.2.0",
     "@mojaloop/central-services-shared": "6.4.0",
     "@mojaloop/central-services-stream": "6.2.1",
+    "@vesselstech/central-services-health": "^0.1.0",
     "bluebird": "3.5.4",
     "config": "3.1.0",
     "healthcheck-server": "1.0.0",
