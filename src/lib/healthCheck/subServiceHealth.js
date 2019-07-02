@@ -40,7 +40,7 @@ const getSubServiceHealthBroker = async () => {
   const consumerTopics = Consumer.getListOfTopics()
   let status = statusEnum.OK
   try {
-    await Promise.all(consumerTopics.map(t => Consumer.isConsumerConnected(t)))
+    await Promise.all(consumerTopics.map(t => Consumer.isConnected(t)))
   } catch (err) {
     Logger.debug(`getSubServiceHealthBroker failed with error ${err.message}.`)
     status = statusEnum.DOWN

@@ -55,8 +55,8 @@ Test('Consumer', ConsumerTest => {
     test.end()
   })
 
-  ConsumerTest.test('isConsumerConnected should', isConsumerConnectedTest => {
-    isConsumerConnectedTest.test('return true if connected', async test => {
+  ConsumerTest.test('isConnected should', isConnectedTest => {
+    isConnectedTest.test('return true if connected', async test => {
       // Arrange
       const topicName = 'admin'
       const config = { rdkafkaConf: {} }
@@ -75,14 +75,14 @@ Test('Consumer', ConsumerTest => {
 
       // Act
       await ConsumerProxy.createHandler(topicName, config)
-      const result = await ConsumerProxy.isConsumerConnected(topicName)
+      const result = await ConsumerProxy.isConnected(topicName)
 
       // Assert
       test.equal(result, true, 'The consumer is connected')
       test.end()
     })
 
-    isConsumerConnectedTest.test('throw if the topic cannot be found', async test => {
+    isConnectedTest.test('throw if the topic cannot be found', async test => {
       // Arrange
       const topicName = 'random-topic'
       const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
@@ -90,7 +90,7 @@ Test('Consumer', ConsumerTest => {
 
       // Act
       try {
-        await ConsumerProxy.isConsumerConnected(topicName)
+        await ConsumerProxy.isConnected(topicName)
         test.fail('should have thrown an exception')
       } catch (err) {
         test.equal(err.message, `No consumer found for topic ${topicName}`, 'The error messages match.')
@@ -101,7 +101,7 @@ Test('Consumer', ConsumerTest => {
       test.end()
     })
 
-    isConsumerConnectedTest.test('throw if not connected', async test => {
+    isConnectedTest.test('throw if not connected', async test => {
       // Arrange
       const topicName = 'admin'
       const config = { rdkafkaConf: {} }
@@ -122,7 +122,7 @@ Test('Consumer', ConsumerTest => {
       await ConsumerProxy.createHandler(topicName, config)
 
       try {
-        await ConsumerProxy.isConsumerConnected(topicName)
+        await ConsumerProxy.isConnected(topicName)
         test.fail('should have thrown an exception')
       } catch (err) {
         test.equal(err.message, `Connected to consumer, but ${topicName} not found.`, 'The error messages match.')
@@ -133,7 +133,7 @@ Test('Consumer', ConsumerTest => {
       test.end()
     })
 
-    isConsumerConnectedTest.end()
+    isConnectedTest.end()
   })
 
   ConsumerTest.test('createHandler should', createHandlerTest => {
@@ -341,10 +341,10 @@ Test('Consumer', ConsumerTest => {
 
     registerTests.test('connect to the consumer', async test => {
       // Arrange
-      var isConsumerConnectedStub = sandbox.stub()
-      isConsumerConnectedStub.returns(Promise.resolve(true))
+      var isConnectedStub = sandbox.stub()
+      isConnectedStub.returns(Promise.resolve(true))
       const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
-      ConsumerProxy.__set__('isConsumerConnected', isConsumerConnectedStub)
+      ConsumerProxy.__set__('isConnected', isConnectedStub)
 
       // Act
       try {

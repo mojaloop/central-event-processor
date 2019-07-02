@@ -131,7 +131,7 @@ const registerNotificationHandler = async () => {
     }
     NotificationHandler.config.rdkafkaConf['client.id'] = NotificationHandler.topicName
     await createHandler(NotificationHandler.topicName, NotificationHandler.config)
-    await isConsumerConnected(NotificationHandler.topicName)
+    await isConnected(NotificationHandler.topicName)
 
     return true
   } catch (e) {
@@ -165,7 +165,7 @@ const getMetadataPromise = (consumer, topic) => {
 }
 
 /**
- * @function isConsumerConnected
+ * @function isConnected
  *
  * @param {string} topicName - the topic name of the consumer to check
  *
@@ -175,7 +175,7 @@ const getMetadataPromise = (consumer, topic) => {
  * @returns {true} - if connected
  * @throws {Error} - if consumer can't be found or the consumer is not connected
  */
-const isConsumerConnected = async topicName => {
+const isConnected = async topicName => {
   const consumer = getConsumer(topicName)
 
   const metadata = await getMetadataPromise(consumer, topicName)
@@ -194,5 +194,5 @@ module.exports = {
   getListOfTopics,
   isConsumerAutoCommitEnabled,
   registerNotificationHandler,
-  isConsumerConnected
+  isConnected
 }
