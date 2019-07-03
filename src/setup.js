@@ -28,17 +28,21 @@
  * @module src/setup
  */
 
+const Logger = require('@mojaloop/central-services-shared').Logger
+const HealthCheck = require('@mojaloop/central-services-shared').HealthCheck.HealthCheck
+
 const Consumer = require('./lib/kafka/consumer')
 const Utility = require('./lib/utility')
-const Logger = require('@mojaloop/central-services-shared').Logger
 const Rx = require('rxjs')
 const { filter, flatMap, catchError } = require('rxjs/operators')
 const Enum = require('./lib/enum')
 const TransferEventType = Enum.transferEventType
 const TransferEventAction = Enum.transferEventAction
 const Observables = require('./observables')
-const createHealthcheck = require('healthcheck-server')
 const Config = require('./lib/config')
+const { createHealthCheckServer, defaultHealthHandler } = require('@vesselstech/central-services-health')
+const { getSubServiceHealthBroker, getSubServiceHealthDatastore } = require('./lib/healthCheck/subServiceHealth')
+const packageJson = require('../package.json')
 
 const setup = async () => {
   let db = await require('./lib/database').db()
@@ -48,18 +52,11 @@ const setup = async () => {
   const topicName = Utility.transformGeneralTopicName(Utility.ENUMS.NOTIFICATION, Utility.ENUMS.EVENT)
   const consumer = Consumer.getConsumer(topicName)
 
-  createHealthcheck({
-    port: Config.get('PORT'),
-    path: '/health',
-    status: ({ cpu, memory }) => {
-      try {
-        if (db.readyState && consumer._status.running) return true
-        else return false
-      } catch (err) {
-        return false
-      }
-    }
-  })
+  const healthCheck = new HealthCheck(packageJson, [
+    getSubServiceHealthBroker,
+    getSubServiceHealthDatastore
+  ])
+  await createHealthCheckServer(Config.get('PORT'), defaultHealthHandler(healthCheck))
 
   const topicObservable = Rx.Observable.create((observer) => {
     consumer.on('message', async (data) => {

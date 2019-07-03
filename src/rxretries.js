@@ -15,7 +15,7 @@ const mapped = arrO.pipe(
   catchError(e => {
     return Rx.of(undefined)
   })
-  )
+)
 
 mapped.subscribe({
   next: v => console.log(v)

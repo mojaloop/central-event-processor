@@ -28,29 +28,38 @@
  * @module src/lib/database
  */
 const Mongoose = require('mongoose')
-const config = require('../lib/config')
 const Logger = require('@mojaloop/central-services-shared').Logger
+
+const config = require('../lib/config')
+
 const defaultConnectionString = config.mongo.user
   ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}`
   : `mongodb://${config.mongo.uri}/${config.mongo.database}`
 
 const setupDb = (connectionString = defaultConnectionString) => {
   const db = Mongoose.connection
+
   Mongoose.Promise = global.Promise
   Mongoose.set('useFindAndModify', false)
   Mongoose.set('useNewUrlParser', true)
   Mongoose.set('useCreateIndex', true)
-  /* const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
-    `mongodb://${config.mongo.uri}/${config.mongo.database}` */
-  Mongoose.connect(`${connectionString}`, { useFindAndModify: false, useNewUrlParser: true, useCreateIndex: true })
-  db.on('error', err => {
-    Logger.info('Connection with database failed with error', err)
-    db.close()
+
+  return new Promise((resolve, reject) => {
+    /* const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` :
+        `mongodb://${config.mongo.uri}/${config.mongo.database}` */
+    Mongoose.connect(`${connectionString}`, { useFindAndModify: false, useNewUrlParser: true, useCreateIndex: true })
+    db.on('error', err => {
+      Logger.info('Connection with database failed with error', err)
+      db.close()
+
+      return reject(err)
+    })
+
+    db.once('open', function callback () {
+      Logger.info('Connection with database succeeded.')
+      return resolve(db)
+    })
   })
-  db.once('open', function callback () {
-    Logger.info('Connection with database succeeded.')
-  })
-  return db
 }
 
 exports.db = setupDb

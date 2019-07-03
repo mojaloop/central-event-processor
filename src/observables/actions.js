@@ -132,7 +132,6 @@ const actionObservable = ({ action, params, message }) => {
       Logger.info(`action observer failed with error - ${err}`)
       observer.error(err)
     }
-    return
   })
 }
 
