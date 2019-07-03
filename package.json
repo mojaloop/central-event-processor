@@ -7,7 +7,7 @@
     "@hapi/boom": "7.4.2",
     "@hapi/hapi": "18.3.1",
     "@mojaloop/central-services-error-handling": "5.2.0",
-    "@mojaloop/central-services-shared": "6.4.0",
+    "@mojaloop/central-services-shared": "6.4.1",
     "@mojaloop/central-services-stream": "6.2.1",
     "@mojaloop/central-services-health": "7.0.0",
     "bluebird": "3.5.4",
