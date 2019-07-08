@@ -18,5 +18,4 @@ const mapped = arrO.pipe(
 )
 
 mapped.subscribe({
-  next: v => console.log(v)
 })
