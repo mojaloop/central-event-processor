@@ -45,8 +45,7 @@ const { getSubServiceHealthBroker, getSubServiceHealthDatastore } = require('./l
 const packageJson = require('../package.json')
 
 const setup = async () => {
-  let db = await require('./lib/database').db()
-
+  await require('./lib/database').db()
   await Consumer.registerNotificationHandler()
 
   const topicName = Utility.transformGeneralTopicName(Utility.ENUMS.NOTIFICATION, Utility.ENUMS.EVENT)
