@@ -1,3 +1,4 @@
+const Logger = require('@mojaloop/central-services-shared').Logger
 const Rx = require('rxjs')
 const { filter, flatMap, retry, delay, retryWhen, repeat, repeatWhen, catchError } = require('rxjs/operators')
 
@@ -18,4 +19,5 @@ const mapped = arrO.pipe(
 )
 
 mapped.subscribe({
+  next: v => Logger.debug(v)
 })
