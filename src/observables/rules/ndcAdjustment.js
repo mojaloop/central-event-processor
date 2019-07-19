@@ -30,13 +30,13 @@ const Rx = require('rxjs')
 const EventModel = require('../../models/events').eventModel
 const ActionModel = require('../../models/action').actionModel
 
-let engine = new RuleEngine.Engine()
+const engine = new RuleEngine.Engine()
 
 const createRules = async (limit) => {
-  let rules = []
-  let { name, currency, type } = limit
+  const rules = []
+  const { name, currency, type } = limit
   try {
-    let dbEvent = await EventModel.findOne({
+    const dbEvent = await EventModel.findOne({
       name,
       currency,
       limitType: type,
@@ -44,7 +44,7 @@ const createRules = async (limit) => {
       isActive: true
     })
 
-    let conditions = {
+    const conditions = {
       all: [{
         fact: 'name',
         operator: 'equal',
@@ -60,7 +60,7 @@ const createRules = async (limit) => {
       }]
     }
 
-    let event = {
+    const event = {
       type: `${type}_ADJUSTMENT_EMAIL`,
       params: {
         dfsp: name,
@@ -77,7 +77,7 @@ const createRules = async (limit) => {
         messageSubject: `${type} LIMIT ADJUSTMENT`
       }
     }
-    let adjustmentRule = new RuleEngine.Rule({ conditions, event })
+    const adjustmentRule = new RuleEngine.Rule({ conditions, event })
     rules.push(adjustmentRule)
     return { rules, event }
   } catch (err) {
@@ -88,9 +88,9 @@ const createRules = async (limit) => {
 const ndcAdjustmentObservable = (limit) => {
   return Rx.Observable.create(async observer => {
     try {
-      let { rules, event } = await createRules(limit)
+      const { rules, event } = await createRules(limit)
       rules.forEach(rule => engine.addRule(rule)) // TODO check if it is a loop atm and if not remove the forEach and push
-      let actions = await engine.run(limit)
+      const actions = await engine.run(limit)
       if (actions.length) {
         actions.forEach(action => {
           observer.next({
@@ -100,9 +100,9 @@ const ndcAdjustmentObservable = (limit) => {
         })
       } else {
         observer.next({ action: 'finish' })
-        let activeActions = await ActionModel.find({ fromEvent: event.params.fromEvent, isActive: true }) // TODO move this into the action observerbale
+        const activeActions = await ActionModel.find({ fromEvent: event.params.fromEvent, isActive: true }) // TODO move this into the action observerbale
         if (activeActions.length) {
-          for (let activeAction of activeActions) {
+          for (const activeAction of activeActions) {
             await ActionModel.findByIdAndUpdate(activeAction.id, { isActive: false })
           }
         }

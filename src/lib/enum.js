@@ -94,7 +94,7 @@ const headers = {
 }
 const topicMap = {
   notification: {
-    'prepare': {
+    prepare: {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
@@ -102,11 +102,11 @@ const topicMap = {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
-    'commit': {
+    commit: {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
-    'abort': {
+    abort: {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
@@ -114,11 +114,11 @@ const topicMap = {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
-    'reject': {
+    reject: {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
-    'get': {
+    get: {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },

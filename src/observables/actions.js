@@ -95,12 +95,12 @@ const actionObservable = ({ action, params, message }) => {
       if (action === 'finish') {
         return observer.complete({ actionResult: true })
       }
-      let hubName = Config.get('HUB_PARTICIPANT').NAME
+      const hubName = Config.get('HUB_PARTICIPANT').NAME
       let actionResult
-      let previousAction = await ActionModel.findOne({ fromEvent: params.fromEvent, isActive: true })
-      let recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType })
-      let hubDetails = await NotificationModel.findOne({ name: hubName, action: params.action, type: params.notificationEndpointType })
-      let messageDetails = Object.assign({}, params, { notificationInterval, resetPeriod })
+      const previousAction = await ActionModel.findOne({ fromEvent: params.fromEvent, isActive: true })
+      const recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType })
+      const hubDetails = await NotificationModel.findOne({ name: hubName, action: params.action, type: params.notificationEndpointType })
+      const messageDetails = Object.assign({}, params, { notificationInterval, resetPeriod })
       const payload = {
         from: hubName,
         to: params.dfsp,
@@ -121,7 +121,7 @@ const actionObservable = ({ action, params, message }) => {
       } else {
         actionResult = await actionBuilder(action)({ payload }) // create new action
         if (Config.get('notificationMinutes').oscilateEvents.includes(params.notificationEndpointType)) {
-          let actionCreated = await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent })
+          const actionCreated = await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent })
           !params.isTest && Rx.asyncScheduler.schedule(clearRepetitionTask, resetPeriod * 60 * 1000, actionCreated.id) // loading the scheduler, clearRepetitionTask is executed after the period and actionCreated.id is sent as a parameter
         } else {
           await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent, isActive: false })
@@ -137,8 +137,8 @@ const actionObservable = ({ action, params, message }) => {
 
 const clearRepetitionTask = async function (actionId) { // clears the timesTriggered after delay is reached if action is still active
   try {
-    let action = await ActionModel.findById(actionId).populate('fromEvent')
-    let limit = await LimitModel.findOne({
+    const action = await ActionModel.findById(actionId).populate('fromEvent')
+    const limit = await LimitModel.findOne({
       type: action.fromEvent.limitType,
       name: action.fromEvent.name,
       currency: action.fromEvent.currency

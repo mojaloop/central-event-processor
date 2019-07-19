@@ -53,7 +53,7 @@ test('Mongo Database tests', async dbTest => {
 
   await dbTest.test('unsuccessful connection', async (assert) => {
     try {
-      let result = await Database('mongodb://foobar:2701/test')
+      const result = await Database('mongodb://foobar:2701/test')
       assert.equals(result, undefined)
       assert.end()
     } catch (err) {
@@ -66,7 +66,7 @@ test('Mongo Database tests', async dbTest => {
 
   await dbTest.test('successful connection', async (assert) => {
     try {
-      let connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}`
+      const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}`
         : `mongodb://${config.mongo.uri}/${config.mongo.database}`
 
       await mockgoose.prepareStorage().then(() => {
@@ -83,8 +83,8 @@ test('Mongo Database tests', async dbTest => {
         })
       })
 
-      let expectedResult = { $initialConnection: {} }
-      let result = await Database()
+      const expectedResult = { $initialConnection: {} }
+      const result = await Database()
       assert.deepEquals(result.$initialConnection, expectedResult.$initialConnection)
       assert.pass('Db connection successful')
       await assert.end()

@@ -1,129 +1,129 @@
 const Utility = require('./src/lib/utility')
 
-let messages = [
+const messages = [
   {
-    'id': '86ce97cf-2302-4d64-8b0e-df5ae9355dd0',
-    'from': 'central-switch',
-    'to': 'dfsp2',
-    'content': {
-      'headers': {
+    id: '86ce97cf-2302-4d64-8b0e-df5ae9355dd0',
+    from: 'central-switch',
+    to: 'dfsp2',
+    content: {
+      headers: {
         'Content-Type': 'application/json',
-        'Date': '2019-01-17T14:46:48.918Z',
+        Date: '2019-01-17T14:46:48.918Z',
         'FSPIOP-Source': 'central-switch',
         'FSPIOP-Destination': 'dfsp2'
       },
-      'payload': {
-        'currency': 'USD',
-        'value': 0,
-        'changedDate': '2019-01-17T14:46:48.918Z'
+      payload: {
+        currency: 'USD',
+        value: 0,
+        changedDate: '2019-01-17T14:46:48.918Z'
       }
     },
-    'type': 'application/json',
-    'metadata': {
-      'event': {
-        'id': '5c7ff308-35be-46b0-b187-0bf4bee72cf8',
-        'type': 'notification',
-        'action': 'settlement-transfer-position-change',
-        'state': {
-          'status': 'success',
-          'code': 0,
-          'description': 'action successful'
+    type: 'application/json',
+    metadata: {
+      event: {
+        id: '5c7ff308-35be-46b0-b187-0bf4bee72cf8',
+        type: 'notification',
+        action: 'settlement-transfer-position-change',
+        state: {
+          status: 'success',
+          code: 0,
+          description: 'action successful'
         }
       },
       'protocol.createdAt': 1547736408918
     }
   },
   {
-    'id': '86ce97cf-2302-4d64-8b0e-df5ae9355dd0',
-    'from': 'central-switch',
-    'to': 'dfsp1',
-    'content': {
-      'headers': {
+    id: '86ce97cf-2302-4d64-8b0e-df5ae9355dd0',
+    from: 'central-switch',
+    to: 'dfsp1',
+    content: {
+      headers: {
         'Content-Type': 'application/json',
-        'Date': '2019-01-17T14:46:48.918Z',
+        Date: '2019-01-17T14:46:48.918Z',
         'FSPIOP-Source': 'central-switch',
         'FSPIOP-Destination': 'dfsp2'
       },
-      'payload': {
-        'currency': 'USD',
-        'value': 0,
-        'changedDate': '2019-01-17T14:46:48.918Z'
+      payload: {
+        currency: 'USD',
+        value: 0,
+        changedDate: '2019-01-17T14:46:48.918Z'
       }
     },
-    'type': 'application/json',
-    'metadata': {
-      'event': {
-        'id': '5c7ff308-35be-46b0-b187-0bf4bee72cf8',
-        'type': 'notification',
-        'action': 'settlement-transfer-position-change',
-        'state': {
-          'status': 'success',
-          'code': 0,
-          'description': 'action successful'
+    type: 'application/json',
+    metadata: {
+      event: {
+        id: '5c7ff308-35be-46b0-b187-0bf4bee72cf8',
+        type: 'notification',
+        action: 'settlement-transfer-position-change',
+        state: {
+          status: 'success',
+          code: 0,
+          description: 'action successful'
         }
       },
       'protocol.createdAt': 1547736408918
     }
   },
   {
-    'id': '86ce97cf-2302-4d64-8b0e-df5ae9355dd0',
-    'from': 'central-switch',
-    'to': 'dfsp11',
-    'content': {
-      'headers': {
+    id: '86ce97cf-2302-4d64-8b0e-df5ae9355dd0',
+    from: 'central-switch',
+    to: 'dfsp11',
+    content: {
+      headers: {
         'Content-Type': 'application/json',
-        'Date': '2019-01-17T14:46:48.918Z',
+        Date: '2019-01-17T14:46:48.918Z',
         'FSPIOP-Source': 'central-switch',
         'FSPIOP-Destination': 'dfsp2'
       },
-      'payload': {
-        'currency': 'USD',
-        'value': 0,
-        'changedDate': '2019-01-17T14:46:48.918Z'
+      payload: {
+        currency: 'USD',
+        value: 0,
+        changedDate: '2019-01-17T14:46:48.918Z'
       }
     },
-    'type': 'application/json',
-    'metadata': {
-      'event': {
-        'id': '5c7ff308-35be-46b0-b187-0bf4bee72cf8',
-        'type': 'notification',
-        'action': 'settlement-transfer-position-change',
-        'state': {
-          'status': 'success',
-          'code': 0,
-          'description': 'action successful'
+    type: 'application/json',
+    metadata: {
+      event: {
+        id: '5c7ff308-35be-46b0-b187-0bf4bee72cf8',
+        type: 'notification',
+        action: 'settlement-transfer-position-change',
+        state: {
+          status: 'success',
+          code: 0,
+          description: 'action successful'
         }
       },
       'protocol.createdAt': 1547736408918
     }
   },
   {
-    'id': '86ce97cf-2302-4d64-8b0e-df5ae9355dd0',
-    'from': 'central-switch',
-    'to': 'dfsp12',
-    'content': {
-      'headers': {
+    id: '86ce97cf-2302-4d64-8b0e-df5ae9355dd0',
+    from: 'central-switch',
+    to: 'dfsp12',
+    content: {
+      headers: {
         'Content-Type': 'application/json',
-        'Date': '2019-01-17T14:46:48.918Z',
+        Date: '2019-01-17T14:46:48.918Z',
         'FSPIOP-Source': 'central-switch',
         'FSPIOP-Destination': 'dfsp2'
       },
-      'payload': {
-        'currency': 'USD',
-        'value': 0,
-        'changedDate': '2019-01-17T14:46:48.918Z'
+      payload: {
+        currency: 'USD',
+        value: 0,
+        changedDate: '2019-01-17T14:46:48.918Z'
       }
     },
-    'type': 'application/json',
-    'metadata': {
-      'event': {
-        'id': '5c7ff308-35be-46b0-b187-0bf4bee72cf8',
-        'type': 'notification',
-        'action': 'settlement-transfer-position-change',
-        'state': {
-          'status': 'success',
-          'code': 0,
-          'description': 'action successful'
+    type: 'application/json',
+    metadata: {
+      event: {
+        id: '5c7ff308-35be-46b0-b187-0bf4bee72cf8',
+        type: 'notification',
+        action: 'settlement-transfer-position-change',
+        state: {
+          status: 'success',
+          code: 0,
+          description: 'action successful'
         }
       },
       'protocol.createdAt': 1547736408918
@@ -136,9 +136,9 @@ let count = 0
 
 const timeout = ms => new Promise(res => setTimeout(res, ms))
 
-let messageSubimtter = async (message) => {
+const messageSubimtter = async (message) => {
   try {
-    let success = {
+    const success = {
       status: 'success',
       code: 0,
       description: 'action successful'
@@ -150,10 +150,10 @@ let messageSubimtter = async (message) => {
   }
 }
 
-let flood = async (count) => {
-  let arr = []
+const flood = async (count) => {
+  const arr = []
   for (let i = 0; i < count; i++) {
-    for (let message of messages) {
+    for (const message of messages) {
       // await timeout(100)
       await messageSubimtter(message)
     }

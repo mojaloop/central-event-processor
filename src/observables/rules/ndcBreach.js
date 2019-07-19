@@ -31,12 +31,12 @@ const EventModel = require('../../models/events').eventModel
 const ActionModel = require('../../models/action').actionModel
 const Enums = require('../../lib/enum')
 
-let engine = new RuleEngine.Engine()
+const engine = new RuleEngine.Engine()
 
 const createRules = async (position) => {
-  let rules = []
+  const rules = []
 
-  let [limit, dbEvent] = await Promise.all([
+  const [limit, dbEvent] = await Promise.all([
     LimitModel.findOne({ name: position.name, currency: position.currency, type: Enums.limitNotificationMap.NET_DEBIT_CAP.enum }),
     EventModel.findOne({
       name: position.name,
@@ -47,7 +47,7 @@ const createRules = async (position) => {
     })
   ])
 
-  let conditions = {
+  const conditions = {
     any: [{
       fact: 'percentage',
       operator: 'lessThanInclusive',
@@ -56,7 +56,7 @@ const createRules = async (position) => {
     }]
   }
 
-  let event = {
+  const event = {
     type: limit.type,
     params: {
       dfsp: position.name,
@@ -74,18 +74,18 @@ const createRules = async (position) => {
     }
   }
 
-  let breachRule = new RuleEngine.Rule({ conditions, event })
+  const breachRule = new RuleEngine.Rule({ conditions, event })
   rules.push(breachRule)
   return { rules, dbEvent }
 }
 
 const ndcBreachObservable = ({ positions, message }) => {
   return Rx.Observable.create(async observer => {
-    for (let position of positions) {
-      let { rules, dbEvent } = await createRules(position)
+    for (const position of positions) {
+      const { rules, dbEvent } = await createRules(position)
       rules.forEach(rule => engine.addRule(rule))
-      let fact = Object.assign({}, position.toObject())
-      let actions = await engine.run(fact)
+      const fact = Object.assign({}, position.toObject())
+      const actions = await engine.run(fact)
       if (actions.length) {
         actions.forEach(action => {
           observer.next({
@@ -96,9 +96,9 @@ const ndcBreachObservable = ({ positions, message }) => {
         })
       } else {
         observer.next({ action: 'finish' })
-        let activeActions = await ActionModel.find({ fromEvent: dbEvent.id, isActive: true })
+        const activeActions = await ActionModel.find({ fromEvent: dbEvent.id, isActive: true })
         if (activeActions) {
-          for (let activeAction of activeActions) {
+          for (const activeAction of activeActions) {
             await ActionModel.findByIdAndUpdate(activeAction.id, { isActive: false })
           }
         }
