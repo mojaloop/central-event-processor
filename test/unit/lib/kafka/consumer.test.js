@@ -254,14 +254,14 @@ Test('Consumer', ConsumerTest => {
     const expected = 'consumer'
 
     getConsumerTest.test('return list of consumers', async (test) => {
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      let ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
       ConsumerProxy.__set__('listOfConsumers', {
         admin: {
           consumer: expected
         }
       })
       try {
-        const result = await ConsumerProxy.getConsumer(topicName)
+        let result = await ConsumerProxy.getConsumer(topicName)
         test.equal(result, expected)
       } catch (err) {
         test.fail()
@@ -270,7 +270,7 @@ Test('Consumer', ConsumerTest => {
     })
 
     getConsumerTest.test('throw error', async (test) => {
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      let ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
       try {
         await ConsumerProxy.getConsumer(topicName)
         test.fail('Error not thrown!')
@@ -307,7 +307,7 @@ Test('Consumer', ConsumerTest => {
 
       // Act
       try {
-        const result = await ConsumerProxy.isConsumerAutoCommitEnabled('admin1')
+        let result = await ConsumerProxy.isConsumerAutoCommitEnabled('admin1')
 
         // Assert
         test.equal(result, true, 'isConsumerAutoCommitEnabled is true')

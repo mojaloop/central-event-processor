@@ -48,7 +48,7 @@ Test('NotificationEndpoint model', NotificationEndpointModelTest => {
   }
   NotificationEndpointModelTest.test('Action model should', isActiveFieldTest => {
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord, { name: '' }))
+      let notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord, { name: '' }))
       try {
         await notificationEndpointModel.validate()
         test.fail()
@@ -60,7 +60,7 @@ Test('NotificationEndpoint model', NotificationEndpointModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord, { type: null }))
+      let notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord, { type: null }))
       try {
         await notificationEndpointModel.validate()
         test.fail()
@@ -72,7 +72,7 @@ Test('NotificationEndpoint model', NotificationEndpointModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord, { value: null }))
+      let notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord, { value: null }))
       try {
         await notificationEndpointModel.validate()
         test.fail()
@@ -84,7 +84,7 @@ Test('NotificationEndpoint model', NotificationEndpointModelTest => {
     })
 
     isActiveFieldTest.test('create object', async test => {
-      const notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord))
+      let notificationEndpointModel = new NotificationEndpointSchema(Object.assign({}, validRecord))
       try {
         await notificationEndpointModel.validate()
         test.pass('with valid field values')

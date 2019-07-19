@@ -42,9 +42,9 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   Sinon.config = {
     useFakeTimers: false
   }
-  const clearMock = Sinon.expectation.create(['ClearRepetitionTask'])
+  let clearMock = Sinon.expectation.create(['ClearRepetitionTask'])
   let sandbox
-  const actionModelJSON = {
+  let actionModelJSON = {
     timesTriggered: 1,
     isActive: false,
     triggeredBy: '5bf5480ba305f9801a6d59df',
@@ -52,13 +52,13 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     updatedAt: '2018-11-21T13:55:24.791Z',
     save: () => { return P.resolve() }
   }
-  const dfspNotificationEndpointModelJSON = {
+  let dfspNotificationEndpointModelJSON = {
     name: 'dfsp2',
     type: 'NET_DEBIT_CAP_ADJUSTMENT_EMAIL',
     value: 'dfsp.knows@gmail.com',
     action: 'produceToKafkaTopic'
   }
-  const hubNotificationEndpointModelJSON = {
+  let hubNotificationEndpointModelJSON = {
     name: 'Hub',
     type: 'NET_DEBIT_CAP_ADJUSTMENT_EMAIL',
     value: 'hub.knows@gmail.com',
@@ -91,80 +91,80 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should return completed when the action is "finish"', async assert => {
-    const mockMessage = {
-      value: {
-        from: 'SYSTEM',
-        to: 'dfsp1',
-        id: '694dd040-a315-4427-bcf0-e29229c4defe',
-        content: {
-          header: {},
-          payload: {
-            from: 'SYSTEM',
-            to: 'dfsp1',
-            recepientDetails: {
-              _id: '5bf5480aa305f9801a6d59db',
-              name: 'dfsp1',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.919Z',
-              updatedAt: '2018-11-21T14:00:38.993Z',
-              __v: 0
+    let mockMessage = {
+      'value': {
+        'from': 'SYSTEM',
+        'to': 'dfsp1',
+        'id': '694dd040-a315-4427-bcf0-e29229c4defe',
+        'content': {
+          'header': {},
+          'payload': {
+            'from': 'SYSTEM',
+            'to': 'dfsp1',
+            'recepientDetails': {
+              '_id': '5bf5480aa305f9801a6d59db',
+              'name': 'dfsp1',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.919Z',
+              'updatedAt': '2018-11-21T14:00:38.993Z',
+              '__v': 0
             },
-            hubDetails: {
-              _id: '5bf5480aa305f9801a6d59dd',
-              name: 'Hub',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.950Z',
-              updatedAt: '2018-11-21T14:00:39.077Z',
-              __v: 0
+            'hubDetails': {
+              '_id': '5bf5480aa305f9801a6d59dd',
+              'name': 'Hub',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.950Z',
+              'updatedAt': '2018-11-21T14:00:39.077Z',
+              '__v': 0
             },
-            messageDetails: {
-              dfsp: 'dfsp1',
-              limitType: 'NET_DEBIT_CAP',
-              value: 1000,
-              currency: 'USD',
-              triggeredBy: '5bf5480ba305f9801a6d59e0',
-              repetitionsAllowed: 3,
-              fromEvent: '5bf5480ba305f9801a6d59e4',
-              action: 'sendEmail',
-              notificationEndpointType: 'NET_DEBIT_CAP_ADJUSTMENT',
-              templateType: 'adjustment',
-              language: 'en',
-              messageSubject: 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
-              notificationInterval: 3,
-              resetPeriod: 60
+            'messageDetails': {
+              'dfsp': 'dfsp1',
+              'limitType': 'NET_DEBIT_CAP',
+              'value': 1000,
+              'currency': 'USD',
+              'triggeredBy': '5bf5480ba305f9801a6d59e0',
+              'repetitionsAllowed': 3,
+              'fromEvent': '5bf5480ba305f9801a6d59e4',
+              'action': 'sendEmail',
+              'notificationEndpointType': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'templateType': 'adjustment',
+              'language': 'en',
+              'messageSubject': 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
+              'notificationInterval': 3,
+              'resetPeriod': 60
             }
           }
         },
-        type: 'application/json',
-        metadata: {
-          event: {
-            id: '4276f87a-0a17-485f-acb8-f2d582a1f608',
-            responseTo: '88d15b71-ae0d-4e31-a285-c3fdd5982180',
-            type: 'notification',
-            action: 'event',
-            createdAt: '2018-12-11T13:36:58.225Z',
-            state: { status: 'success', code: 0, description: 'action successful' }
+        'type': 'application/json',
+        'metadata': {
+          'event': {
+            'id': '4276f87a-0a17-485f-acb8-f2d582a1f608',
+            'responseTo': '88d15b71-ae0d-4e31-a285-c3fdd5982180',
+            'type': 'notification',
+            'action': 'event',
+            'createdAt': '2018-12-11T13:36:58.225Z',
+            'state': { 'status': 'success', 'code': 0, 'description': 'action successful' }
           },
           'protocol.createdAt': 1544535418447
         },
-        pp: ''
+        'pp': ''
       },
-      size: 1363,
-      key: {
-        type: 'Buffer',
-        data: [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
+      'size': 1363,
+      'key': {
+        'type': 'Buffer',
+        'data': [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
       },
-      topic: 'topic-notification-event',
-      offset: 4,
-      partition: 0,
-      timestamp: 1544535418448
+      'topic': 'topic-notification-event',
+      'offset': 4,
+      'partition': 0,
+      'timestamp': 1544535418448
     }
-    const params = { fromEvent: '7d4f2a70' }
-    const action = 'finish'
+    let params = { fromEvent: '7d4f2a70' }
+    let action = 'finish'
 
     ActionObservable({ action, params, mockMessage }).subscribe(
       result => {
@@ -185,7 +185,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should return completed when only a previous action exist and triggered times and updated at times fail', async assert => {
-    const params = {
+    let params = {
       fromEvent: '51bb793aca2ab77a3200000d',
       dfsp: 'dfsp2',
       action: 'sendmail',
@@ -193,78 +193,78 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       repetitionsAllowed: 0
     }
 
-    const action = 'produceToKafkaTopic'
-    const mockMessage = {
-      value: {
-        from: 'SYSTEM',
-        to: 'dfsp1',
-        id: '694dd040-a315-4427-bcf0-e29229c4defe',
-        content: {
-          header: {},
-          payload: {
-            from: 'SYSTEM',
-            to: 'dfsp1',
-            recepientDetails: {
-              _id: '5bf5480aa305f9801a6d59db',
-              name: 'dfsp1',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.919Z',
-              updatedAt: '2018-11-21T14:00:38.993Z',
-              __v: 0
+    let action = 'produceToKafkaTopic'
+    let mockMessage = {
+      'value': {
+        'from': 'SYSTEM',
+        'to': 'dfsp1',
+        'id': '694dd040-a315-4427-bcf0-e29229c4defe',
+        'content': {
+          'header': {},
+          'payload': {
+            'from': 'SYSTEM',
+            'to': 'dfsp1',
+            'recepientDetails': {
+              '_id': '5bf5480aa305f9801a6d59db',
+              'name': 'dfsp1',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.919Z',
+              'updatedAt': '2018-11-21T14:00:38.993Z',
+              '__v': 0
             },
-            hubDetails: {
-              _id: '5bf5480aa305f9801a6d59dd',
-              name: 'Hub',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.950Z',
-              updatedAt: '2018-11-21T14:00:39.077Z',
-              __v: 0
+            'hubDetails': {
+              '_id': '5bf5480aa305f9801a6d59dd',
+              'name': 'Hub',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.950Z',
+              'updatedAt': '2018-11-21T14:00:39.077Z',
+              '__v': 0
             },
-            messageDetails: {
-              dfsp: 'dfsp1',
-              limitType: 'NET_DEBIT_CAP',
-              value: 1000,
-              currency: 'USD',
-              triggeredBy: '5bf5480ba305f9801a6d59e0',
-              repetitionsAllowed: 3,
-              fromEvent: '5bf5480ba305f9801a6d59e4',
-              action: 'sendEmail',
-              notificationEndpointType: 'NET_DEBIT_CAP_ADJUSTMENT',
-              templateType: 'adjustment',
-              language: 'en',
-              messageSubject: 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
-              notificationInterval: 3,
-              resetPeriod: 60
+            'messageDetails': {
+              'dfsp': 'dfsp1',
+              'limitType': 'NET_DEBIT_CAP',
+              'value': 1000,
+              'currency': 'USD',
+              'triggeredBy': '5bf5480ba305f9801a6d59e0',
+              'repetitionsAllowed': 3,
+              'fromEvent': '5bf5480ba305f9801a6d59e4',
+              'action': 'sendEmail',
+              'notificationEndpointType': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'templateType': 'adjustment',
+              'language': 'en',
+              'messageSubject': 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
+              'notificationInterval': 3,
+              'resetPeriod': 60
             }
           }
         },
-        type: 'application/json',
-        metadata: {
-          event: {
-            id: '4276f87a-0a17-485f-acb8-f2d582a1f608',
-            responseTo: '88d15b71-ae0d-4e31-a285-c3fdd5982180',
-            type: 'notification',
-            action: 'event',
-            createdAt: '2018-12-11T13:36:58.225Z',
-            state: { status: 'success', code: 0, description: 'action successful' }
+        'type': 'application/json',
+        'metadata': {
+          'event': {
+            'id': '4276f87a-0a17-485f-acb8-f2d582a1f608',
+            'responseTo': '88d15b71-ae0d-4e31-a285-c3fdd5982180',
+            'type': 'notification',
+            'action': 'event',
+            'createdAt': '2018-12-11T13:36:58.225Z',
+            'state': { 'status': 'success', 'code': 0, 'description': 'action successful' }
           },
           'protocol.createdAt': 1544535418447
         },
-        pp: ''
+        'pp': ''
       },
-      size: 1363,
-      key: {
-        type: 'Buffer',
-        data: [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
+      'size': 1363,
+      'key': {
+        'type': 'Buffer',
+        'data': [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
       },
-      topic: 'topic-notification-event',
-      offset: 4,
-      partition: 0,
-      timestamp: 1544535418448
+      'topic': 'topic-notification-event',
+      'offset': 4,
+      'partition': 0,
+      'timestamp': 1544535418448
     }
 
     NotificationModel.findOne.withArgs({
@@ -303,7 +303,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should stop sending messages when times triggered has been met', async assert => {
-    const params = {
+    let params = {
       fromEvent: '51bb793aca2ab77a3200000d',
       dfsp: 'dfsp2',
       action: 'sendmail',
@@ -311,78 +311,78 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       repetitionsAllowed: 1
     }
 
-    const action = 'produceToKafkaTopic'
-    const mockMessage = {
-      value: {
-        from: 'SYSTEM',
-        to: 'dfsp1',
-        id: '694dd040-a315-4427-bcf0-e29229c4defe',
-        content: {
-          header: {},
-          payload: {
-            from: 'SYSTEM',
-            to: 'dfsp1',
-            recepientDetails: {
-              _id: '5bf5480aa305f9801a6d59db',
-              name: 'dfsp1',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.919Z',
-              updatedAt: '2018-11-21T14:00:38.993Z',
-              __v: 0
+    let action = 'produceToKafkaTopic'
+    let mockMessage = {
+      'value': {
+        'from': 'SYSTEM',
+        'to': 'dfsp1',
+        'id': '694dd040-a315-4427-bcf0-e29229c4defe',
+        'content': {
+          'header': {},
+          'payload': {
+            'from': 'SYSTEM',
+            'to': 'dfsp1',
+            'recepientDetails': {
+              '_id': '5bf5480aa305f9801a6d59db',
+              'name': 'dfsp1',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.919Z',
+              'updatedAt': '2018-11-21T14:00:38.993Z',
+              '__v': 0
             },
-            hubDetails: {
-              _id: '5bf5480aa305f9801a6d59dd',
-              name: 'Hub',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.950Z',
-              updatedAt: '2018-11-21T14:00:39.077Z',
-              __v: 0
+            'hubDetails': {
+              '_id': '5bf5480aa305f9801a6d59dd',
+              'name': 'Hub',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.950Z',
+              'updatedAt': '2018-11-21T14:00:39.077Z',
+              '__v': 0
             },
-            messageDetails: {
-              dfsp: 'dfsp1',
-              limitType: 'NET_DEBIT_CAP',
-              value: 1000,
-              currency: 'USD',
-              triggeredBy: '5bf5480ba305f9801a6d59e0',
-              repetitionsAllowed: 3,
-              fromEvent: '5bf5480ba305f9801a6d59e4',
-              action: 'sendEmail',
-              notificationEndpointType: 'NET_DEBIT_CAP_ADJUSTMENT',
-              templateType: 'adjustment',
-              language: 'en',
-              messageSubject: 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
-              notificationInterval: 3,
-              resetPeriod: 60
+            'messageDetails': {
+              'dfsp': 'dfsp1',
+              'limitType': 'NET_DEBIT_CAP',
+              'value': 1000,
+              'currency': 'USD',
+              'triggeredBy': '5bf5480ba305f9801a6d59e0',
+              'repetitionsAllowed': 3,
+              'fromEvent': '5bf5480ba305f9801a6d59e4',
+              'action': 'sendEmail',
+              'notificationEndpointType': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'templateType': 'adjustment',
+              'language': 'en',
+              'messageSubject': 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
+              'notificationInterval': 3,
+              'resetPeriod': 60
             }
           }
         },
-        type: 'application/json',
-        metadata: {
-          event: {
-            id: '4276f87a-0a17-485f-acb8-f2d582a1f608',
-            responseTo: '88d15b71-ae0d-4e31-a285-c3fdd5982180',
-            type: 'notification',
-            action: 'event',
-            createdAt: '2018-12-11T13:36:58.225Z',
-            state: { status: 'success', code: 0, description: 'action successful' }
+        'type': 'application/json',
+        'metadata': {
+          'event': {
+            'id': '4276f87a-0a17-485f-acb8-f2d582a1f608',
+            'responseTo': '88d15b71-ae0d-4e31-a285-c3fdd5982180',
+            'type': 'notification',
+            'action': 'event',
+            'createdAt': '2018-12-11T13:36:58.225Z',
+            'state': { 'status': 'success', 'code': 0, 'description': 'action successful' }
           },
           'protocol.createdAt': 1544535418447
         },
-        pp: ''
+        'pp': ''
       },
-      size: 1363,
-      key: {
-        type: 'Buffer',
-        data: [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
+      'size': 1363,
+      'key': {
+        'type': 'Buffer',
+        'data': [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
       },
-      topic: 'topic-notification-event',
-      offset: 4,
-      partition: 0,
-      timestamp: 1544535418448
+      'topic': 'topic-notification-event',
+      'offset': 4,
+      'partition': 0,
+      'timestamp': 1544535418448
     }
 
     NotificationModel.findOne.withArgs({
@@ -421,7 +421,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should throw an error when incorrect action are used', async assert => {
-    const params = {
+    let params = {
       fromEvent: '51bb793aca2ab77a3200000d',
       dfsp: 'dfsp2',
       action: 'incorrect',
@@ -429,78 +429,78 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       repetitionsAllowed: 3
     }
 
-    const action = 'Failed Action'
-    const mockMessage = {
-      value: {
-        from: 'SYSTEM',
-        to: 'dfsp1',
-        id: '694dd040-a315-4427-bcf0-e29229c4defe',
-        content: {
-          header: {},
-          payload: {
-            from: 'SYSTEM',
-            to: 'dfsp1',
-            recepientDetails: {
-              _id: '5bf5480aa305f9801a6d59db',
-              name: 'dfsp1',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.919Z',
-              updatedAt: '2018-11-21T14:00:38.993Z',
-              __v: 0
+    let action = 'Failed Action'
+    let mockMessage = {
+      'value': {
+        'from': 'SYSTEM',
+        'to': 'dfsp1',
+        'id': '694dd040-a315-4427-bcf0-e29229c4defe',
+        'content': {
+          'header': {},
+          'payload': {
+            'from': 'SYSTEM',
+            'to': 'dfsp1',
+            'recepientDetails': {
+              '_id': '5bf5480aa305f9801a6d59db',
+              'name': 'dfsp1',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.919Z',
+              'updatedAt': '2018-11-21T14:00:38.993Z',
+              '__v': 0
             },
-            hubDetails: {
-              _id: '5bf5480aa305f9801a6d59dd',
-              name: 'Hub',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.950Z',
-              updatedAt: '2018-11-21T14:00:39.077Z',
-              __v: 0
+            'hubDetails': {
+              '_id': '5bf5480aa305f9801a6d59dd',
+              'name': 'Hub',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.950Z',
+              'updatedAt': '2018-11-21T14:00:39.077Z',
+              '__v': 0
             },
-            messageDetails: {
-              dfsp: 'dfsp1',
-              limitType: 'NET_DEBIT_CAP',
-              value: 1000,
-              currency: 'USD',
-              triggeredBy: '5bf5480ba305f9801a6d59e0',
-              repetitionsAllowed: 3,
-              fromEvent: '5bf5480ba305f9801a6d59e4',
-              action: 'sendEmail',
-              notificationEndpointType: 'NET_DEBIT_CAP_ADJUSTMENT',
-              templateType: 'adjustment',
-              language: 'en',
-              messageSubject: 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
-              notificationInterval: 3,
-              resetPeriod: 60
+            'messageDetails': {
+              'dfsp': 'dfsp1',
+              'limitType': 'NET_DEBIT_CAP',
+              'value': 1000,
+              'currency': 'USD',
+              'triggeredBy': '5bf5480ba305f9801a6d59e0',
+              'repetitionsAllowed': 3,
+              'fromEvent': '5bf5480ba305f9801a6d59e4',
+              'action': 'sendEmail',
+              'notificationEndpointType': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'templateType': 'adjustment',
+              'language': 'en',
+              'messageSubject': 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
+              'notificationInterval': 3,
+              'resetPeriod': 60
             }
           }
         },
-        type: 'application/json',
-        metadata: {
-          event: {
-            id: '4276f87a-0a17-485f-acb8-f2d582a1f608',
-            responseTo: '88d15b71-ae0d-4e31-a285-c3fdd5982180',
-            type: 'notification',
-            action: 'event',
-            createdAt: '2018-12-11T13:36:58.225Z',
-            state: { status: 'success', code: 0, description: 'action successful' }
+        'type': 'application/json',
+        'metadata': {
+          'event': {
+            'id': '4276f87a-0a17-485f-acb8-f2d582a1f608',
+            'responseTo': '88d15b71-ae0d-4e31-a285-c3fdd5982180',
+            'type': 'notification',
+            'action': 'event',
+            'createdAt': '2018-12-11T13:36:58.225Z',
+            'state': { 'status': 'success', 'code': 0, 'description': 'action successful' }
           },
           'protocol.createdAt': 1544535418447
         },
-        pp: ''
+        'pp': ''
       },
-      size: 1363,
-      key: {
-        type: 'Buffer',
-        data: [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
+      'size': 1363,
+      'key': {
+        'type': 'Buffer',
+        'data': [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
       },
-      topic: 'topic-notification-event',
-      offset: 4,
-      partition: 0,
-      timestamp: 1544535418448
+      'topic': 'topic-notification-event',
+      'offset': 4,
+      'partition': 0,
+      'timestamp': 1544535418448
     }
 
     NotificationModel.findOne.withArgs({
@@ -539,7 +539,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should save previous action if times triggered has not been met', async assert => {
-    const params = {
+    let params = {
       fromEvent: '51bb793aca2ab77a3200000d',
       dfsp: 'dfsp2',
       action: 'sendmail',
@@ -547,78 +547,78 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       repetitionsAllowed: 3
     }
 
-    const action = 'produceToKafkaTopic'
-    const mockMessage = {
-      value: {
-        from: 'SYSTEM',
-        to: 'dfsp1',
-        id: '694dd040-a315-4427-bcf0-e29229c4defe',
-        content: {
-          header: {},
-          payload: {
-            from: 'SYSTEM',
-            to: 'dfsp1',
-            recepientDetails: {
-              _id: '5bf5480aa305f9801a6d59db',
-              name: 'dfsp1',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.919Z',
-              updatedAt: '2018-11-21T14:00:38.993Z',
-              __v: 0
+    let action = 'produceToKafkaTopic'
+    let mockMessage = {
+      'value': {
+        'from': 'SYSTEM',
+        'to': 'dfsp1',
+        'id': '694dd040-a315-4427-bcf0-e29229c4defe',
+        'content': {
+          'header': {},
+          'payload': {
+            'from': 'SYSTEM',
+            'to': 'dfsp1',
+            'recepientDetails': {
+              '_id': '5bf5480aa305f9801a6d59db',
+              'name': 'dfsp1',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.919Z',
+              'updatedAt': '2018-11-21T14:00:38.993Z',
+              '__v': 0
             },
-            hubDetails: {
-              _id: '5bf5480aa305f9801a6d59dd',
-              name: 'Hub',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.950Z',
-              updatedAt: '2018-11-21T14:00:39.077Z',
-              __v: 0
+            'hubDetails': {
+              '_id': '5bf5480aa305f9801a6d59dd',
+              'name': 'Hub',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.950Z',
+              'updatedAt': '2018-11-21T14:00:39.077Z',
+              '__v': 0
             },
-            messageDetails: {
-              dfsp: 'dfsp1',
-              limitType: 'NET_DEBIT_CAP',
-              value: 1000,
-              currency: 'USD',
-              triggeredBy: '5bf5480ba305f9801a6d59e0',
-              repetitionsAllowed: 3,
-              fromEvent: '5bf5480ba305f9801a6d59e4',
-              action: 'sendEmail',
-              notificationEndpointType: 'NET_DEBIT_CAP_ADJUSTMENT',
-              templateType: 'adjustment',
-              language: 'en',
-              messageSubject: 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
-              notificationInterval: 3,
-              resetPeriod: 60
+            'messageDetails': {
+              'dfsp': 'dfsp1',
+              'limitType': 'NET_DEBIT_CAP',
+              'value': 1000,
+              'currency': 'USD',
+              'triggeredBy': '5bf5480ba305f9801a6d59e0',
+              'repetitionsAllowed': 3,
+              'fromEvent': '5bf5480ba305f9801a6d59e4',
+              'action': 'sendEmail',
+              'notificationEndpointType': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'templateType': 'adjustment',
+              'language': 'en',
+              'messageSubject': 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
+              'notificationInterval': 3,
+              'resetPeriod': 60
             }
           }
         },
-        type: 'application/json',
-        metadata: {
-          event: {
-            id: '4276f87a-0a17-485f-acb8-f2d582a1f608',
-            responseTo: '88d15b71-ae0d-4e31-a285-c3fdd5982180',
-            type: 'notification',
-            action: 'event',
-            createdAt: '2018-12-11T13:36:58.225Z',
-            state: { status: 'success', code: 0, description: 'action successful' }
+        'type': 'application/json',
+        'metadata': {
+          'event': {
+            'id': '4276f87a-0a17-485f-acb8-f2d582a1f608',
+            'responseTo': '88d15b71-ae0d-4e31-a285-c3fdd5982180',
+            'type': 'notification',
+            'action': 'event',
+            'createdAt': '2018-12-11T13:36:58.225Z',
+            'state': { 'status': 'success', 'code': 0, 'description': 'action successful' }
           },
           'protocol.createdAt': 1544535418447
         },
-        pp: ''
+        'pp': ''
       },
-      size: 1363,
-      key: {
-        type: 'Buffer',
-        data: [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
+      'size': 1363,
+      'key': {
+        'type': 'Buffer',
+        'data': [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
       },
-      topic: 'topic-notification-event',
-      offset: 4,
-      partition: 0,
-      timestamp: 1544535418448
+      'topic': 'topic-notification-event',
+      'offset': 4,
+      'partition': 0,
+      'timestamp': 1544535418448
     }
 
     NotificationModel.findOne.withArgs({
@@ -657,7 +657,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   })
 
   await actionTest.test('Should create a new action if no previous action exist', async assert => {
-    const params = {
+    let params = {
       triggeredBy: '51bb793aca2ab77a3200000e',
       isTest: true,
       fromEvent: '51bb793aca2ab77a3200000d',
@@ -667,78 +667,78 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
       repetitionsAllowed: 0
     }
 
-    const action = 'produceToKafkaTopic'
-    const mockMessage = {
-      value: {
-        from: 'SYSTEM',
-        to: 'dfsp1',
-        id: '694dd040-a315-4427-bcf0-e29229c4defe',
-        content: {
-          header: {},
-          payload: {
-            from: 'SYSTEM',
-            to: 'dfsp1',
-            recepientDetails: {
-              _id: '5bf5480aa305f9801a6d59db',
-              name: 'dfsp1',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.919Z',
-              updatedAt: '2018-11-21T14:00:38.993Z',
-              __v: 0
+    let action = 'produceToKafkaTopic'
+    let mockMessage = {
+      'value': {
+        'from': 'SYSTEM',
+        'to': 'dfsp1',
+        'id': '694dd040-a315-4427-bcf0-e29229c4defe',
+        'content': {
+          'header': {},
+          'payload': {
+            'from': 'SYSTEM',
+            'to': 'dfsp1',
+            'recepientDetails': {
+              '_id': '5bf5480aa305f9801a6d59db',
+              'name': 'dfsp1',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.919Z',
+              'updatedAt': '2018-11-21T14:00:38.993Z',
+              '__v': 0
             },
-            hubDetails: {
-              _id: '5bf5480aa305f9801a6d59dd',
-              name: 'Hub',
-              type: 'NET_DEBIT_CAP_ADJUSTMENT',
-              value: 'dean.bothma@modusbox.com',
-              action: 'sendEmail',
-              createdAt: '2018-11-21T11:56:58.950Z',
-              updatedAt: '2018-11-21T14:00:39.077Z',
-              __v: 0
+            'hubDetails': {
+              '_id': '5bf5480aa305f9801a6d59dd',
+              'name': 'Hub',
+              'type': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'value': 'dean.bothma@modusbox.com',
+              'action': 'sendEmail',
+              'createdAt': '2018-11-21T11:56:58.950Z',
+              'updatedAt': '2018-11-21T14:00:39.077Z',
+              '__v': 0
             },
-            messageDetails: {
-              dfsp: 'dfsp1',
-              limitType: 'NET_DEBIT_CAP',
-              value: 1000,
-              currency: 'USD',
-              triggeredBy: '5bf5480ba305f9801a6d59e0',
-              repetitionsAllowed: 3,
-              fromEvent: '5bf5480ba305f9801a6d59e4',
-              action: 'sendEmail',
-              notificationEndpointType: 'NET_DEBIT_CAP_ADJUSTMENT',
-              templateType: 'adjustment',
-              language: 'en',
-              messageSubject: 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
-              notificationInterval: 3,
-              resetPeriod: 60
+            'messageDetails': {
+              'dfsp': 'dfsp1',
+              'limitType': 'NET_DEBIT_CAP',
+              'value': 1000,
+              'currency': 'USD',
+              'triggeredBy': '5bf5480ba305f9801a6d59e0',
+              'repetitionsAllowed': 3,
+              'fromEvent': '5bf5480ba305f9801a6d59e4',
+              'action': 'sendEmail',
+              'notificationEndpointType': 'NET_DEBIT_CAP_ADJUSTMENT',
+              'templateType': 'adjustment',
+              'language': 'en',
+              'messageSubject': 'NET_DEBIT_CAP LIMIT ADJUSTMENT',
+              'notificationInterval': 3,
+              'resetPeriod': 60
             }
           }
         },
-        type: 'application/json',
-        metadata: {
-          event: {
-            id: '4276f87a-0a17-485f-acb8-f2d582a1f608',
-            responseTo: '88d15b71-ae0d-4e31-a285-c3fdd5982180',
-            type: 'notification',
-            action: 'event',
-            createdAt: '2018-12-11T13:36:58.225Z',
-            state: { status: 'success', code: 0, description: 'action successful' }
+        'type': 'application/json',
+        'metadata': {
+          'event': {
+            'id': '4276f87a-0a17-485f-acb8-f2d582a1f608',
+            'responseTo': '88d15b71-ae0d-4e31-a285-c3fdd5982180',
+            'type': 'notification',
+            'action': 'event',
+            'createdAt': '2018-12-11T13:36:58.225Z',
+            'state': { 'status': 'success', 'code': 0, 'description': 'action successful' }
           },
           'protocol.createdAt': 1544535418447
         },
-        pp: ''
+        'pp': ''
       },
-      size: 1363,
-      key: {
-        type: 'Buffer',
-        data: [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
+      'size': 1363,
+      'key': {
+        'type': 'Buffer',
+        'data': [51, 48, 55, 54, 50, 51, 49, 55, 45, 54, 48, 97, 48, 45, 52, 98, 102, 52, 45, 98, 98, 97, 97, 45, 100, 50, 49, 50, 53, 101, 49, 100, 54, 52, 50, 97]
       },
-      topic: 'topic-notification-event',
-      offset: 4,
-      partition: 0,
-      timestamp: 1544535418448
+      'topic': 'topic-notification-event',
+      'offset': 4,
+      'partition': 0,
+      'timestamp': 1544535418448
     }
 
     NotificationModel.findOne.withArgs({

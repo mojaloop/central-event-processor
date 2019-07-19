@@ -96,7 +96,7 @@ const topicConf = {
 
 Test('Producer', producerTest => {
   let sandbox
-  const config = {}
+  let config = {}
 
   producerTest.test('produceMessage should', produceMessageTest => {
     produceMessageTest.beforeEach(t => {

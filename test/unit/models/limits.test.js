@@ -52,7 +52,7 @@ Test('Limit model', LimitModelTest => {
   }
   LimitModelTest.test('Action model should', isActiveFieldTest => {
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const limitModel = new LimitSchema(Object.assign({}, validRecord, { name: '' }))
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { name: '' }))
       try {
         await limitModel.validate()
         test.fail()
@@ -64,7 +64,7 @@ Test('Limit model', LimitModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const limitModel = new LimitSchema(Object.assign({}, validRecord, { currency: '' }))
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { currency: '' }))
       try {
         await limitModel.validate()
         test.fail()
@@ -76,7 +76,7 @@ Test('Limit model', LimitModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const limitModel = new LimitSchema(Object.assign({}, validRecord, { oldValue: 'test' }))
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { oldValue: 'test' }))
       try {
         await limitModel.validate()
         test.fail()
@@ -88,7 +88,7 @@ Test('Limit model', LimitModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const limitModel = new LimitSchema(Object.assign({}, validRecord, { type: null }))
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { type: null }))
       try {
         await limitModel.validate()
         test.fail()
@@ -100,7 +100,7 @@ Test('Limit model', LimitModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const limitModel = new LimitSchema(Object.assign({}, validRecord, { value: 'test' }))
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { value: 'test' }))
       try {
         await limitModel.validate()
         test.fail()
@@ -112,7 +112,7 @@ Test('Limit model', LimitModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const limitModel = new LimitSchema(Object.assign({}, validRecord, { repetitions: 'test' }))
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { repetitions: 'test' }))
       try {
         await limitModel.validate()
         test.fail()
@@ -124,7 +124,7 @@ Test('Limit model', LimitModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const limitModel = new LimitSchema(Object.assign({}, validRecord, { threshold: null }))
+      let limitModel = new LimitSchema(Object.assign({}, validRecord, { threshold: null }))
       try {
         await limitModel.validate()
         test.fail()
@@ -136,7 +136,7 @@ Test('Limit model', LimitModelTest => {
     })
 
     isActiveFieldTest.test('create object', async test => {
-      const limitModel = new LimitSchema(Object.assign({}, validRecord))
+      let limitModel = new LimitSchema(Object.assign({}, validRecord))
       try {
         await limitModel.validate()
         test.pass('with valid field values')

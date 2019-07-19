@@ -51,7 +51,7 @@ Test('curentPosition model test', currentPositionModelTest => {
 
   currentPositionModelTest.test('Action model should', isActiveFieldTest => {
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { name: '' }))
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { name: '' }))
       try {
         await currentPositionModel.validate()
         test.fail()
@@ -63,7 +63,7 @@ Test('curentPosition model test', currentPositionModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { currency: '' }))
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { currency: '' }))
       try {
         await currentPositionModel.validate()
         test.fail()
@@ -75,7 +75,7 @@ Test('curentPosition model test', currentPositionModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { positionValue: 'A' }))
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { positionValue: 'A' }))
       try {
         await currentPositionModel.validate()
         test.fail()
@@ -86,7 +86,7 @@ Test('curentPosition model test', currentPositionModelTest => {
       }
     })
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { percentage: 'A' }))
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { percentage: 'A' }))
       try {
         await currentPositionModel.validate()
         test.fail()
@@ -97,7 +97,7 @@ Test('curentPosition model test', currentPositionModelTest => {
       }
     })
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { transferId: '' }))
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { transferId: '' }))
       try {
         await currentPositionModel.validate()
         test.fail()
@@ -108,7 +108,7 @@ Test('curentPosition model test', currentPositionModelTest => {
       }
     })
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { positionType: 'test' }))
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { positionType: 'test' }))
       try {
         await currentPositionModel.validate()
         test.fail()
@@ -119,7 +119,7 @@ Test('curentPosition model test', currentPositionModelTest => {
       }
     })
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { messagePayload: null }))
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord, { messagePayload: null }))
       try {
         await currentPositionModel.validate()
         test.fail()
@@ -130,7 +130,7 @@ Test('curentPosition model test', currentPositionModelTest => {
       }
     })
     isActiveFieldTest.test('create object', async test => {
-      const currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord))
+      let currentPositionModel = new CurrentPositionSchema(Object.assign({}, validRecord))
       try {
         await currentPositionModel.validate()
         test.pass('with valid field values')

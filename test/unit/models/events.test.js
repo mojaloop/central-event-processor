@@ -53,7 +53,7 @@ Test('Event model', EventModelTest => {
 
   EventModelTest.test('Event model should', isActiveFieldTest => {
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const eventModel = new EventSchema(Object.assign({}, validRecord, { isActive: 'test' }))
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { isActive: 'test' }))
       try {
         await eventModel.validate()
         test.fail()
@@ -65,7 +65,7 @@ Test('Event model', EventModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const eventModel = new EventSchema(Object.assign({}, validRecord, { name: '' }))
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { name: '' }))
       try {
         await eventModel.validate()
         test.fail()
@@ -77,7 +77,7 @@ Test('Event model', EventModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const eventModel = new EventSchema(Object.assign({}, validRecord, { currency: '' }))
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { currency: '' }))
       try {
         await eventModel.validate()
         test.fail()
@@ -89,7 +89,7 @@ Test('Event model', EventModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const eventModel = new EventSchema(Object.assign({}, validRecord, { limitType: null }))
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { limitType: null }))
       try {
         await eventModel.validate()
         test.fail()
@@ -101,7 +101,7 @@ Test('Event model', EventModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const eventModel = new EventSchema(Object.assign({}, validRecord, { notificationEndpointType: null }))
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { notificationEndpointType: null }))
       try {
         await eventModel.validate()
         test.fail()
@@ -113,7 +113,7 @@ Test('Event model', EventModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const eventModel = new EventSchema(Object.assign({}, validRecord, { action: 1 }))
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { action: 1 }))
       try {
         await eventModel.validate()
         test.fail()
@@ -125,7 +125,7 @@ Test('Event model', EventModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const eventModel = new EventSchema(Object.assign({}, validRecord, { templateType: null }))
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { templateType: null }))
       try {
         await eventModel.validate()
         test.fail()
@@ -137,7 +137,7 @@ Test('Event model', EventModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      const eventModel = new EventSchema(Object.assign({}, validRecord, { language: null }))
+      let eventModel = new EventSchema(Object.assign({}, validRecord, { language: null }))
       try {
         await eventModel.validate()
         test.fail()
@@ -149,7 +149,7 @@ Test('Event model', EventModelTest => {
     })
 
     isActiveFieldTest.test('create object', async test => {
-      const eventModel = new EventSchema(Object.assign({}, validRecord))
+      let eventModel = new EventSchema(Object.assign({}, validRecord))
       try {
         await eventModel.validate()
         test.pass('with valid field values')

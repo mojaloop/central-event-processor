@@ -7,8 +7,8 @@ const Enums = require('../../lib/enum')
 const getLimitPerNameObservable = ({ message }) => {
   return Rx.Observable.create(async observer => {
     try {
-      const { limit, currency } = message.value.content.payload
-      const name = message.value.from
+      let { limit, currency } = message.value.content.payload
+      let name = message.value.from
       const limitResult = await updateLimitsFromMessage(name, currency, limit)
       await createEventsForParticipant(name, limitResult)
       observer.next(limitResult)
@@ -22,10 +22,10 @@ const getLimitPerNameObservable = ({ message }) => {
 
 const createEventsForParticipant = async (name, limit) => {
   try {
-    const notificationActions = Enums.limitNotificationMap[limit.type]
-    for (const key in notificationActions) {
+    let notificationActions = Enums.limitNotificationMap[limit.type]
+    for (let key in notificationActions) {
       if (key !== 'enum') {
-        const eventRecord = await EventModel.findOne({ name, currency: limit.currency, limitType: limit.type, notificationEndpointType: key })
+        let eventRecord = await EventModel.findOne({ name, currency: limit.currency, limitType: limit.type, notificationEndpointType: key })
         if (!eventRecord) {
           const newEvent = {
             name,
@@ -48,8 +48,8 @@ const createEventsForParticipant = async (name, limit) => {
 
 const updateLimitsFromMessage = async (name, currency, limit) => {
   try {
-    const doc = await LimitModel.findOne({ name, currency, type: limit.type })
-    const limitObject = {
+    let doc = await LimitModel.findOne({ name, currency, type: limit.type })
+    let limitObject = {
       name,
       currency: currency,
       type: limit.type,
@@ -62,7 +62,7 @@ const updateLimitsFromMessage = async (name, currency, limit) => {
       await doc.save()
       return doc.toObject()
     } else {
-      const document = await LimitModel.create(limitObject)
+      let document = await LimitModel.create(limitObject)
       return document.toObject()
     }
   } catch (err) {

@@ -2,7 +2,7 @@ const Logger = require('@mojaloop/central-services-shared').Logger
 const Rx = require('rxjs')
 const { filter, flatMap, retry, delay, retryWhen, repeat, repeatWhen, catchError } = require('rxjs/operators')
 
-const arrO = Rx.from([1, 2, 3, 4, 5, 6, 7])
+let arrO = Rx.from([1, 2, 3, 4, 5, 6, 7])
 
 const mapped = arrO.pipe(
   flatMap(v => {
