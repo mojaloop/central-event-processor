@@ -168,3 +168,20 @@ The scheduler coordinates the Action Object that requires to be dispatched. It w
 [Notifier flow](docs/images/6.png)
 
 Email notifier service is a separate app, that observes the same topic for messages with field *from* = `SYSTEM`. Its code is available in the [email-notifier](https://github.com/mojaloop/email-notifier) repository.
+
+
+## Auditing Dependencies
+
+We use `npm-audit-resolver` along with `npm audit` to check dependencies for vulnerabilities, and keep track of resolved dependencies with an `audit-resolv.json` file.
+
+To start a new resolution process, run:
+```bash
+npm run audit:resolve
+```
+
+You can then check to see if the CI will pass based on the current dependencies with:
+```bash
+npm run audit:check
+```
+
+And commit the changed `audit-resolv.json` to ensure that CircleCI will build correctly.
