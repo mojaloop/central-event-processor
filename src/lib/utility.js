@@ -223,36 +223,6 @@ const updateMessageProtocolMetadata = (messageProtocol, metadataType, metadataAc
 }
 
 /**
- * @function createPrepareErrorStatus
- *
- * @param {number} errorCode - error code for error occurred
- * @param {string} errorDescription - error description for error occurred
- * @param {object} extensionList - list of extensions
- * Example:
- * errorInformation: {
- *   errorCode: 3001,
- *   errorDescription: 'A failure has occurred',
- *   extensionList: [{
- *      extension: {
- *        key: 'key',
- *        value: 'value'
- *      }
- *   }]
- * }
- *
- * @returns {object} - Returns errorInformation object
- */
-const createPrepareErrorStatus = (errorCode, errorDescription, extensionList) => {
-  return {
-    errorInformation: {
-      errorCode,
-      errorDescription,
-      extensionList
-    }
-  }
-}
-
-/**
  * @function createState
  *
  * @param {string} status - status of message
@@ -327,7 +297,6 @@ const produceGeneralMessage = async (functionality, action, message, state) => {
 exports.transformGeneralTopicName = transformGeneralTopicName
 exports.getKafkaConfig = getKafkaConfig
 exports.updateMessageProtocolMetadata = updateMessageProtocolMetadata
-exports.createPrepareErrorStatus = createPrepareErrorStatus
 exports.createState = createState
 exports.produceGeneralMessage = produceGeneralMessage
 exports.ENUMS = ENUMS
