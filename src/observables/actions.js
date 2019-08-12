@@ -36,6 +36,7 @@ const Logger = require('@mojaloop/central-services-shared').Logger
 const ActionModel = require('../models/action').actionModel
 const NotificationModel = require('../models/notificationEndpoint').notificationEndpointModel
 const LimitModel = require('../models/limits').limitModel
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const { resetPeriod, notificationInterval } = Config.notificationMinutes
 
@@ -68,7 +69,7 @@ const dictionary = {
     try {
       await Utility.produceGeneralMessage(eventType, eventAction, createMessageProtocol(payload, action), Utility.ENUMS.STATE.SUCCESS)
     } catch (err) {
-      throw err
+      throw ErrorHandler.Factory.reformatFSPIOPError(err)
     }
   },
 
@@ -85,7 +86,7 @@ const actionBuilder = (action) => {
   if (action in dictionary) {
     return dictionary[action]
   } else {
-    throw new Error('Action ' + action + ' are not supported')
+    throw ErrorHandler.Factory.createInternalServerFSPIOPError('Action ' + action + ' are not supported')
   }
 }
 
@@ -153,7 +154,7 @@ const clearRepetitionTask = async function (actionId) { // clears the timesTrigg
       this.schedule(actionId, resetPeriod * 60 * 1000)
     }
   } catch (err) {
-    throw new Error('Clear repetition for task id : ' + actionId + ' failed. Error : ' + err)
+    throw ErrorHandler.Factory.createInternalServerFSPIOPError('Clear repetition for task id : ' + actionId + ' failed.', err)
   }
 }
 
