@@ -29,6 +29,7 @@
   "scripts": {
     "test": "npm run test:unit | faucet",
     "test:unit": "tape 'test/unit/**/*.test.js'",
+    "test:xunit": "tape 'test/unit/**/*.test.js' | tap-xunit",
     "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js'",
     "test:coverage-check": "npm run test:coverage && istanbul check-coverage",
     "start": "WITH_SASL=0&&LD_LIBRARY_PATH=$PWD/node_modules/node-rdkafka/build/deps && node app.js",
@@ -63,6 +64,7 @@
     "sinon-mongoose": "2.3.0",
     "standard": "13.1.0",
     "tape": "4.11.0",
-    "tapes": "4.1.0"
+    "tapes": "4.1.0",
+    "tap-xunit": "2.4.1"
   }
 }
