@@ -149,20 +149,5 @@ Test('Utility Test', utilityTest => {
     createStateTest.end()
   })
 
-  utilityTest.test('createPrepareErrorStatus should', createPrepareErrorStatusTest => {
-    createPrepareErrorStatusTest.test('create Prepare Error Status', async (test) => {
-      const errorInformation = {
-        errorCode: 3000,
-        errorDescription: 'description',
-        extensionList: []
-      }
-      const result = await Utility.createPrepareErrorStatus(errorInformation.errorCode, errorInformation.errorDescription, errorInformation.extensionList)
-      test.deepEqual(result.errorInformation, errorInformation)
-      test.end()
-    })
-
-    createPrepareErrorStatusTest.end()
-  })
-
   utilityTest.end()
 })

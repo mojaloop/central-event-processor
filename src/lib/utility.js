@@ -42,6 +42,7 @@ const Logger = require('@mojaloop/central-services-shared').Logger
 const Uuid = require('uuid4')
 const Kafka = require('./kafka')
 const Enum = require('./enum')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 /**
  * The Producer config required
@@ -135,9 +136,9 @@ const ENUMS = {
 const generalTopicTemplate = (functionality, action) => {
   try {
     return Mustache.render(Config.KAFKA.TOPIC_TEMPLATES.GENERAL_TOPIC_TEMPLATE.TEMPLATE, { functionality, action })
-  } catch (e) {
-    Logger.error(e)
-    throw e
+  } catch (err) {
+    Logger.error(err)
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
@@ -157,8 +158,8 @@ const transformGeneralTopicName = (functionality, action) => {
       return generalTopicTemplate(Enum.topicMap[functionality][action].functionality, Enum.topicMap[functionality][action].action)
     }
     return generalTopicTemplate(functionality, action)
-  } catch (e) {
-    throw e
+  } catch (err) {
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
@@ -180,8 +181,8 @@ const getKafkaConfig = (flow, functionality, action) => {
     const actionObject = functionalityObject[action]
     actionObject.config.logger = Logger
     return actionObject.config
-  } catch (e) {
-    throw new Error(`No config found for those parameters flow='${flow}', functionality='${functionality}', action='${action}'`)
+  } catch (err) {
+    throw ErrorHandler.Factory.createInternalServerFSPIOPError(`No config found for those parameters flow='${flow}', functionality='${functionality}', action='${action}'`, err)
   }
 }
 
@@ -219,36 +220,6 @@ const updateMessageProtocolMetadata = (messageProtocol, metadataType, metadataAc
     messageProtocol.metadata.event.state = state
   }
   return messageProtocol
-}
-
-/**
- * @function createPrepareErrorStatus
- *
- * @param {number} errorCode - error code for error occurred
- * @param {string} errorDescription - error description for error occurred
- * @param {object} extensionList - list of extensions
- * Example:
- * errorInformation: {
- *   errorCode: 3001,
- *   errorDescription: 'A failure has occurred',
- *   extensionList: [{
- *      extension: {
- *        key: 'key',
- *        value: 'value'
- *      }
- *   }]
- * }
- *
- * @returns {object} - Returns errorInformation object
- */
-const createPrepareErrorStatus = (errorCode, errorDescription, extensionList) => {
-  return {
-    errorInformation: {
-      errorCode,
-      errorDescription,
-      extensionList
-    }
-  }
 }
 
 /**
@@ -326,7 +297,6 @@ const produceGeneralMessage = async (functionality, action, message, state) => {
 exports.transformGeneralTopicName = transformGeneralTopicName
 exports.getKafkaConfig = getKafkaConfig
 exports.updateMessageProtocolMetadata = updateMessageProtocolMetadata
-exports.createPrepareErrorStatus = createPrepareErrorStatus
 exports.createState = createState
 exports.produceGeneralMessage = produceGeneralMessage
 exports.ENUMS = ENUMS

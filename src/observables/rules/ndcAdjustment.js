@@ -29,6 +29,7 @@ const Rx = require('rxjs')
 // const LimitModel = require('../../models/limits').limitModel
 const EventModel = require('../../models/events').eventModel
 const ActionModel = require('../../models/action').actionModel
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 let engine = new RuleEngine.Engine()
 
@@ -81,7 +82,7 @@ const createRules = async (limit) => {
     rules.push(adjustmentRule)
     return { rules, event }
   } catch (err) {
-    throw err
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 

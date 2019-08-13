@@ -3,6 +3,7 @@ const Logger = require('@mojaloop/central-services-shared').Logger
 const LimitModel = require('../../models/limits').limitModel
 const EventModel = require('../../models/events').eventModel
 const Enums = require('../../lib/enum')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const getLimitPerNameObservable = ({ message }) => {
   return Rx.Observable.create(async observer => {
@@ -42,7 +43,7 @@ const createEventsForParticipant = async (name, limit) => {
     }
   } catch (err) {
     Logger.info(`createEventsForParticipant exit with error: ${err}`)
-    throw err
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
@@ -67,7 +68,7 @@ const updateLimitsFromMessage = async (name, currency, limit) => {
     }
   } catch (err) {
     Logger.info(`updateLimitsFromMessage exit with error: ${err}`)
-    throw err
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
