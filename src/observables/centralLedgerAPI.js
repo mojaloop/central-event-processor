@@ -36,6 +36,7 @@ const Enums = require('../lib/enum')
 const centralLedgerAPIConfig = Config.get('centralLedgerAPI')
 const centralLedgerAdminURI = `${centralLedgerAPIConfig.adminHost}:${centralLedgerAPIConfig.adminPort}`
 const hubName = Config.get('HUB_PARTICIPANT').NAME
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const getPositionsFromResponse = positions => {
   let positionObject = {}
@@ -89,7 +90,7 @@ const createEventsForParticipantSettlementPositionChange = async (message) => {
     }
   } catch (err) {
     Logger.info(`createEventsForParticipant exit with error: ${err}`)
-    throw err
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
@@ -117,7 +118,7 @@ const storeCurrentPositionForSettlementChange = async (message) => {
     }
   } catch (err) {
     Logger.info(`storeCurrentPositionForSettlementChange exit with error: ${err}`)
-    throw err
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
@@ -187,7 +188,7 @@ const prepareCurrentPosition = (name, positions, limits, transferId, messagePayl
     })
     return viewsArray
   } catch (err) {
-    throw err
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
@@ -213,7 +214,7 @@ const updateNotificationEndpointsFromResponse = async (name, notificationEndpoin
       result.push(notificationRecord.toObject())
     }
   } catch (err) {
-    throw err
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
   return result
 }
@@ -275,8 +276,8 @@ const requestPositionPerName = async (name) => {
   try {
     const position = await request({ uri: `http://${centralLedgerAdminURI}/participants/${name}/positions`, json: true })
     return position
-  } catch (e) {
-    throw e
+  } catch (err) {
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
@@ -293,7 +294,7 @@ const getPositionsObservable = ({ message }) => {
         LimitModel.find({ name: payerFsp }),
         LimitModel.find({ name: payeeFsp })
       ]).catch(err => {
-        throw err
+        throw ErrorHandler.Factory.reformatFSPIOPError(err)
       })
       const payerPositions = getPositionsFromResponse(payerPositionsResponse)
       const payeePositions = getPositionsFromResponse(payeePositionsResponse)
@@ -301,7 +302,7 @@ const getPositionsObservable = ({ message }) => {
       const payeeCurrentPostion = prepareCurrentPosition(payeeFsp, payeePositions, payeeLimits, transferId, messagePayload)
       let positions = []
       CurrentPositionModel.insertMany(payerCurrentPostion.concat(payeeCurrentPostion), function (err, docs) {
-        if (err) throw err
+        if (err) throw ErrorHandler.Factory.reformatFSPIOPError(err)
         for (let doc of docs) {
           positions.push(doc)
         }

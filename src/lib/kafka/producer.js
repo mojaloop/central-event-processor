@@ -35,6 +35,7 @@
 
 const Producer = require('@mojaloop/central-services-stream').Kafka.Producer
 const Logger = require('@mojaloop/central-services-shared').Logger
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 let listOfProducers = {}
 
@@ -67,10 +68,10 @@ const produceMessage = async (messageProtocol, topicConf, config) => {
     await producer.sendMessage(messageProtocol, topicConf)
     Logger.info('Producer::end')
     return true
-  } catch (e) {
-    Logger.error(e)
+  } catch (err) {
+    Logger.error(err)
     Logger.info('Producer error has occurred')
-    throw e
+    throw ErrorHandler.Factory.createInternalServerFSPIOPError(`Producer error has occurred for ${topicConf.topicName}`, err)
   }
 }
 
@@ -87,8 +88,8 @@ const disconnect = async (topicName = null) => {
   if (topicName && typeof topicName === 'string') {
     try {
       await getProducer(topicName).disconnect()
-    } catch (e) {
-      throw e
+    } catch (err) {
+      throw ErrorHandler.Factory.reformatFSPIOPError(err)
     }
   } else if (topicName === null) {
     let isError = false
@@ -101,13 +102,13 @@ const disconnect = async (topicName = null) => {
       } catch (e) {
         isError = true
         errorTopicList.push({ topic: tpName, error: e.toString() })
+        if (isError) {
+          throw ErrorHandler.Factory.createInternalServerFSPIOPError(`The following Producers could not be disconnected: ${JSON.stringify(errorTopicList)}`, e)
+        }
       }
     }
-    if (isError) {
-      throw Error(`The following Producers could not be disconnected: ${JSON.stringify(errorTopicList)}`)
-    }
   } else {
-    throw Error(`Unable to disconnect Producer: ${topicName}`)
+    throw ErrorHandler.Factory.createInternalServerFSPIOPError(`Unable to disconnect Producer: ${topicName}`)
   }
 }
 
@@ -125,7 +126,7 @@ const getProducer = (topicName) => {
   if (listOfProducers[topicName]) {
     return listOfProducers[topicName]
   } else {
-    throw Error(`No producer found for topic ${topicName}`)
+    throw ErrorHandler.Factory.createInternalServerFSPIOPError(`No producer found for topic ${topicName}`)
   }
 }
 
