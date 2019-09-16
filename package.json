@@ -4,7 +4,7 @@
   "description": "CEP for Mojaloop Central-Ledger to monitor the notificaion kafka topic and act on it.",
   "main": "app.js",
   "dependencies": {
-    "@hapi/hapi": "18.3.1",
+    "@hapi/hapi": "18.4.0",
     "@mojaloop/central-services-error-handling": "7.3.0",
     "@mojaloop/central-services-shared": "7.2.0",
     "@mojaloop/central-services-stream": "6.2.2",
