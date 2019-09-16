@@ -17,7 +17,7 @@
     "moment": "2.24.0",
     "mongoose": "5.6.9",
     "mongoose-unique-validator": "2.0.3",
-    "mustache": "3.0.1",
+    "mustache": "3.1.0",
     "proxyquire": "2.1.2",
     "rc": "1.2.8",
     "request": "2.88.0",
