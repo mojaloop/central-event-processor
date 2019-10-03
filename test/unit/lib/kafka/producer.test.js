@@ -39,7 +39,7 @@ const P = require('bluebird')
 const Uuid = require('uuid4')
 const FSPIOPError = require('@mojaloop/central-services-error-handling').Factory.FSPIOPError
 
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 
 const transfer = {
   transferId: 'b51ec534-ee48-4575-b6a9-ead2955b8999',
