@@ -1,10 +1,14 @@
 {
+  "PORT": 3080,
   "notificationMinutes": {
     "resetPeriod": 60,
     "notificationInterval": 3,
     "oscilateEvents": ["NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL"]
   },
-  "PORT": 3080,
+  "AMOUNT": {
+    "PRECISION": 18,
+    "SCALE": 4
+  },
   "centralLedgerAPI": {
     "adminHost": "localhost",
     "adminPort": 3001,

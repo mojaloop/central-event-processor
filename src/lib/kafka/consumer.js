@@ -17,11 +17,13 @@
  optionally within square brackets <email>.
  * Gates Foundation
  - Name Surname <name.surname@gatesfoundation.com>
- * Rajiv Mothilal <rajiv.mothilal@modusbox.com>
- * Miguel de Barros <miguel.debarros@modusbox.com>
+
+ * ModusBox
+ - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
+ - Miguel de Barros <miguel.debarros@modusbox.com>
+
  --------------
  ******/
-
 'use strict'
 
 /**
@@ -29,10 +31,10 @@
  */
 
 const Consumer = require('@mojaloop/central-services-stream').Kafka.Consumer
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 const Utility = require('../utility')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
-let listOfConsumers = {}
+const listOfConsumers = {}
 
 /**
  * @function isConsumerAutoCommitEnabled

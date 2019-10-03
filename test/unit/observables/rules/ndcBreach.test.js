@@ -24,7 +24,7 @@
 'use strict'
 
 const Rx = require('rxjs')
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 const test = require('tapes')(require('tape'))
 const Utility = require('../../../src/lib/utility')
 const Sinon = require('sinon')

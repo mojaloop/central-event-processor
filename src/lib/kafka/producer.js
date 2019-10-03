@@ -22,8 +22,9 @@
  * Gates Foundation
  - Name Surname <name.surname@gatesfoundation.com>
 
- * Rajiv Mothilal <rajiv.mothilal@modusbox.com>
- * Miguel de Barros <miguel.debarros@modusbox.com>
+ * ModusBox
+ - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
+ - Miguel de Barros <miguel.debarros@modusbox.com>
 
  --------------
  ******/
@@ -34,10 +35,10 @@
  */
 
 const Producer = require('@mojaloop/central-services-stream').Kafka.Producer
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
-let listOfProducers = {}
+const listOfProducers = {}
 
 /**
  * @function ProduceMessage
@@ -93,7 +94,7 @@ const disconnect = async (topicName = null) => {
     }
   } else if (topicName === null) {
     let isError = false
-    let errorTopicList = []
+    const errorTopicList = []
 
     let tpName
     for (tpName in listOfProducers) {

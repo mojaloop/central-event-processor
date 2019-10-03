@@ -43,7 +43,7 @@ const Mockgoose = require('mockgoose').Mockgoose
 const mockgoose = new Mockgoose(mongoose)
 const Database = require('../../../src/lib/database').db
 const config = require('../../../src/lib/config')
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 
 test('Mongo Database tests', async dbTest => {
   dbTest.beforeEach(async t => {

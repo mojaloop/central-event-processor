@@ -1,5 +1,4 @@
 /*****
- * @file This registers all handlers for the central-ledger API
  License
  --------------
  Copyright © 2017 Bill & Melinda Gates Foundation
@@ -23,7 +22,8 @@
  * Gates Foundation
  - Name Surname <name.surname@gatesfoundation.com>
 
- * Georgi Georgiev <lazola.lucas@modusbox.com>
+ * ModusBox
+ - Georgi Georgiev <georgi.georgiev@modusbox.com>
 
  --------------
  ******/
@@ -94,7 +94,7 @@ const headers = {
 }
 const topicMap = {
   notification: {
-    'prepare': {
+    prepare: {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
@@ -102,11 +102,11 @@ const topicMap = {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
-    'commit': {
+    commit: {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
-    'abort': {
+    abort: {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
@@ -114,11 +114,11 @@ const topicMap = {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
-    'reject': {
+    reject: {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },
-    'get': {
+    get: {
       functionality: transferEventType.NOTIFICATION,
       action: transferEventAction.EVENT
     },

@@ -22,13 +22,13 @@
  * Gates Foundation
  - Name Surname <name.surname@gatesfoundation.com>
 
- * Lazola Lucas <lazola.lucas@modusbox.com>
- * Rajiv Mothilal <rajiv.mothilal@modusbox.com>
- * Miguel de Barros <miguel.debarros@modusbox.com>
+ * ModusBox
+ - Lazola Lucas <lazola.lucas@modusbox.com>
+ - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
+ - Miguel de Barros <miguel.debarros@modusbox.com>
 
  --------------
  ******/
-
 'use strict'
 
 /**
@@ -38,7 +38,7 @@
 const Config = require('../lib/config')
 const Mustache = require('mustache')
 const KafkaConfig = require('../../config/default.json').KAFKA
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 const Uuid = require('uuid4')
 const Kafka = require('./kafka')
 const Enum = require('./enum')

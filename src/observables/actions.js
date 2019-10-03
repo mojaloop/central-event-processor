@@ -3,8 +3,11 @@
  --------------
  Copyright © 2017 Bill & Melinda Gates Foundation
  The Mojaloop files are made available by the Bill & Melinda Gates Foundation under the Apache License, Version 2.0 (the "License") and you may not use these files except in compliance with the License. You may obtain a copy of the License at
+
  http://www.apache.org/licenses/LICENSE-2.0
+
  Unless required by applicable law or agreed to in writing, the Mojaloop files are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
  Contributors
  --------------
  This is the official list of the Mojaloop project contributors for this file.
@@ -15,13 +18,17 @@
  Gates Foundation organization for an example). Those individuals should have
  their names indented and be marked with a '-'. Email address can be added
  optionally within square brackets <email>.
+
  * Gates Foundation
  - Name Surname <name.surname@gatesfoundation.com>
- * Valentin Genev <valentin.genev@modusbox.com>
- * Deon Botha <deon.botha@modusbox.com>
+
+ * ModusBox
+ - Georgi Georgiev <georgi.georgiev@modusbox.com>
+ - Valentin Genev <valentin.genev@modusbox.com>
+ - Deon Botha <deon.botha@modusbox.com>
+
  --------------
  ******/
-
 'use strict'
 
 const Rx = require('rxjs')
@@ -31,8 +38,7 @@ const moment = require('moment')
 const Config = require('../lib/config')
 const Enum = require('../lib/enum')
 const TransferEventType = Enum.transferEventType
-// const TransferEventAction = Enum.transferEventAction
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 const ActionModel = require('../models/action').actionModel
 const NotificationModel = require('../models/notificationEndpoint').notificationEndpointModel
 const LimitModel = require('../models/limits').limitModel
@@ -96,12 +102,12 @@ const actionObservable = ({ action, params, message }) => {
       if (action === 'finish') {
         return observer.complete({ actionResult: true })
       }
-      let hubName = Config.get('HUB_PARTICIPANT').NAME
+      const hubName = Config.get('HUB_PARTICIPANT.NAME')
       let actionResult
-      let previousAction = await ActionModel.findOne({ fromEvent: params.fromEvent, isActive: true })
-      let recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType })
-      let hubDetails = await NotificationModel.findOne({ name: hubName, action: params.action, type: params.notificationEndpointType })
-      let messageDetails = Object.assign({}, params, { notificationInterval, resetPeriod })
+      const previousAction = await ActionModel.findOne({ fromEvent: params.fromEvent, isActive: true })
+      const recepientDetails = await NotificationModel.findOne({ name: params.dfsp, action: params.action, type: params.notificationEndpointType })
+      const hubDetails = await NotificationModel.findOne({ name: hubName, action: params.action, type: params.notificationEndpointType })
+      const messageDetails = Object.assign({}, params, { notificationInterval, resetPeriod })
       const payload = {
         from: hubName,
         to: params.dfsp,
@@ -122,7 +128,7 @@ const actionObservable = ({ action, params, message }) => {
       } else {
         actionResult = await actionBuilder(action)({ payload }) // create new action
         if (Config.get('notificationMinutes').oscilateEvents.includes(params.notificationEndpointType)) {
-          let actionCreated = await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent })
+          const actionCreated = await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent })
           !params.isTest && Rx.asyncScheduler.schedule(clearRepetitionTask, resetPeriod * 60 * 1000, actionCreated.id) // loading the scheduler, clearRepetitionTask is executed after the period and actionCreated.id is sent as a parameter
         } else {
           await ActionModel.create({ triggeredBy: params.triggeredBy, fromEvent: params.fromEvent, isActive: false })
@@ -138,8 +144,8 @@ const actionObservable = ({ action, params, message }) => {
 
 const clearRepetitionTask = async function (actionId) { // clears the timesTriggered after delay is reached if action is still active
   try {
-    let action = await ActionModel.findById(actionId).populate('fromEvent')
-    let limit = await LimitModel.findOne({
+    const action = await ActionModel.findById(actionId).populate('fromEvent')
+    const limit = await LimitModel.findOne({
       type: action.fromEvent.limitType,
       name: action.fromEvent.name,
       currency: action.fromEvent.currency

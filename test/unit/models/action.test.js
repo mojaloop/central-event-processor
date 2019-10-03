@@ -33,7 +33,7 @@ const Sinon = require('sinon')
 // const mockgoose = new Mockgoose(mongoose)
 // const Database = require('../../../src/lib/database').db
 // const config = require('../../../src/lib/config')
-// const Logger = require('@mojaloop/central-services-shared').Logger
+// const Logger = require('@mojaloop/central-services-logger')
 const ActionSchema = require('../../../src/models/action').actionModel
 
 Test('Action model', ActionModelTest => {
