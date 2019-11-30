@@ -43,10 +43,7 @@ defaults_awsCliDependencies: &defaults_awsCliDependencies |
 defaults_build_docker_build: &defaults_build_docker_build
   name: Build Docker image
   command: |
-    # TODO: replace
     docker build -t $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG .
-    # docker build -t $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG -t $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$RELEASE_TAG .
-    # docker build -t $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TEST_TAG -t $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TEST_TAG .
 
 defaults_build_docker_login: &defaults_build_docker_login
   name: Login to Docker Hub
@@ -134,7 +131,6 @@ defaults_license_scanner: &defaults_license_scanner
     git clone https://github.com/mojaloop/license-scanner /tmp/license-scanner
     cd /tmp/license-scanner && make build default-files set-up
 
-#TODO: test the change to slack announcement curl command... or maybe we can just make this a shell script
 defaults_slack_announcement: &defaults_slack_announcement
   name: Slack announcement for tag releases
   command: |
@@ -148,11 +144,9 @@ defaults_test_env: &defaults_test_env
   environment:
     - TAG_EXP: 'v[0-9]+(\.[0-9]+)*'
     - TAG_EXP_SNAPSHOT: 'v[0-9]+(\.[0-9]+)*\-SNAPSHOT'
-    # TODO: remove these
     - TAG: v1.0
     - CIRCLE_TEST_TAG: v1.0
     - DOCKER_ORG: docker.io
-    # - CIRCLE_TAG: v1.0
     - RELEASE_TAG: v1.0
 
 defaults_working_directory: &defaults_working_directory
