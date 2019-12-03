@@ -4,6 +4,7 @@ set -o nounset
 if [[ ${CIRCLE_TAG} =~ v[0-9]+(\.[0-9]+)*(\-snapshot) ]]; then
   echo "Setting snap shot env vars for ${CIRCLE_TAG}"
 
+  echo 'export RELEASE_TAG=$RELEASE_TAG_SNAPSHOT' >> $BASH_ENV
   echo 'export HELM_VALUE_FILENAME=$K8_HELM_VALUE_FILENAME_SNAPSHOT' >> $BASH_ENV
   echo 'export K8_CLUSTER_SERVER=$K8_CLUSTER_SERVER_SNAPSHOT' >> $BASH_ENV
   echo 'export K8_RELEASE_NAME=$K8_RELEASE_NAME_SNAPSHOT' >> $BASH_ENV
@@ -20,6 +21,7 @@ fi
 if [[ ${CIRCLE_TAG} =~ v[0-9]+(\.[0-9]+)* ]]; then
   echo "Setting prod env vars for ${CIRCLE_TAG}"
 
+  echo 'export RELEASE_TAG=$RELEASE_TAG_PROD' >> $BASH_ENV
   echo 'export HELM_VALUE_FILENAME=$K8_HELM_VALUE_FILENAME_PROD' >> $BASH_ENV
   echo 'export K8_CLUSTER_SERVER=$K8_CLUSTER_SERVER_PROD' >> $BASH_ENV
   echo 'export K8_RELEASE_NAME=$K8_RELEASE_NAME_PROD' >> $BASH_ENV

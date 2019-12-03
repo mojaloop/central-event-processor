@@ -357,9 +357,8 @@ jobs:
       - run:
           <<: *defaults_build_docker_login
       - run:
-          name: setup environment vars for LATEST release
-          command: |
-            echo 'export RELEASE_TAG=$RELEASE_TAG_PROD' >> $BASH_ENV
+          name: setup environment vars for release/snapshot
+          command: ./.circleci/_set_up_deploy_envs.sh
       - run:
           name: Re-tag pre built image
           command: |
@@ -379,7 +378,7 @@ jobs:
           name: Install AWS CLI dependencies
           command: *defaults_awsCliDependencies
       - run:
-          name: setup environment vars for release
+          name: setup environment vars for release/snapshot
           command: ./.circleci/_set_up_deploy_envs.sh
       - run:
           <<: *defaults_deploy_prequisites
