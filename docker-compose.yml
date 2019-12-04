@@ -11,6 +11,8 @@ services:
     volumes:
       # override the default values with our own - this is because we can't set the kafka and mongo hosts dynamically
       - ./docker/central-event-processor/default.json:/opt/central-event-processor/config/default.json
+    environment:
+      - CSL_LOG_TRANSPORT=file
 
   ml-api-adapter:
     image: mojaloop/ml-api-adapter:latest
