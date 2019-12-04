@@ -1,4 +1,4 @@
-FROM node:10.15.3-alpine as builder
+FROM node:10.15.3-alpine
 USER root
 
 WORKDIR /opt/central-event-processor
@@ -11,23 +11,15 @@ RUN apk add --no-cache -t build-dependencies make gcc g++ python libtool autocon
 
 COPY package.json package-lock.json* /opt/central-event-processor/
 
-RUN npm install
+RUN npm install --production && \
+  npm uninstall -g npm
 
 COPY src /opt/central-event-processor/src
 COPY config /opt/central-event-processor/config
 COPY app.js /opt/central-event-processor/
 COPY docs /opt/central-event-processor/docs
 
-FROM node:10.15.3-alpine
-
-WORKDIR /opt/central-event-processor
-
-COPY --from=builder /opt/central-event-processor .
-RUN npm prune --production
-
-# Create empty log file & link stdout to the application log file
-RUN mkdir ./logs && touch ./logs/combined.log
-RUN ln -sf /dev/stdout ./logs/combined.log
+RUN apk del build-dependencies
 
 EXPOSE 3080
 CMD node app.js
