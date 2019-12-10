@@ -46,7 +46,7 @@ const mapped = arrO.pipe(
     if (v === 8) return Rx.throwError('error')
     else return Rx.from([v])
   }),
-  catchError(e => {
+  catchError(() => {
     return Rx.of(undefined)
   })
 )

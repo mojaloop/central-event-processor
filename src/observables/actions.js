@@ -79,10 +79,6 @@ const dictionary = {
     }
   },
 
-  /* sendRequest: ({ method = 'GET', url, payload }) => {
-    return 'not implemented'
-  }, */
-
   sendEmail: ({ emailAddress, subject, body }) => {
     return 'not implemented'
   }

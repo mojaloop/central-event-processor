@@ -134,8 +134,6 @@ const messages = [
 
 let count = 0
 
-const timeout = ms => new Promise(res => setTimeout(res, ms))
-
 const messageSubimtter = async (message) => {
   try {
     const success = {
@@ -151,10 +149,8 @@ const messageSubimtter = async (message) => {
 }
 
 const flood = async (count) => {
-  const arr = []
   for (let i = 0; i < count; i++) {
     for (const message of messages) {
-      // await timeout(100)
       await messageSubimtter(message)
     }
   }

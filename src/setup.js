@@ -65,7 +65,6 @@ const setup = async () => {
 
   const topicObservable = Rx.Observable.create((observer) => {
     consumer.on('message', async (data) => {
-      // Logger.info(`Central-Event-Processor :: Topic ${topicName} :: Payload: \n${JSON.stringify(data.value, null, 2)}`)
       observer.next(data)
       if (!Consumer.isConsumerAutoCommitEnabled(topicName)) {
         consumer.commitMessageSync(data)
@@ -79,7 +78,7 @@ const setup = async () => {
       flatMap(Observables.CentralLedgerAPI.getPositionsObservable),
       flatMap(Observables.Rules.ndcBreachObservable),
       flatMap(Observables.actionObservable),
-      catchError(e => {
+      catchError(() => {
         return Rx.onErrorResumeNext(generalObservable)
       })
     )
@@ -103,7 +102,7 @@ const setup = async () => {
       flatMap(Observables.Store.getLimitsPerNameObservable),
       flatMap(Observables.Rules.ndcAdjustmentObservable),
       flatMap(Observables.actionObservable),
-      catchError(e => {
+      catchError(() => {
         return Rx.onErrorResumeNext(limitAdjustmentObservable)
       })
     )
