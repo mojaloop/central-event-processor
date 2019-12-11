@@ -23,67 +23,25 @@
 
 'use strict'
 
-const Rx = require('rxjs')
-const Logger = require('@mojaloop/central-services-logger')
 const test = require('tapes')(require('tape'))
 const Utility = require('../../../src/lib/utility')
 const Sinon = require('sinon')
-const ndcBreachObservable = require('../../../src/observables/actions').ndcBreachObservable
 const LimitModel = require('../../../src/models/limits').limitModel
 const EventModel = require('../../../../src/models/events').eventModel
 const ActionModel = require('../../../src/models/action').actionModel
-const Enums = require('../../../../src/lib/enum')
 
 test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   Sinon.config = {
     useFakeTimers: false
   }
   let sandbox
-  let positionInput = {
-    name: 'dfsp1',
-    currency: 'USD',
-    percentage: 10.00,
-    positionValue: 100,
-    triggeredBy: '51bb793aca2ab77a3200000d'
-    // save: () => {return P.resolve()}
-  }
-  let limitResult = {
-    name: 'dfsp1',
-    currency: 'USD',
-    type: 'NET_DEBIT_CAP',
-    threshold: 20,
-    repetitions: 3
-  }
-  let eventResult = {
-    name: 'dfsp1',
-    currency: 'USD',
-    limitType: 'NET_DEBIT_CAP',
-    action: 'produceToKafkaTopic',
-    notificationEndpointType: 'NET_DEBIT_CAP_THRESHOLD_BREACH_EMAIL',
-    isActive: true,
-    id: '51bb793aca2ab77a3200000d',
-    templateType: 'templateType',
-    language: 'EN'
-  }
 
   actionTest.beforeEach(test => {
     sandbox = Sinon.createSandbox()
     sandbox.stub(LimitModel, 'findOne')
     sandbox.stub(EventModel, 'findOne')
     sandbox.stub(ActionModel, 'find')
-    sandbox.stub(findByIdAndUpdate, 'find')
-
-   /* sandbox.stub(Rx, 'asyncScheduler')
-    Rx.asyncScheduler.returns({schedule: () => {return P.resolve()}})*/
-    /*sandbox
-      .stub(ClearRepetitiontask,'Rx.Scheduler.async.schedule')
-      .returns(P.resolve());*/
-
-    // sandbox.stub(Rx.prototype, 'asyncScheduler')
-
     sandbox.stub(Utility)
-
-    Utility.produceGeneralMessage.returns(P.resolve())
     test.end()
   })
 
@@ -91,5 +49,4 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     sandbox.restore()
     test.end()
   })
-
-  await actionTest.test('Should return completed when the action is "finish"', async assert => {
+})

@@ -2,25 +2,14 @@
 
 const Sinon = require('sinon')
 const Test = require('tapes')(require('tape'))
-const Mustache = require('mustache')
-const P = require('bluebird')
 const Uuid = require('uuid4')
-// const Logger = require('@mojaloop/central-services-logger')
-// const KafkaProducer = require('@mojaloop/central-services-stream').Kafka.Producer
-const Proxyquire = require('proxyquire')
 const Utility = require('../../../src/lib/utility')
 
-let participantName
 const TRANSFER = 'transfer'
 const PREPARE = 'prepare'
-const FULFIL = 'fulfil'
 const NOTIFICATION = 'notification'
 const EVENT = 'event'
-// const COMMIT = 'commit'
 const CONSUMER = 'CONSUMER'
-
-const participantTopic = 'topic-testParticipant-transfer-prepare'
-const generalTopic = 'topic-transfer-fulfil'
 
 const transfer = {
   transferId: 'b51ec534-ee48-4575-b6a9-ead2955b8999',
@@ -77,11 +66,6 @@ Test('Utility Test', utilityTest => {
 
   utilityTest.beforeEach(test => {
     sandbox = Sinon.createSandbox()
-    // sandbox.stub(KafkaProducer.prototype, 'constructor').returns(P.resolve())
-    // sandbox.stub(KafkaProducer.prototype, 'connect').returns(P.resolve())
-    // sandbox.stub(KafkaProducer.prototype, 'sendMessage').returns(P.resolve())
-    // sandbox.stub(KafkaProducer.prototype, 'disconnect').returns(P.resolve())
-    participantName = 'testParticipant'
     test.end()
   })
 

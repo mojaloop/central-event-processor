@@ -35,15 +35,12 @@ require('leaked-handles').set({
 })
 
 const test = require('tapes')(require('tape'))
-const Sinon = require('sinon')
-const P = require('bluebird')
 const Mongoose = require('mongoose').Mongoose
 const mongoose = new Mongoose()
 const Mockgoose = require('mockgoose').Mockgoose
 const mockgoose = new Mockgoose(mongoose)
 const Database = require('../../../src/lib/database').db
 const config = require('../../../src/lib/config')
-const Logger = require('@mojaloop/central-services-logger')
 
 test('Mongo Database tests', async dbTest => {
   dbTest.beforeEach(async t => {
@@ -61,8 +58,6 @@ test('Mongo Database tests', async dbTest => {
       assert.end()
     }
   })
-
-  const timeout = ms => new Promise((resolve, reject) => setTimeout(resolve, ms))
 
   await dbTest.test('successful connection', async (assert) => {
     try {
