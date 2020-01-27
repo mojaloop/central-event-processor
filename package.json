@@ -54,7 +54,7 @@
     "istanbul": "1.1.0-alpha.1",
     "mockgoose": "8.0.4",
     "nodemon": "2.0.2",
-    "npm-audit-resolver": "2.1.0",
+    "npm-audit-resolver": "2.2.0",
     "npm-check-updates": "4.0.1",
     "rewire": "4.0.1",
     "sinon": "7.5.0",
