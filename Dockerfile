@@ -1,4 +1,4 @@
-FROM node:10.15.3-alpine as builder
+FROM node:12.16.0-alpine as builder
 USER root
 
 WORKDIR /opt/central-event-processor
@@ -18,7 +18,7 @@ COPY config /opt/central-event-processor/config
 COPY app.js /opt/central-event-processor/
 COPY docs /opt/central-event-processor/docs
 
-FROM node:10.15.3-alpine
+FROM node:12.16.0-alpine
 
 WORKDIR /opt/central-event-processor
 
