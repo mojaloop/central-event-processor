@@ -8,7 +8,7 @@ version: 2.1
 ###
 orbs:
   anchore: anchore/anchore-engine@1.6.0
-  deploy-kube: mojaloop/deployment@0.1.4
+  deploy-kube: mojaloop/deployment@0.1.6
 
 ##
 # defaults
@@ -208,7 +208,7 @@ jobs:
           <<: *defaults_license_scanner
       - run:
           name: Run the license-scanner
-          command: cd /tmp/license-scanner && mode=docker dockerImage=$DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG make run
+          command: cd /tmp/license-scanner && mode=docker dockerImages=$DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG make run
       - store_artifacts:
           path: /tmp/license-scanner/results
           prefix: licenses
