@@ -11,6 +11,18 @@
     "1325|istanbul>istanbul-api>istanbul-reports>handlebars": {
       "decision": "fix",
       "madeAt": 1575003783675
+    },
+    "1476|@mojaloop/central-services-health>@hapi/hapi>@hapi/subtext": {
+      "decision": "fix",
+      "madeAt": 1582278197698
+    },
+    "1480|@mojaloop/central-services-health>@hapi/hapi>@hapi/subtext": {
+      "decision": "fix",
+      "madeAt": 1582278197698
+    },
+    "1482|@mojaloop/central-services-health>@hapi/hapi": {
+      "decision": "fix",
+      "madeAt": 1582278197698
     }
   },
   "rules": {},
