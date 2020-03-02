@@ -11,7 +11,7 @@
     "@mojaloop/central-services-stream": "9.2.0",
     "@mojaloop/ml-number": "8.2.0",
     "bluebird": "3.7.2",
-    "config": "3.2.6",
+    "config": "3.3.0",
     "json-rules-engine": "5.0.3",
     "leaked-handles": "5.2.0",
     "moment": "2.24.0",
