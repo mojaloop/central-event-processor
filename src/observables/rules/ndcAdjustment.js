@@ -98,8 +98,8 @@ const ndcAdjustmentObservable = (limit) => {
       const { rules, event } = await createRules(limit)
       rules.forEach(rule => engine.addRule(rule)) // TODO check if it is a loop atm and if not remove the forEach and push
       const actions = await engine.run(limit)
-      if (actions.length) {
-        actions.forEach(action => {
+      if (actions.events && actions.events.length) {
+        actions.events.forEach(action => {
           observer.next({
             action: 'produceToKafkaTopic',
             params: action.params
