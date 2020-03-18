@@ -93,8 +93,8 @@ const ndcBreachObservable = ({ positions, message }) => {
       rules.forEach(rule => engine.addRule(rule))
       const fact = Object.assign({}, position.toObject())
       const actions = await engine.run(fact)
-      if (actions.length) {
-        actions.forEach(action => {
+      if (actions.events.length) {
+        actions.events.forEach(action => {
           observer.next({
             action: 'produceToKafkaTopic',
             params: action.params,
