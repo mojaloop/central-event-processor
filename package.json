@@ -58,7 +58,7 @@
     "faucet": "0.0.1",
     "istanbul": "1.1.0-alpha.1",
     "mockgoose": "8.0.4",
-    "nodemon": "2.0.2",
+    "nodemon": "2.0.3",
     "npm-audit-resolver": "2.2.0",
     "npm-check-updates": "4.0.4",
     "pre-commit": "1.2.2",
