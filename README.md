@@ -32,6 +32,8 @@ The CEP can then be integrated with a notifier service, to send out notification
 * [Actions Agent flow](#12-actions-agent-flow)
 * [Scheduler flow](#13-scheduler-flow)
 * [Notifier flow (separate service)](#14-notifier-flow-separate-service)
+* [Auditing Dependencies](#15-auditing-dependencies)
+* [Container Scans](#16-container-scans)
 
 ## 1. Deployment
 See the [onboarding guide](onboarding.md) for running the service locally.
@@ -170,9 +172,9 @@ The scheduler coordinates the Action Object that requires to be dispatched. It w
 Email notifier service is a separate app, that observes the same topic for messages with field *from* = `SYSTEM`. Its code is available in the [email-notifier](https://github.com/mojaloop/email-notifier) repository.
 
 
-## Auditing Dependencies
+## 15. Auditing Dependencies
 
-We use `npm-audit-resolver` along with `npm audit` to check dependencies for vulnerabilities, and keep track of resolved dependencies with an `audit-resolv.json` file.
+We use `npm-audit-resolver` along with `npm audit` to check dependencies for node vulnerabilities, and keep track of resolved dependencies with an `audit-resolve.json` file.
 
 To start a new resolution process, run:
 ```bash
@@ -184,4 +186,15 @@ You can then check to see if the CI will pass based on the current dependencies 
 npm run audit:check
 ```
 
-And commit the changed `audit-resolv.json` to ensure that CircleCI will build correctly.
+And commit the changed `audit-resolve.json` to ensure that CircleCI will build correctly.
+
+## 16. Container Scans
+
+As part of our CI/CD process, we use anchore-cli to scan our built docker container for vulnerabilities upon release.
+
+If you find your release builds are failing, refer to the [container scanning](https://github.com/mojaloop/ci-config#container-scanning) in our shared Mojaloop CI config repo. There is a good chance you simply need to update the `mojaloop-policy-generator.js` file and re-run the circleci workflow.
+
+For more information on anchore and anchore-cli, refer to:
+- [Anchore CLI](https://github.com/anchore/anchore-cli)
+- [Circle Orb Registry](https://circleci.com/orbs/registry/orb/anchore/anchore-engine)
+
