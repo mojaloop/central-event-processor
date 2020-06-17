@@ -33,8 +33,8 @@
     "standard": "standard",
     "dev": "nodemon app.js",
     "docker:up": "docker-compose -f docker-compose.yml up",
-    "audit:resolve": "SHELL=sh resolve-audit",
-    "audit:check": "SHELL=sh check-audit",
+    "audit:resolve": "SHELL=sh resolve-audit --production",
+    "audit:check": "SHELL=sh check-audit --production",
     "dep:check": "npx ncu -e 2",
     "dep:update": "npx ncu -u"
   },
