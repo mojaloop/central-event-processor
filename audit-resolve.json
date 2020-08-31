@@ -1,0 +1,26 @@
+{
+  "decisions": {
+    "1523|@mojaloop/central-services-shared>@mojaloop/central-services-error-handling>lodash": {
+      "decision": "fix",
+      "madeAt": 1598601454740
+    },
+    "1523|@mojaloop/central-services-shared>lodash": {
+      "decision": "fix",
+      "madeAt": 1598601454740
+    },
+    "1523|@mojaloop/central-services-shared>@mojaloop/event-sdk>lodash": {
+      "decision": "fix",
+      "madeAt": 1598601454740
+    },
+    "1523|@mojaloop/central-services-shared>openapi-backend>lodash": {
+      "decision": "fix",
+      "madeAt": 1598601460040
+    },
+    "1523|@mojaloop/central-services-stream>@mojaloop/central-services-error-handling>lodash": {
+      "decision": "fix",
+      "madeAt": 1598601559668
+    }
+  },
+  "rules": {},
+  "version": 1
+}
