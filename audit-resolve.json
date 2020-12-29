@@ -19,6 +19,10 @@
     "1523|@mojaloop/central-services-stream>@mojaloop/central-services-error-handling>lodash": {
       "decision": "fix",
       "madeAt": 1598601559668
+    },
+    "1500|@mojaloop/central-services-shared>widdershins>yargs>yargs-parser": {
+      "decision": "postpone",
+      "madeAt": 1609240164512
     }
   },
   "rules": {},
