@@ -58,7 +58,7 @@ Test('Action model', ActionModelTest => {
 
   ActionModelTest.test('Action model should', isActiveFieldTest => {
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      let actionModel = new ActionSchema(Object.assign({}, validRecord, { isActive: 'test' }))
+      const actionModel = new ActionSchema(Object.assign({}, validRecord, { isActive: 'test' }))
       try {
         await actionModel.validate()
         test.fail()
@@ -70,7 +70,7 @@ Test('Action model', ActionModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      let actionModel = new ActionSchema(Object.assign({}, validRecord, { timesTriggered: 'test' }))
+      const actionModel = new ActionSchema(Object.assign({}, validRecord, { timesTriggered: 'test' }))
       try {
         await actionModel.validate()
         test.fail()
@@ -82,7 +82,7 @@ Test('Action model', ActionModelTest => {
     })
 
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      let actionModel = new ActionSchema(Object.assign({}, validRecord, { fromEvent: 'test' }))
+      const actionModel = new ActionSchema(Object.assign({}, validRecord, { fromEvent: 'test' }))
       try {
         await actionModel.validate()
         test.fail()
@@ -93,7 +93,7 @@ Test('Action model', ActionModelTest => {
       }
     })
     isActiveFieldTest.test('throw error if invalid object is created', async test => {
-      let actionModel = new ActionSchema(Object.assign({}, validRecord, { triggeredBy: 1 }))
+      const actionModel = new ActionSchema(Object.assign({}, validRecord, { triggeredBy: 1 }))
       try {
         await actionModel.validate()
         test.fail()
@@ -104,7 +104,7 @@ Test('Action model', ActionModelTest => {
       }
     })
     isActiveFieldTest.test('create object', async test => {
-      let actionModel = new ActionSchema(Object.assign({}, validRecord))
+      const actionModel = new ActionSchema(Object.assign({}, validRecord))
       try {
         await actionModel.validate()
         test.pass('with valid field values')

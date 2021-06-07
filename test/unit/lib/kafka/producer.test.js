@@ -236,11 +236,11 @@ Test('Producer', producerTest => {
     })
 
     disconnectTest.test('throw error if failure to disconnect from kafka when disconnecting all Producers', async test => {
+      const topicNameSuccess = 'topic1'
+      const topicNameFailure = 'topic2'
+      const getProducerStub = sandbox.stub()
       try {
         // setup stubs for getProducer method
-        const topicNameSuccess = 'topic1'
-        var topicNameFailure = 'topic2'
-        var getProducerStub = sandbox.stub()
         getProducerStub.returns(new KafkaProducer({}))
         getProducerStub.withArgs(topicNameFailure).throws(`No producer found for topic ${topicNameFailure}`)
 
