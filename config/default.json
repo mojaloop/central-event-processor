@@ -69,6 +69,7 @@
               "enable.auto.commit": false,
               "auto.commit.interval.ms": 200,
               "socket.keepalive.enable": true,
+              "allow.auto.create.topics": true,
               "socket.max.fails": 1
             },
             "topicConf": {

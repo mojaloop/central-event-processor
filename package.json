@@ -1,28 +1,28 @@
 {
   "name": "central-event-processor",
-  "version": "11.0.1",
-  "description": "CEP for Mojaloop Central-Ledger to monitor the notificaion kafka topic and act on it",
-  "main": "app.js",
-  "dependencies": {
-    "@mojaloop/central-services-error-handling": "11.1.0",
-    "@mojaloop/central-services-health": "11.0.0",
-    "@mojaloop/central-services-logger": "10.6.0",
-    "@mojaloop/central-services-shared": "11.5.5",
-    "@mojaloop/central-services-stream": "10.6.0",
-    "@mojaloop/ml-number": "11.0.0",
-    "bluebird": "3.7.2",
-    "config": "3.3.3",
-    "json-rules-engine": "6.0.0",
-    "leaked-handles": "5.2.0",
-    "moment": "2.29.1",
-    "mongoose": "5.11.15",
-    "mustache": "4.1.0",
-    "proxyquire": "2.1.3",
-    "request": "2.88.2",
-    "request-promise": "4.2.6",
-    "rxjs": "6.6.3",
-    "uuid4": "2.0.2"
+  "version": "11.0.2",
+  "description": "CEP for Mojaloop Central-Ledger to monitor the notification kafka topic and act on it",
+  "homepage": "https://github.com/mojaloop/central-event-processor#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mojaloop/central-event-processor.git"
   },
+  "bugs": {
+    "url": "https://github.com/mojaloop/central-event-processor/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "ModusBox",
+  "contributors": [
+    "Valentin Genev <valentin.genev@modusbox.com>",
+    "Miguel de Barros <miguel.debarros@modusbox.com>"
+  ],
+  "main": "app.js",
+  "pre-commit": [
+    "dep:check",
+    "audit:check",
+    "lint",
+    "test"
+  ],
   "scripts": {
     "test": "npm run test:unit | faucet",
     "test:unit": "tape 'test/unit/**/*.test.js'",
@@ -30,7 +30,10 @@
     "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js'",
     "test:coverage-check": "npm run test:coverage && istanbul check-coverage",
     "start": "WITH_SASL=0&&LD_LIBRARY_PATH=$PWD/node_modules/node-rdkafka/build/deps && node app.js",
-    "standard": "standard",
+    "standard": "npx standard",
+    "standard:fix": "npx standard --fix",
+    "lint": "npm run standard",
+    "lint:fix": "npm run standard:fix",
     "dev": "nodemon app.js",
     "docker:up": "docker-compose -f docker-compose.yml up",
     "audit:resolve": "SHELL=sh resolve-audit --production",
@@ -38,34 +41,41 @@
     "dep:check": "npx ncu -e 2",
     "dep:update": "npx ncu -u"
   },
-  "pre-commit": [
-    "dep:check",
-    "audit:check",
-    "test"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mojaloop/central-event-processor.git"
+  "dependencies": {
+    "@mojaloop/central-services-error-handling": "11.3.0",
+    "@mojaloop/central-services-health": "13.0.0",
+    "@mojaloop/central-services-logger": "10.6.1",
+    "@mojaloop/central-services-metrics": "11.0.0",
+    "@mojaloop/central-services-shared": "13.0.1",
+    "@mojaloop/central-services-stream": "10.7.0",
+    "@mojaloop/event-sdk": "10.7.1",
+    "@mojaloop/ml-number": "11.1.0",
+    "bluebird": "3.7.2",
+    "config": "3.3.6",
+    "json-rules-engine": "6.1.2",
+    "leaked-handles": "5.2.0",
+    "moment": "2.29.1",
+    "mongoose": "5.12.13",
+    "mustache": "4.2.0",
+    "proxyquire": "2.1.3",
+    "request": "2.88.2",
+    "request-promise": "4.2.6",
+    "rxjs": "7.1.0",
+    "uuid4": "2.0.2"
   },
-  "author": "Valentin Genev",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mojaloop/central-event-processor/issues"
-  },
-  "homepage": "https://github.com/mojaloop/central-event-processor#readme",
   "devDependencies": {
     "faucet": "0.0.1",
     "istanbul": "1.1.0-alpha.1",
     "mockgoose": "8.0.4",
     "nodemon": "2.0.7",
-    "npm-audit-resolver": "2.2.1",
-    "npm-check-updates": "11.1.1",
+    "npm-audit-resolver": "2.3.1",
+    "npm-check-updates": "11.6.0",
     "pre-commit": "1.2.2",
     "rewire": "5.0.0",
-    "sinon": "9.2.4",
+    "sinon": "11.1.1",
     "standard": "16.0.3",
     "tap-xunit": "2.4.1",
-    "tape": "5.1.1",
+    "tape": "5.2.2",
     "tapes": "4.1.0"
   }
 }
