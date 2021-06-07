@@ -157,7 +157,7 @@ const getMetadataPromise = (consumer, topic) => {
   return new Promise((resolve, reject) => {
     const cb = (err, metadata) => {
       if (err) {
-        return reject(new Error(`Error connecting to consumer`))
+        return reject(new Error('Error connecting to consumer'))
       }
 
       return resolve(metadata)

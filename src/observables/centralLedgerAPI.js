@@ -74,7 +74,7 @@ const getParticipantEndpointsFromMessageResponse = async participantName => {
 
 const createEventsForParticipantSettlementPositionChange = async (message) => {
   try {
-    const notificationActions = Enums.notificationActionMap['SETTLEMENT_TRANSFER_POSITION_CHANGE_EMAIL']
+    const notificationActions = Enums.notificationActionMap.SETTLEMENT_TRANSFER_POSITION_CHANGE_EMAIL
     const eventRecord = await EventModel.findOne({
       name: message.value.to,
       currency: message.value.content.payload.currency,
@@ -162,7 +162,7 @@ const getParticipantEndpointsFromResponseObservable = message => {
         notificationEndpointType: dbEvent.notificationEndpointType,
         templateType: dbEvent.templateType,
         language: dbEvent.language,
-        messageSubject: `Settlement Position Change`
+        messageSubject: 'Settlement Position Change'
       }
 
       observer.next({

@@ -58,7 +58,7 @@ Test('Consumer', ConsumerTest => {
       // Arrange
       const topicName = 'admin'
       const config = { rdkafkaConf: {} }
-      var getMetadataPromiseStub = sandbox.stub()
+      const getMetadataPromiseStub = sandbox.stub()
       const metadata = {
         orig_broker_id: 0,
         orig_broker_name: 'kafka:9092/0',
@@ -103,7 +103,7 @@ Test('Consumer', ConsumerTest => {
       // Arrange
       const topicName = 'admin'
       const config = { rdkafkaConf: {} }
-      var getMetadataPromiseStub = sandbox.stub()
+      const getMetadataPromiseStub = sandbox.stub()
       const metadata = {
         orig_broker_id: 0,
         orig_broker_name: 'kafka:9092/0',
@@ -339,7 +339,7 @@ Test('Consumer', ConsumerTest => {
 
     registerTests.test('connect to the consumer', async test => {
       // Arrange
-      var isConnectedStub = sandbox.stub()
+      const isConnectedStub = sandbox.stub()
       isConnectedStub.returns(Promise.resolve(true))
       const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
       ConsumerProxy.__set__('isConnected', isConnectedStub)
