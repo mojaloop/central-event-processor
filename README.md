@@ -43,7 +43,7 @@ The CEP can then be integrated with a notifier service, to send out notification
 ## Todo
 
 - Improve code-coverage to 90% across the board: [.nycrc.yml](./.nycrc.yml). Don't forget to un-comment out the code-coverage options & rules.
-- Update CI/CD scripts to include unit and code-coverage tests
+- Update CI/CD scripts to include unit and code-coverage verification jobs
 
 ## Deployment
 
