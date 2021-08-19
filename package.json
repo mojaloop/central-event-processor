@@ -29,7 +29,7 @@
     "test:xunit": "tape 'test/unit/**/*.test.js' | tap-xunit",
     "test:coverage1": "istanbul cover tape -- 'test/unit/**/*.test.js'",
     "test:coverage-check1": "npm run test:coverage1 && istanbul check-coverage",
-    "test:coverage": "nyc --reporter=text-summary tapes -- 'test/unit/**/*.test.js' | tap-spec; nyc report ---reporter=text",
+    "test:coverage": "nyc tapes -- 'test/unit/**/*.test.js' | tap-spec; nyc report ---reporter=text",
     "test:coverage-check": "npm run test:coverage && nyc check-coverage",
     "start": "WITH_SASL=0&&LD_LIBRARY_PATH=$PWD/node_modules/node-rdkafka/build/deps && node app.js",
     "standard": "npx standard",
