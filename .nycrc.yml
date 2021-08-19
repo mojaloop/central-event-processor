@@ -1,0 +1,17 @@
+temp-directory: "./.nyc_output"
+check-coverage: true
+# per-file: true ## TODO: This should be un-commented to 90 once code-coverage is improved!
+# lines: 90 ## TODO: This should be un-commented to 90 once code-coverage is improved!
+# statements: 90 ## TODO: This should be un-commented to 90 once code-coverage is improved!
+# functions: 90 ## TODO: This should be un-commented to 90 once code-coverage is improved!
+# branches: 90 ## TODO: This should be un-commented to 90 once code-coverage is improved!
+# all: true ## TODO: This should be un-commented to 90 once code-coverage is improved!
+include: [
+  "src/**/*.js"
+]
+reporter: [
+  "lcov"
+]
+exclude: [
+  "**/node_modules/**"
+]
