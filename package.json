@@ -54,7 +54,7 @@
     "config": "3.3.6",
     "json-rules-engine": "6.1.2",
     "leaked-handles": "5.2.0",
-    "moment": "2.29.1",
+    "moment": "2.29.4",
     "mongoose": "5.13.7",
     "mustache": "4.2.0",
     "proxyquire": "2.1.3",
