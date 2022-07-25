@@ -23,10 +23,18 @@
  ******/
 'use strict'
 
-const setup = require('./src/setup').setup
+const setup = require('./setup').setup
 const Logger = require('@mojaloop/central-services-logger')
 
 try {
+  // Lets have a catch-all for any unhandled Promises
+  process.on('unhandledRejection', (reason, promise) => {
+    // TODO: replace this with Logger
+    console.error('unhandledRejection - promise', promise)
+    Logger.error(`Event Stream Processor error ${reason}`)
+  })
+
+  // Setup the application
   setup()
 } catch (err) {
   Logger.info(`Notifier throws an error ${err}`)

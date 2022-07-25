@@ -1,4 +1,4 @@
-const Utility = require('./src/lib/utility')
+const Utility = require('../../src/lib/utility')
 
 const messages = [
   {

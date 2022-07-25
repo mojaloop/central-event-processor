@@ -62,3 +62,11 @@ typings/
 
 # next.js build output
 .next
+
+# https://devspace.sh/
+devspace*
+.devspace/**.*
+
+# Add ignores
+*IGNORE*
+*ignore*

@@ -87,7 +87,7 @@ const updateLimitsFromMessage = async (name, currency, limit) => {
     const doc = await LimitModel.findOne({ name, currency, type: limit.type })
     const limitObject = {
       name,
-      currency: currency,
+      currency,
       type: limit.type,
       value: new MLNumber(limit.value).toFixed(Config.get('AMOUNT.SCALE')),
       threshold: limit.alarmPercentage

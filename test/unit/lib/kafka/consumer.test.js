@@ -28,12 +28,11 @@
  ******/
 'use strict'
 
-const src = '../../../../src'
 const Test = require('tapes')(require('tape'))
 const Sinon = require('sinon')
 const rewire = require('rewire')
 const KafkaConsumer = require('@mojaloop/central-services-stream').Kafka.Consumer
-const Consumer = require(`${src}/lib/kafka/consumer`)
+const Consumer = require('#src/lib/kafka/consumer')
 
 Test('Consumer', ConsumerTest => {
   let sandbox
@@ -68,7 +67,7 @@ Test('Consumer', ConsumerTest => {
         brokers: [{ id: 0, host: 'kafka', port: 9092 }]
       }
       getMetadataPromiseStub.returns(Promise.resolve(metadata))
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       ConsumerProxy.__set__('getMetadataPromise', getMetadataPromiseStub)
 
       // Act
@@ -83,7 +82,7 @@ Test('Consumer', ConsumerTest => {
     isConnectedTest.test('throw if the topic cannot be found', async test => {
       // Arrange
       const topicName = 'random-topic'
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       // Don't register any topics
 
       // Act
@@ -113,7 +112,7 @@ Test('Consumer', ConsumerTest => {
         brokers: [{ id: 0, host: 'kafka', port: 9092 }]
       }
       getMetadataPromiseStub.returns(Promise.resolve(metadata))
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       ConsumerProxy.__set__('getMetadataPromise', getMetadataPromiseStub)
 
       // Act
@@ -165,7 +164,7 @@ Test('Consumer', ConsumerTest => {
 
     createHandlerTest.test('topic is still added if fails to connect', async (test) => {
       // Arrange
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       const topicName = 'admin'
       const config = { rdkafkaConf: {} }
       KafkaConsumer.prototype.connect.throws(new Error())
@@ -181,7 +180,7 @@ Test('Consumer', ConsumerTest => {
 
     createHandlerTest.test('should have a timestamp of 0 if couldn\'t connect', async test => {
       // Arrange
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       const topicName = ['admin2', 'admin1']
       const config = { rdkafkaConf: {} }
       KafkaConsumer.prototype.connect.throws(new Error())
@@ -198,7 +197,7 @@ Test('Consumer', ConsumerTest => {
 
     createHandlerTest.test('should contain a timestamp of when it connected', async test => {
       // Arrange
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       const topicName = ['admin2', 'admin1']
       const config = { rdkafkaConf: {} }
 
@@ -218,7 +217,7 @@ Test('Consumer', ConsumerTest => {
   ConsumerTest.test('getListOfTopics should', getListOfTopicsTest => {
     getListOfTopicsTest.test('return an empty array when there are no topics', test => {
       // Arrange
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       ConsumerProxy.__set__('listOfConsumers', {})
       const expected = []
 
@@ -232,7 +231,7 @@ Test('Consumer', ConsumerTest => {
 
     getListOfTopicsTest.test('return a list of topics', test => {
       // Arrange
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       ConsumerProxy.__set__('listOfConsumers', { admin1: {}, admin2: {} })
       const expected = ['admin1', 'admin2']
 
@@ -252,7 +251,7 @@ Test('Consumer', ConsumerTest => {
     const expected = 'consumer'
 
     getConsumerTest.test('return list of consumers', async (test) => {
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       ConsumerProxy.__set__('listOfConsumers', {
         admin: {
           consumer: expected
@@ -268,7 +267,7 @@ Test('Consumer', ConsumerTest => {
     })
 
     getConsumerTest.test('throw error', async (test) => {
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       try {
         await ConsumerProxy.getConsumer(topicName)
         test.fail('Error not thrown!')
@@ -285,7 +284,7 @@ Test('Consumer', ConsumerTest => {
     const topicName = 'admin'
 
     isConsumerAutoCommitEnabledTest.test('throw error', async (test) => {
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       try {
         await ConsumerProxy.isConsumerAutoCommitEnabled(topicName)
         test.fail('Error not thrown!')
@@ -300,7 +299,7 @@ Test('Consumer', ConsumerTest => {
       // Arrange
       const topics = ['admin2', 'admin1']
       const config = { rdkafkaConf: {} }
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       await ConsumerProxy.createHandler(topics, config)
 
       // Act
@@ -341,7 +340,7 @@ Test('Consumer', ConsumerTest => {
       // Arrange
       const isConnectedStub = sandbox.stub()
       isConnectedStub.returns(Promise.resolve(true))
-      const ConsumerProxy = rewire(`${src}/lib/kafka/consumer`)
+      const ConsumerProxy = rewire('#src/lib/kafka/consumer')
       ConsumerProxy.__set__('isConnected', isConnectedStub)
 
       // Act
