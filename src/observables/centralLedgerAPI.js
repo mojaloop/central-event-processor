@@ -167,7 +167,7 @@ const getParticipantEndpointsFromResponseObservable = message => {
 
       observer.next({
         action: 'produceToKafkaTopic',
-        params: params,
+        params,
         message
       })
     } catch (err) {

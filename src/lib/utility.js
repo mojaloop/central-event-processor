@@ -209,7 +209,7 @@ const updateMessageProtocolMetadata = (messageProtocol, metadataType, metadataAc
         id: Uuid(),
         type: metadataType,
         action: metadataAction,
-        state: state
+        state
       }
     }
   } else {

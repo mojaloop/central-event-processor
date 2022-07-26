@@ -25,15 +25,14 @@
 
 const Rx = require('rxjs')
 const { filter, switchMap, share } = require('rxjs/operators')
-const Consumer = require('../../src/lib/kafka/consumer')
 const Proxyquire = require('proxyquire')
-const Observables = require('../../src/observables')
 const Logger = require('@mojaloop/central-services-logger')
 const Test = require('tapes')(require('tape'))
 const Sinon = require('sinon')
-// const Setup = require('../../src/setup')
-const Config = require('../../src/lib/config')
-const Utility = require('../../src/lib/utility')
+const Consumer = require('#src/lib/kafka/consumer')
+const Observables = require('#src/observables')
+const Config = require('#src/lib/config')
+const Utility = require('#src/lib/utility')
 
 Test('RxJs Observable Tests ( setup.js ) : ', async setupTest => {
   Sinon.config = {

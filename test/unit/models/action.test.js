@@ -26,15 +26,7 @@
 
 const Test = require('tapes')(require('tape'))
 const Sinon = require('sinon')
-// const P = require('bluebird')
-// const Mongoose = require('mongoose').Mongoose
-// const mongoose = new Mongoose()
-// const Mockgoose = require('mockgoose').Mockgoose
-// const mockgoose = new Mockgoose(mongoose)
-// const Database = require('../../../src/lib/database').db
-// const config = require('../../../src/lib/config')
-// const Logger = require('@mojaloop/central-services-logger')
-const ActionSchema = require('../../../src/models/action').actionModel
+const ActionSchema = require('#src/models/action').actionModel
 
 Test('Action model', ActionModelTest => {
   let sandbox
