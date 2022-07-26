@@ -29,15 +29,13 @@
  ******/
 'use strict'
 
-const src = '../../../../src/'
 const Sinon = require('sinon')
 const rewire = require('rewire')
 const Test = require('tapes')(require('tape'))
-const KafkaProducer = require('@mojaloop/central-services-stream').Kafka.Producer
-const Producer = require(`${src}/lib/kafka/producer`)
-const P = require('bluebird')
 const Uuid = require('uuid4')
+const KafkaProducer = require('@mojaloop/central-services-stream').Kafka.Producer
 const FSPIOPError = require('@mojaloop/central-services-error-handling').Factory.FSPIOPError
+const Producer = require('#src/lib/kafka/producer')
 
 const transfer = {
   transferId: 'b51ec534-ee48-4575-b6a9-ead2955b8999',
@@ -102,10 +100,10 @@ Test('Producer', producerTest => {
   producerTest.test('produceMessage should', produceMessageTest => {
     produceMessageTest.beforeEach(t => {
       sandbox = Sinon.createSandbox()
-      sandbox.stub(KafkaProducer.prototype, 'constructor').returns(P.resolve())
-      sandbox.stub(KafkaProducer.prototype, 'connect').returns(P.resolve())
-      sandbox.stub(KafkaProducer.prototype, 'sendMessage').returns(P.resolve())
-      sandbox.stub(KafkaProducer.prototype, 'disconnect').returns(P.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'constructor').returns(Promise.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'connect').returns(Promise.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'sendMessage').returns(Promise.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'disconnect').returns(Promise.resolve())
       t.end()
     })
 
@@ -155,10 +153,10 @@ Test('Producer', producerTest => {
   producerTest.test('getProducer should', getProducerTest => {
     getProducerTest.beforeEach(t => {
       sandbox = Sinon.createSandbox()
-      sandbox.stub(KafkaProducer.prototype, 'constructor').returns(P.resolve())
-      sandbox.stub(KafkaProducer.prototype, 'connect').returns(P.resolve())
-      sandbox.stub(KafkaProducer.prototype, 'sendMessage').returns(P.resolve())
-      sandbox.stub(KafkaProducer.prototype, 'disconnect').returns(P.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'constructor').returns(Promise.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'connect').returns(Promise.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'sendMessage').returns(Promise.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'disconnect').returns(Promise.resolve())
       t.end()
     })
 
@@ -189,10 +187,10 @@ Test('Producer', producerTest => {
   producerTest.test('disconnect should', disconnectTest => {
     disconnectTest.beforeEach(t => {
       sandbox = Sinon.createSandbox()
-      sandbox.stub(KafkaProducer.prototype, 'constructor').returns(P.resolve())
-      sandbox.stub(KafkaProducer.prototype, 'connect').returns(P.resolve())
-      sandbox.stub(KafkaProducer.prototype, 'sendMessage').returns(P.resolve())
-      sandbox.stub(KafkaProducer.prototype, 'disconnect').returns(P.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'constructor').returns(Promise.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'connect').returns(Promise.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'sendMessage').returns(Promise.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'disconnect').returns(Promise.resolve())
       t.end()
     })
 
@@ -209,7 +207,7 @@ Test('Producer', producerTest => {
     disconnectTest.test('disconnect specific topic correctly', async test => {
       try {
         const topicName = 'someTopic'
-        test.ok(await Producer.produceMessage({}, { topicName: topicName }, {}))
+        test.ok(await Producer.produceMessage({}, { topicName }, {}))
         await Producer.disconnect(topicName)
         test.pass('Disconnect specific topic successfully')
         test.end()
@@ -222,10 +220,10 @@ Test('Producer', producerTest => {
     disconnectTest.test('disconnect all topics correctly', async test => {
       try {
         let topicName = 'someTopic1'
-        test.ok(await Producer.produceMessage({}, { topicName: topicName }, {}))
+        test.ok(await Producer.produceMessage({}, { topicName }, {}))
         await Producer.disconnect(topicName)
         topicName = 'someTopic2'
-        test.ok(await Producer.produceMessage({}, { topicName: topicName }, {}))
+        test.ok(await Producer.produceMessage({}, { topicName }, {}))
         await Producer.disconnect()
         test.pass('Disconnected all topics successfully')
         test.end()
@@ -245,7 +243,7 @@ Test('Producer', producerTest => {
         getProducerStub.withArgs(topicNameFailure).throws(`No producer found for topic ${topicNameFailure}`)
 
         // lets rewire the producer import
-        const KafkaProducerProxy = rewire(`${src}/lib/kafka/producer`)
+        const KafkaProducerProxy = rewire('#src/lib/kafka/producer')
 
         // lets override the getProducer method within the import
         KafkaProducerProxy.__set__('getProducer', getProducerStub)
@@ -268,7 +266,7 @@ Test('Producer', producerTest => {
     disconnectTest.test('throw error if failure to disconnect from kafka if topic does not exist', async test => {
       try {
         const topicName = 'someTopic'
-        await Producer.produceMessage({}, { topicName: topicName }, {})
+        await Producer.produceMessage({}, { topicName }, {})
         await Producer.disconnect('undefined')
       } catch (e) {
         test.ok(e instanceof FSPIOPError)
@@ -294,9 +292,9 @@ Test('Producer', producerTest => {
   producerTest.test('produceMessage failure should', produceMessageTest => {
     produceMessageTest.beforeEach(t => {
       sandbox = Sinon.createSandbox()
-      sandbox.stub(KafkaProducer.prototype, 'constructor').returns(P.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'constructor').returns(Promise.resolve())
       sandbox.stub(KafkaProducer.prototype, 'connect').throws(new Error())
-      sandbox.stub(KafkaProducer.prototype, 'sendMessage').returns(P.resolve())
+      sandbox.stub(KafkaProducer.prototype, 'sendMessage').returns(Promise.resolve())
       sandbox.stub(KafkaProducer.prototype, 'disconnect').throws(new Error())
       t.end()
     })

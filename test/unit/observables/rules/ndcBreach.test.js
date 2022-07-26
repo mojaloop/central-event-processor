@@ -24,19 +24,19 @@
 'use strict'
 
 const test = require('tapes')(require('tape'))
-const Utility = require('../../../src/lib/utility')
 const Sinon = require('sinon')
-const LimitModel = require('../../../src/models/limits').limitModel
-const EventModel = require('../../../../src/models/events').eventModel
-const ActionModel = require('../../../src/models/action').actionModel
+const Utility = require('#src/lib/utility')
+const LimitModel = require('#src/models/limits').limitModel
+const EventModel = require('#src/models/events').eventModel
+const ActionModel = require('#src/models/action').actionModel
 
-test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
+test('RxJs Observable Tests (Action Observable) : ', subTest => {
   Sinon.config = {
     useFakeTimers: false
   }
   let sandbox
 
-  actionTest.beforeEach(test => {
+  subTest.beforeEach(test => {
     sandbox = Sinon.createSandbox()
     sandbox.stub(LimitModel, 'findOne')
     sandbox.stub(EventModel, 'findOne')
@@ -45,8 +45,15 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     test.end()
   })
 
-  actionTest.afterEach(test => {
+  subTest.afterEach(test => {
     sandbox.restore()
     test.end()
   })
+
+  subTest.test('TODO', t => {
+    t.ok('do something here')
+    t.end()
+  })
+
+  subTest.end()
 })

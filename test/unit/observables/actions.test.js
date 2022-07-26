@@ -24,12 +24,11 @@
 'use strict'
 
 const test = require('tapes')(require('tape'))
-const Utility = require('../../../src/lib/utility')
+const Utility = require('#src/lib/utility')
 const Sinon = require('sinon')
-const ActionObservable = require('../../../src/observables/actions').actionObservable
-const ActionModel = require('../../../src/models/action').actionModel
-const NotificationModel = require('../../../src/models/notificationEndpoint').notificationEndpointModel
-const P = require('bluebird')
+const ActionObservable = require('#src/observables/actions').actionObservable
+const ActionModel = require('#src/models/action').actionModel
+const NotificationModel = require('#src/models/notificationEndpoint').notificationEndpointModel
 
 test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
   Sinon.config = {
@@ -42,7 +41,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
     triggeredBy: '5bf5480ba305f9801a6d59df',
     fromEvent: '5bf5480ba305f9801a6d59e3',
     updatedAt: '2018-11-21T13:55:24.791Z',
-    save: () => { return P.resolve() }
+    save: () => { return Promise.resolve() }
   }
   const dfspNotificationEndpointModelJSON = {
     name: 'dfsp2',
@@ -64,7 +63,7 @@ test('RxJs Observable Tests (Action Observable) : ', async actionTest => {
 
     sandbox.stub(Utility)
 
-    Utility.produceGeneralMessage.returns(P.resolve())
+    Utility.produceGeneralMessage.returns(Promise.resolve())
     test.end()
   })
 
