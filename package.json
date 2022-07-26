@@ -61,7 +61,7 @@
     "json-rules-engine": "6.1.2",
     "leaked-handles": "5.2.0",
     "moment": "2.29.4",
-    "mongoose": "6.4.6",
+    "mongoose": "6.4.7",
     "mustache": "4.2.0",
     "request": "2.88.2",
     "request-promise": "4.2.6",
