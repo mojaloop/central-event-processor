@@ -257,10 +257,11 @@ Test('Producer', producerTest => {
         test.end()
       } catch (e) {
         test.ok(e instanceof FSPIOPError)
-        test.ok(e.message === `The following Producers could not be disconnected: [{"topic":"${topicNameFailure}","error":"No producer found for topic ${topicNameFailure}"}]`)
+
+        test.ok(e.message === `The following Producers could not be disconnected: [{"topic":"${topicNameFailure}","error":"No producer found for topic ${topicNameFailure}: Sinon-provided No producer found for topic ${topicNameFailure}"}]`)
         test.end()
       }
-      getProducerStub.restore()
+      sandbox.restore()
     })
 
     disconnectTest.test('throw error if failure to disconnect from kafka if topic does not exist', async test => {
