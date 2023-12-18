@@ -770,8 +770,6 @@ workflows:
             - test-lint
             - test-unit
             - test-coverage
-            # - test-integration
-            # - test-functional
             - vulnerability-check
             - audit-licenses
           filters:
@@ -808,8 +806,6 @@ workflows:
             - test-lint
             - test-unit
             - test-coverage
-            # - test-integration
-            # - test-functional
             - vulnerability-check
             - audit-licenses
             - license-scan
@@ -835,11 +831,8 @@ workflows:
             - test-lint
             - test-unit
             - test-coverage
-            # - test-integration
-            # - test-functional
             - vulnerability-check
             - audit-licenses
-            # - test-integration
             - license-scan
             - image-scan
           filters:
@@ -855,11 +848,8 @@ workflows:
             - test-lint
             - test-unit
             - test-coverage
-            # - test-integration
-            # - test-functional
             - vulnerability-check
             - audit-licenses
-            # - test-integration
             - license-scan
             - image-scan
           filters:
