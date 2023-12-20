@@ -26,6 +26,19 @@
     "GHSA-8h2f-7jc4-7m3m",
     "GHSA-3vjf-82ff-p4r3",
     "GHSA-gmv4-r438-p67f",
-    "GHSA-p9pc-299p-vxgp"
+    "GHSA-p9pc-299p-vxgp",
+    // third party dependencies
+    "GHSA-67hx-6x53-jw92",
+    "GHSA-gxpj-cx7g-858c",
+    "GHSA-6xrf-q977-5vgc",
+    "GHSA-8cf7-32gw-wr33",
+    "GHSA-hjrf-2m68-5959",
+    "GHSA-qwph-4952-7xr6",
+    "GHSA-7fh5-64p2-3v2j",
+    "GHSA-hrpp-h998-j3pp",
+    "GHSA-p8p7-x288-28g6",
+    "GHSA-c2qf-rxjj-qqgw",
+    "GHSA-72xf-g2v4-qvf3",
+    "GHSA-g694-m8vq-gv9h"
   ]
 }
