@@ -5,40 +5,7 @@
   "moderate": true,
   "allowlist": [ // NOTE: Please add as much information as possible to any items added to the allowList
     // Currently no fixes available for the following
-    "GHSA-v88g-cgmw-v5xw",
-    "GHSA-93q8-gq69-wqmw",
-    "GHSA-fwr7-v2mv-hh25",
-    "GHSA-phwq-j96m-2c2q",
-    "GHSA-mhxj-85r3-2x55",
-    "GHSA-v5vg-g7rq-363w",
-    "GHSA-896r-f27r-55mw",
-    "GHSA-282f-qqgm-c34q",
-    "GHSA-6vfc-qv3f-vr6c",
-    "GHSA-xvch-5gv4-984h",
-    "GHSA-vh95-rmgr-6w4m",
-    "GHSA-wc69-rhjr-hc9g",
-    "GHSA-rp65-9cf3-cjxr",
-    "GHSA-g954-5hwp-pp24",
-    "GHSA-mjxr-4v3x-q3m4",
-    "GHSA-rjqq-98f6-6j3r",
-    "GHSA-w5p7-h5w8-2hfq",
-    "GHSA-gcv8-gh4r-25x6",
-    "GHSA-8h2f-7jc4-7m3m",
-    "GHSA-3vjf-82ff-p4r3",
-    "GHSA-gmv4-r438-p67f",
-    "GHSA-p9pc-299p-vxgp",
-    // third party dependencies
-    "GHSA-67hx-6x53-jw92",
-    "GHSA-gxpj-cx7g-858c",
-    "GHSA-6xrf-q977-5vgc",
-    "GHSA-8cf7-32gw-wr33",
-    "GHSA-hjrf-2m68-5959",
-    "GHSA-qwph-4952-7xr6",
-    "GHSA-7fh5-64p2-3v2j",
-    "GHSA-hrpp-h998-j3pp",
-    "GHSA-p8p7-x288-28g6",
-    "GHSA-c2qf-rxjj-qqgw",
-    "GHSA-72xf-g2v4-qvf3",
-    "GHSA-g694-m8vq-gv9h"
+    "GHSA-p8p7-x288-28g6"  //https://github.com/advisories/GHSA-p8p7-x288-28g6
+
   ]
 }
