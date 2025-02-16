@@ -37,14 +37,13 @@ require('leaked-handles').set({
 const test = require('tapes')(require('tape'))
 const Mongoose = require('mongoose').Mongoose
 const mongoose = new Mongoose()
-const Mockgoose = require('mockgoose').Mockgoose
-const mockgoose = new Mockgoose(mongoose)
+const { MongoMemoryServer } = require('mongodb-memory-server')
 const Database = require('../../../src/lib/database').db
 const config = require('../../../src/lib/config')
 
 test('Mongo Database tests', async dbTest => {
   dbTest.beforeEach(async t => {
-    await mockgoose.helper.reset()
+    await MongoMemoryServer.helper.reset()
     t.end()
   })
 
@@ -63,7 +62,7 @@ test('Mongo Database tests', async dbTest => {
     try {
       const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` : `mongodb://${config.mongo.uri}/${config.mongo.database}`
 
-      await mockgoose.prepareStorage().then(() => {
+      await MongoMemoryServer.prepareStorage().then(() => {
         mongoose.connect(`${connectionString}`, {
           useFindAndModify: false,
           useNewUrlParser: true,
