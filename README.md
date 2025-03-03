@@ -86,7 +86,7 @@ See the [onboarding guide](onboarding.md) for running the service locally.
 
 [Architecture Overview](docs/images/1.png)
 
-This is standalone service which is connected to Kafka Notification topic into the mojaloop environemnt and monitors the topic for messages which match certain rules and takes actions accordingly.
+This is standalone service which is connected to Kafka Notification topic into the mojaloop environment and monitors the topic for messages which match certain rules and takes actions accordingly.
 
 The service is developed using [RxJS](https://github.com/ReactiveX/rxjs) for observing the system and acting accordingly. The decisions for actions are taken by the [json-rule-engine](https://github.com/cachecontrol/json-rules-engine).
 
