@@ -324,5 +324,7 @@ module.exports = {
   getPositionsObservable,
   getDfspNotificationEndpointsObservable,
   getParticipantEndpointsFromResponseObservable,
-  getDfspNotificationEndpointsForLimitObservable
+  getDfspNotificationEndpointsForLimitObservable,
+  createEventsForParticipantSettlementPositionChange,
+  storeCurrentPositionForSettlementChange
 }
