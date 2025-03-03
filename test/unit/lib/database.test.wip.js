@@ -37,13 +37,17 @@ require('leaked-handles').set({
 const test = require('tapes')(require('tape'))
 const Mongoose = require('mongoose').Mongoose
 const mongoose = new Mongoose()
-const { MongoMemoryServer } = require('mongodb-memory-server')
+
+// it should use mongodb-memory-server as mockgoose introduces a vulnerability as it uses requests.
+
+// const Mockgoose = require('mockgoose').Mockgoose
+// const mockgoose = new Mockgoose(mongoose)
 const Database = require('../../../src/lib/database').db
-const config = require('../../../src/lib/config')
+// const config = require('../../../src/lib/config')
 
 test('Mongo Database tests', async dbTest => {
   dbTest.beforeEach(async t => {
-    await MongoMemoryServer.helper.reset()
+    // await mockgoose.helper.reset()
     t.end()
   })
 
@@ -60,21 +64,21 @@ test('Mongo Database tests', async dbTest => {
 
   await dbTest.test('successful connection', async (assert) => {
     try {
-      const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` : `mongodb://${config.mongo.uri}/${config.mongo.database}`
+      // const connectionString = config.mongo.user ? `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.uri}/${config.mongo.database}` : `mongodb://${config.mongo.uri}/${config.mongo.database}`
 
-      await MongoMemoryServer.prepareStorage().then(() => {
-        mongoose.connect(`${connectionString}`, {
-          useFindAndModify: false,
-          useNewUrlParser: true,
-          useCreateIndex: true
-        })
-        mongoose.connection.on('connected', () => {
-          console.log('db connection is now open')
-        })
-        mongoose.connection.on('error', function (err) {
-          console.log('Mongoose default connection has occured ' + err + ' error')
-        })
-      })
+      // await mockgoose.prepareStorage().then(() => {
+      //   mongoose.connect(`${connectionString}`, {
+      //     useFindAndModify: false,
+      //     useNewUrlParser: true,
+      //     useCreateIndex: true
+      //   })
+      //   mongoose.connection.on('connected', () => {
+      //     console.log('db connection is now open')
+      //   })
+      //   mongoose.connection.on('error', function (err) {
+      //     console.log('Mongoose default connection has occured ' + err + ' error')
+      //   })
+      // })
 
       const expectedResult = { $initialConnection: {} }
       const result = await Database()
