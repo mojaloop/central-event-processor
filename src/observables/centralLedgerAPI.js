@@ -31,7 +31,8 @@
  ******/
 'use strict'
 
-const request = require('request-promise')
+// const request = require('request-promise')
+const axios = require('axios')
 const Rx = require('rxjs')
 const Logger = require('@mojaloop/central-services-logger')
 const MLNumber = require('@mojaloop/ml-number')
@@ -61,11 +62,8 @@ const getParticipantEndpointsFromMessageResponse = async participantName => {
   }]
 
   try {
-    const participantEndpointsObjArray = await request({
-      uri: `http://${centralLedgerAdminURI}/participants/${participantName}/endpoints`,
-      json: true
-    })
-    return participantEndpointsObjArray
+    const response = await axios.get(`http://${centralLedgerAdminURI}/participants/${participantName}/endpoints`)
+    return response.data
   } catch (err) {
     Logger.info(`getParticipantEndpointsFromResponse failed with error: ${err}`)
     return unKnownParticipantObjArray
@@ -233,13 +231,13 @@ const getDfspNotificationEndpointsObservable = message => {
     const payeeFsp = message.value.to
     try {
       const [payerNotificationResponse, payeeNotificationResponse, hubNotificationResponse] = await Promise.all([
-        request({ uri: `http://${centralLedgerAdminURI}/participants/${payerFsp}/endpoints`, json: true }),
-        request({ uri: `http://${centralLedgerAdminURI}/participants/${payeeFsp}/endpoints`, json: true }),
-        request({ uri: `http://${centralLedgerAdminURI}/participants/${Config.get('HUB_PARTICIPANT').NAME}/endpoints`, json: true })
+        axios.get(`http://${centralLedgerAdminURI}/participants/${payerFsp}/endpoints`),
+        axios.get(`http://${centralLedgerAdminURI}/participants/${payeeFsp}/endpoints`),
+        axios.get(`http://${centralLedgerAdminURI}/participants/${Config.get('HUB_PARTICIPANT').NAME}/endpoints`)
       ])
-      const payerNotificationEndpoints = await updateNotificationEndpointsFromResponse(payerFsp, payerNotificationResponse)
-      const payeeNotificationEndpoints = await updateNotificationEndpointsFromResponse(payeeFsp, payeeNotificationResponse)
-      const hubNotificationEndpoints = await updateNotificationEndpointsFromResponse(hubName, hubNotificationResponse)
+      const payerNotificationEndpoints = await updateNotificationEndpointsFromResponse(payerFsp, payerNotificationResponse.data)
+      const payeeNotificationEndpoints = await updateNotificationEndpointsFromResponse(payeeFsp, payeeNotificationResponse.data)
+      const hubNotificationEndpoints = await updateNotificationEndpointsFromResponse(hubName, hubNotificationResponse.data)
       const notifications = {}
       notifications[payerFsp] = payerNotificationEndpoints
       notifications[payeeFsp] = payeeNotificationEndpoints
@@ -260,11 +258,11 @@ const getDfspNotificationEndpointsForLimitObservable = message => {
     const fsp = message.value.from
     try {
       const [fspNotificationResponse, hubNotificationResponse] = await Promise.all([
-        request({ uri: `http://${centralLedgerAdminURI}/participants/${fsp}/endpoints`, json: true }),
-        request({ uri: `http://${centralLedgerAdminURI}/participants/${Config.get('HUB_PARTICIPANT').NAME}/endpoints`, json: true })
+        axios.get(`http://${centralLedgerAdminURI}/participants/${fsp}/endpoints`),
+        axios.get(`http://${centralLedgerAdminURI}/participants/${Config.get('HUB_PARTICIPANT').NAME}/endpoints`)
       ])
-      const fspNotificationEndpoints = await updateNotificationEndpointsFromResponse(fsp, fspNotificationResponse)
-      const hubNotificationEndpoints = await updateNotificationEndpointsFromResponse(hubName, hubNotificationResponse)
+      const fspNotificationEndpoints = await updateNotificationEndpointsFromResponse(fsp, fspNotificationResponse.data)
+      const hubNotificationEndpoints = await updateNotificationEndpointsFromResponse(hubName, hubNotificationResponse.data)
       const notifications = {}
       notifications[fsp] = fspNotificationEndpoints
       notifications.Hub = hubNotificationEndpoints
@@ -281,8 +279,8 @@ const getDfspNotificationEndpointsForLimitObservable = message => {
 
 const requestPositionPerName = async (name) => {
   try {
-    const position = await request({ uri: `http://${centralLedgerAdminURI}/participants/${name}/positions`, json: true })
-    return position
+    const position = await axios.get(`http://${centralLedgerAdminURI}/participants/${name}/positions`)
+    return position.data
   } catch (err) {
     throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
@@ -326,5 +324,7 @@ module.exports = {
   getPositionsObservable,
   getDfspNotificationEndpointsObservable,
   getParticipantEndpointsFromResponseObservable,
-  getDfspNotificationEndpointsForLimitObservable
+  getDfspNotificationEndpointsForLimitObservable,
+  createEventsForParticipantSettlementPositionChange,
+  storeCurrentPositionForSettlementChange
 }
