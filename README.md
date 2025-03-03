@@ -58,7 +58,7 @@ See the [onboarding guide](onboarding.md) for running the service locally.
 
 ## Tasks
 
-- send notifications when current position breaches the limit threshold value after a successful transfer was commited
+- send notifications when current position breaches the limit threshold value after a successful transfer was committed
 - send notifications when the limit was adjusted
 - make it extendable and flexible
 
