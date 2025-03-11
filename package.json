@@ -51,17 +51,17 @@
   "dependencies": {
     "@mojaloop/central-services-error-handling": "13.0.7",
     "@mojaloop/central-services-health": "15.0.4",
-    "@mojaloop/central-services-logger": "11.5.5",
+    "@mojaloop/central-services-logger": "11.6.1",
     "@mojaloop/central-services-metrics": "12.4.5",
-    "@mojaloop/central-services-shared": "18.21.0",
+    "@mojaloop/central-services-shared": "18.22.1",
     "@mojaloop/central-services-stream": "11.5.1",
-    "@mojaloop/event-sdk": "14.1.5",
+    "@mojaloop/event-sdk": "14.3.1",
     "@mojaloop/ml-number": "11.2.7",
     "config": "3.3.12",
     "json-rules-engine": "7.3.1",
     "leaked-handles": "5.2.0",
     "moment": "2.30.1",
-    "mongoose": "8.12.0",
+    "mongoose": "8.12.1",
     "mustache": "4.2.0",
     "request-promise": "4.2.6",
     "rxjs": "7.8.2",
@@ -87,6 +87,7 @@
   },
   "overrides": {
     "async": "3.2.6",
+    "axios": "1.8.2",
     "postcss": {
       "nanoid": "^3.3.8"
     },
