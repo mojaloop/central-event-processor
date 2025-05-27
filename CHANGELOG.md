@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [12.2.0](https://github.com/mojaloop/central-event-processor/compare/v12.1.2...v12.2.0) (2025-05-27)
+
+
+### Features
+
+* bump up node to v22.15.1 ([#268](https://github.com/mojaloop/central-event-processor/issues/268)) ([b96efe0](https://github.com/mojaloop/central-event-processor/commit/b96efe0c272fb12b962e6ce40214d4cdb949c0b0))
+
 ### [12.1.2](https://github.com/mojaloop/central-event-processor/compare/v12.1.1...v12.1.2) (2025-02-24)
 
 ### [12.1.1](https://github.com/mojaloop/central-event-processor/compare/v12.1.0...v12.1.1) (2025-01-29)
