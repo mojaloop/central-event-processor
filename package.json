@@ -1,6 +1,6 @@
 {
   "name": "central-event-processor",
-  "version": "12.1.2",
+  "version": "12.2.2",
   "description": "CEP for Mojaloop Central-Ledger to monitor the notification kafka topic and act on it",
   "homepage": "https://github.com/mojaloop/central-event-processor#readme",
   "repository": {
@@ -17,7 +17,7 @@
     "Miguel de Barros <miguel.debarros@modusbox.com>"
   ],
   "engines": {
-    "node": "=18.x"
+    "node": "22.x"
   },
   "main": "src/index.js",
   "imports": {
@@ -35,6 +35,8 @@
     "test:xunit": "npx tape 'test/unit/**/**.test.js' | tap-xunit > ./test/results/xunit.xml",
     "test:coverage": "npx nyc tapes -- 'test/unit/**/*.test.js' | tap-mocha-reporter spec; nyc report ---reporter=text",
     "test:coverage-check": "npm run test:coverage && nyc check-coverage",
+    "test:functional": "echo 'No functional tests defined'",
+    "test:integration": "echo 'No integration tests defined'",
     "start": "node ./src/index.js",
     "standard": "npx standard",
     "standard:fix": "npx standard --fix",
@@ -43,41 +45,42 @@
     "dev": "npx nodemon ./src/index.js",
     "docker:up": "docker-compose -f docker-compose.yml up",
     "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
+    "audit:fix": "npm audit fix",
     "dep:check": "npx ncu -e 2",
     "dep:update": "npx ncu -u",
     "release": "npx standard-version --no-verify --releaseCommitMessageFormat 'chore(release): {{currentTag}} [skip ci]'",
     "snapshot": "npx standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
   "dependencies": {
-    "@mojaloop/central-services-error-handling": "13.0.7",
-    "@mojaloop/central-services-health": "15.0.4",
-    "@mojaloop/central-services-logger": "11.5.5",
-    "@mojaloop/central-services-metrics": "12.4.5",
-    "@mojaloop/central-services-shared": "18.21.0",
-    "@mojaloop/central-services-stream": "11.5.1",
-    "@mojaloop/event-sdk": "14.1.5",
-    "@mojaloop/ml-number": "11.2.7",
-    "config": "3.3.12",
+    "@mojaloop/central-services-error-handling": "13.1.3",
+    "@mojaloop/central-services-health": "15.2.0",
+    "@mojaloop/central-services-logger": "11.10.1",
+    "@mojaloop/central-services-metrics": "12.8.0",
+    "@mojaloop/central-services-shared": "18.34.2",
+    "@mojaloop/central-services-stream": "11.8.8",
+    "@mojaloop/event-sdk": "14.8.1",
+    "@mojaloop/ml-number": "11.4.0",
+    "axios": "1.12.2",
+    "config": "4.1.1",
     "json-rules-engine": "7.3.1",
     "leaked-handles": "5.2.0",
     "moment": "2.30.1",
-    "mongoose": "8.12.0",
+    "mongoose": "8.19.1",
     "mustache": "4.2.0",
-    "request-promise": "4.2.6",
     "rxjs": "7.8.2",
     "uuid4": "2.0.3"
   },
   "devDependencies": {
     "audit-ci": "^7.1.0",
-    "mockgoose": "8.0.4",
-    "nodemon": "3.1.9",
-    "npm-check-updates": "17.1.15",
+    "mongodb-memory-server": "10.2.3",
+    "nodemon": "3.1.10",
+    "npm-check-updates": "19.1.1",
     "nyc": "^17.1.0",
     "pre-commit": "1.2.2",
     "proxyquire": "2.1.3",
     "replace": "^1.2.2",
-    "rewire": "7.0.0",
-    "sinon": "19.0.2",
+    "rewire": "9.0.1",
+    "sinon": "21.0.0",
     "standard": "17.1.2",
     "standard-version": "^9.5.0",
     "tap-mocha-reporter": "^5.0.4",
@@ -86,7 +89,9 @@
     "tapes": "4.1.0"
   },
   "overrides": {
-    "httpsnippet":"3.0.1",
+    "form-data": "4.0.4",
+    "on-headers": "1.1.0",
+    "brace-expansion": "2.0.2",
     "async": "3.2.6",
     "postcss": {
       "nanoid": "^3.3.8"
@@ -98,8 +103,7 @@
       "jsonpointer": "5.0.0",
       "markdown-it": "12.3.2",
       "yargs-parser": "13.1.2",
-      "postcss": "8.4.31",
-      "undici": "6.21.1"
+      "postcss": "8.4.31"
     },
     "widdershins": {
       "yargs-parser": "13.1.2",
