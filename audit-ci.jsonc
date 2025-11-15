@@ -5,7 +5,9 @@
   "moderate": true,
   "allowlist": [ // NOTE: Please add as much information as possible to any items added to the allowList
     // Currently no fixes available for the following
-    "GHSA-p8p7-x288-28g6"  //https://github.com/advisories/GHSA-p8p7-x288-28g6
-
+    // "GHSA-p8p7-x288-28g6"  //https://github.com/advisories/GHSA-p8p7-x288-28g6
+    "GHSA-968p-4wvh-cqc8", //https://github.com/advisories/GHSA-968p-4wvh-cqc8
+    "GHSA-fjxv-7rqg-78g4", //https://github.com/advisories/GHSA-fjxv-7rqg-78g4
+    "GHSA-mh29-5h37-fv8m" //https://github.com/advisories/GHSA-mh29-5h37-fv8m
   ]
 }
