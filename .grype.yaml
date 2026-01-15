@@ -8,6 +8,11 @@ ignore:
   - vulnerability: CVE-2025-56200
     include-aliases: true
     reason: "No fixes available as of 2025-10-16 on validator npm package"
+  - vulnerability: CVE-2025-60876
+    reason: "No fixes available as of 2026-01-14 on Dockerfile base image 22.21.1-alpine3.23"
+  - vulnerability: GHSA-5j98-mcp5-4vw2
+    include-aliases: true
+    reason: "glob upgraded to 10.5.0 in package.json, but Node.js 22.21.1-alpine3.23 is still using glob 10.4.5"
 
 # Set output format defaults
 output:
