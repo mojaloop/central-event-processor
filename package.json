@@ -31,9 +31,9 @@
   ],
   "scripts": {
     "test": "npm run test:unit",
-    "test:unit": "npx tape 'test/unit/**/*.test.js' | tap-spec",
+    "test:unit": "npx tape 'test/unit/**/*.test.js' | tap-mocha-reporter spec",
     "test:xunit": "npx tape 'test/unit/**/**.test.js' | tap-xunit > ./test/results/xunit.xml",
-    "test:coverage": "npx nyc tapes -- 'test/unit/**/*.test.js' | tap-spec; nyc report ---reporter=text",
+    "test:coverage": "npx nyc tapes -- 'test/unit/**/*.test.js' | tap-mocha-reporter spec; nyc report ---reporter=text",
     "test:coverage-check": "npm run test:coverage && nyc check-coverage",
     "test:functional": "echo 'No functional tests defined'",
     "test:integration": "echo 'No integration tests defined'",
@@ -83,7 +83,7 @@
     "sinon": "21.0.1",
     "standard": "17.1.2",
     "standard-version": "^9.5.0",
-    "tap-spec": "^5.0.0",
+    "tap-mocha-reporter": "^5.0.4",
     "tap-xunit": "2.4.1",
     "tape": "5.9.0",
     "tapes": "4.1.0"
