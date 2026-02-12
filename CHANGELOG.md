@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [12.2.4](https://github.com/mojaloop/central-event-processor/compare/v12.2.3...v12.2.4) (2026-02-12)
+
 ### [12.2.3](https://github.com/mojaloop/central-event-processor/compare/v12.2.2...v12.2.3) (2026-01-15)
 
 ### [12.2.2](https://github.com/mojaloop/central-event-processor/compare/v12.2.1...v12.2.2) (2025-10-16)
