@@ -36,16 +36,42 @@ const Consumer = require('../kafka/consumer')
 /**
  * @function getSubServiceHealthBroker
  *
- * @description Gets the health for the broker
+ * @description
+ *   Gets the health for the broker, by checking that each consumer is healthy.
+ *   Uses the consumer's isHealthy() method from central-services-stream which performs:
+ *   - isConnected() - basic connection status
+ *   - isAssigned() - consumer has partition assignments
+ *   - isPollHealthy() - last poll was within healthCheckPollInterval
+ *   - getMetadataSync() - all subscribed topics exist in broker metadata
+ *
  * @returns Promise<SubServiceHealth> The SubService health object for the broker
  */
 const getSubServiceHealthBroker = async () => {
-  const consumerTopics = Consumer.getListOfTopics()
   let status = statusEnum.OK
+
   try {
-    await Promise.all(consumerTopics.map(t => Consumer.isConnected(t)))
+    const consumerTopics = Consumer.getListOfTopics()
+    const results = await Promise.all(
+      consumerTopics.map(async (topic) => {
+        try {
+          const consumer = Consumer.getConsumer(topic)
+          const isHealthy = await consumer.isHealthy()
+          if (!isHealthy) {
+            Logger.isWarnEnabled && Logger.warn(`Consumer is not healthy for topic ${topic}`)
+          }
+          return isHealthy
+        } catch (err) {
+          Logger.isWarnEnabled && Logger.warn(`isHealthy check failed for topic ${topic}: ${err.message}`)
+          return false
+        }
+      })
+    )
+
+    if (results.some(healthy => !healthy)) {
+      status = statusEnum.DOWN
+    }
   } catch (err) {
-    Logger.debug(`getSubServiceHealthBroker failed with error ${err.message}.`)
+    Logger.isWarnEnabled && Logger.warn(`getSubServiceHealthBroker failed with error ${err.message}.`)
     status = statusEnum.DOWN
   }
 

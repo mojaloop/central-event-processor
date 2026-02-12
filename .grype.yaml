@@ -13,6 +13,18 @@ ignore:
   - vulnerability: GHSA-5j98-mcp5-4vw2
     include-aliases: true
     reason: "glob upgraded to 10.5.0 in package.json, but Node.js 22.21.1-alpine3.23 is still using glob 10.4.5"
+  - vulnerability: CVE-2026-24842
+    include-aliases: true
+    reason: "tar 6.2.1/7.4.3 bundled in npm 10.x shipped with Node.js 22.x — fixed in tar >=7.5.7 (npm 11.x), not yet available in Node 22 LTS"
+  - vulnerability: CVE-2026-23950
+    include-aliases: true
+    reason: "tar 6.2.1/7.4.3 bundled in npm 10.x shipped with Node.js 22.x — fixed in tar >=7.5.4 (npm 11.x), not yet available in Node 22 LTS"
+  - vulnerability: CVE-2026-23745
+    include-aliases: true
+    reason: "tar 6.2.1/7.4.3 bundled in npm 10.x shipped with Node.js 22.x — fixed in tar >=7.5.3 (npm 11.x), not yet available in Node 22 LTS"
+  - vulnerability: CVE-2020-7608
+    include-aliases: true
+    reason: "yargs-parser 11.1.1 transitive via widdershins in @mojaloop/central-services-shared — no upgrade path available"
 
 # Set output format defaults
 output:
