@@ -61,7 +61,7 @@
     "@mojaloop/central-services-stream": "11.9.1",
     "@mojaloop/event-sdk": "14.8.3",
     "@mojaloop/ml-number": "11.4.3",
-    "axios": "1.13.6",
+    "axios": "1.15.0",
     "config": "4.4.1",
     "json-rules-engine": "7.3.1",
     "leaked-handles": "5.2.0",
@@ -117,7 +117,7 @@
     "fast-xml-parser": "5.5.7",
     "undici": "6.24.1",
     "lodash": "4.17.23",
-    "axios": "1.13.6",
+    "axios": "1.15.0",
     "immutable": "5.1.5",
     "minimatch@3.0.5": "3.1.5",
     "yargs-parser@11.1.1": "13.1.2"
