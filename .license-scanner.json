@@ -1,0 +1,8 @@
+{
+  "exceptions": {
+    "process@0.10.1": {
+      "reason": "MIT licensed (LICENSE file in package: 'The MIT License', Copyright (c) 2013 Roman Shtylman) but the upstream package.json omits the license field, so syft reads it as empty. Transitive via leaked-handles@5.2.0. Verified 2026-07-07.",
+      "expires": "2026-12-31"
+    }
+  }
+}
