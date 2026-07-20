@@ -178,11 +178,19 @@ const prepareCurrentPosition = (name, positions, limits, transferId, messagePayl
   const viewsArray = []
   try {
     limits.forEach(limit => {
-      const percentage = 100 - (positions[limit.currency] * 100 / limit.value)
+      // A limit can exist for a currency the participant has no position account for
+      // (e.g. stale limit cache). ml-number >= 11.4.5 (bignumber.js 11) throws on
+      // undefined instead of producing NaN, so skip such limits.
+      const positionValue = positions[limit.currency]
+      if (positionValue === undefined) {
+        Logger.info(`prepareCurrentPosition: no position found for participant ${name} and currency ${limit.currency}, skipping`)
+        return
+      }
+      const percentage = 100 - (positionValue * 100 / limit.value)
       const currentPosition = {
         name,
         currency: limit.currency,
-        positionValue: new MLNumber(positions[limit.currency]).toFixed(Config.get('AMOUNT.SCALE')),
+        positionValue: new MLNumber(positionValue).toFixed(Config.get('AMOUNT.SCALE')),
         percentage,
         transferId,
         positionType: 'transfer',
