@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [12.2.7](https://github.com/mojaloop/central-event-processor/compare/v12.2.6...v12.2.7) (2026-07-20)
+
+
+### Bug Fixes
+
+* handle new ml-number using bignumber11 ([#309](https://github.com/mojaloop/central-event-processor/issues/309)) ([e4935b6](https://github.com/mojaloop/central-event-processor/commit/e4935b6dc815037d41587df85dd9ec077345a7af))
+
 ### [12.2.6](https://github.com/mojaloop/central-event-processor/compare/v12.2.5...v12.2.6) (2026-03-23)
 
 ### [12.2.5](https://github.com/mojaloop/central-event-processor/compare/v12.2.4...v12.2.5) (2026-02-25)
