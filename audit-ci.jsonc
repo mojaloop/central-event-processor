@@ -4,5 +4,16 @@
   // Only use one of ["low": true, "moderate": true, "high": true, "critical": true]
   "moderate": true,
   "allowlist": [ // NOTE: Please add as much information as possible to any items added to the allowList
+    // Both entries below are advisories with NO patched release published. Everything
+    // else is fixed with a real override in package.json rather than suppressed here.
+    // GHSA-vfj7-8cjw-p6xm - braces: advisory covers "<= 3.0.3" and 3.0.3 is the newest
+    // version published, so there is nothing to upgrade to. Dev tooling only.
+    // Remove once braces 3.0.4 or later ships.
+    "GHSA-vfj7-8cjw-p6xm",
+    // GHSA-hp3w-g68c-fv3c - sprintf-js: advisory covers "<= 1.1.3" and 1.1.3 is the
+    // newest version published. Reached only via argparse 1.x under js-yaml 3.x, which
+    // is dev tooling. Remove once sprintf-js 1.1.4 or later ships.
+    "GHSA-hp3w-g68c-fv3c"
+
   ]
 }

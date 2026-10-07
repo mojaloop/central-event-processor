@@ -1,86 +1,15 @@
 scan-type: source
 ignore:
-  - vulnerability: CVE-2025-60876
-    include-aliases: true
-    reason: 'Alpine base image package (apk): busybox - no npm fix available as of 2026-02-24 (moderate severity)'
-  - vulnerability: GHSA-3ppc-4f35-3m26
-    include-aliases: true
-    reason: >-
-      Base image npm package: minimatch - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-02-24 (high severity)
-  - vulnerability: GHSA-83g3-92jg-28cx
-    include-aliases: true
-    reason: >-
-      Base image npm package: tar - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-02-24 (high severity)
-  - vulnerability: GHSA-34x7-hfp2-rc4v
-    include-aliases: true
-    reason: >-
-      Base image npm package: tar - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-02-24 (high severity)
-  - vulnerability: GHSA-73rr-hh4g-fpgx
-    include-aliases: true
-    reason: >-
-      Base image npm package: diff - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-02-24 (low severity)
-  - vulnerability: GHSA-r6q2-hw4h-h46w
-    include-aliases: true
-    reason: >-
-      Base image npm package: tar - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-02-24 (high severity)
-  - vulnerability: GHSA-8qq5-rm4j-mr97
-    include-aliases: true
-    reason: >-
-      Base image npm package: tar - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-02-24 (high severity)
-  - vulnerability: CVE-2026-27171
-    include-aliases: true
-    reason: 'Alpine base image package (apk): zlib - no npm fix available as of 2026-02-24 (moderate severity)'
-  - vulnerability: GHSA-mh99-v99m-4gvg
-    include-aliases: true
-    reason: >-
-      Base image npm package: brace-expansion - bundled in Node.js base image, not fixable via application dependencies
-      as of 2026-09-18 (high severity)
-  - vulnerability: GHSA-rgw5-rvv9-x895
-    include-aliases: true
-    reason: >-
-      Base image npm package: brace-expansion - bundled in Node.js base image, not fixable via application dependencies
-      as of 2026-09-18 (high severity)
-  - vulnerability: GHSA-r292-9mhp-454m
-    include-aliases: true
-    reason: >-
-      Base image npm package: tar - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-09-18 (high severity)
-  - vulnerability: GHSA-mwp4-54f8-5fhr
-    include-aliases: true
-    reason: >-
-      Base image npm package: ip-address - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-09-18 (high severity)
-  - vulnerability: GHSA-4xrf-jv44-h6hh
-    include-aliases: true
-    reason: >-
-      Base image npm package: ip-address - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-09-18 (moderate severity)
-  - vulnerability: GHSA-22jq-vg5j-6vgg
-    include-aliases: true
-    reason: >-
-      Base image npm package: ip-address - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-09-18 (moderate severity)
-  - vulnerability: GHSA-v3r7-h72x-cjcm
-    include-aliases: true
-    reason: >-
-      Base image npm package: undici - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-09-18 (moderate severity)
-  - vulnerability: GHSA-m8rv-5g2x-5cg5
-    include-aliases: true
-    reason: >-
-      Base image npm package: undici - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-09-18 (moderate severity)
-  - vulnerability: GHSA-8xcm-r25x-g524
-    include-aliases: true
-    reason: >-
-      Base image npm package: undici - bundled in Node.js base image, not fixable via application dependencies as of
-      2026-09-18 (moderate severity)
+  # Empty by design. The grype job here runs with scan-type: source, so it scans
+  # package-lock.json and never the container image. Every entry previously listed was
+  # an Alpine apk finding or an npm package bundled inside the Node base image, none of
+  # which a source scan can see, and each was keyed on vulnerability ID with
+  # include-aliases: true and no package scoping - so it would also have suppressed the
+  # same advisory in this repo's own dependency tree. Verified: grype reports no
+  # findings with no ignores at all. Advisories that genuinely have no fix are recorded
+  # in audit-ci.jsonc instead.
+  []
+
 output:
   - table
   - json
