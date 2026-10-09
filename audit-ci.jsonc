@@ -4,5 +4,18 @@
   // Only use one of ["low": true, "moderate": true, "high": true, "critical": true]
   "moderate": true,
   "allowlist": [ // NOTE: Please add as much information as possible to any items added to the allowList
+    //
+    // Only one advisory in this tree has no usable fix. Everything else is patched with a
+    // real npm override in package.json rather than suppressed here.
+    //
+    // GHSA-vfj7-8cjw-p6xm - braces: no patched release exists in any major - the advisory
+    // covers "<= 3.0.3" and 3.0.3 is the newest version published. Its only path is
+    // nodemon@3.1.14 -> chokidar@3.6.0 -> braces. nodemon 3.1.14 is the latest release and
+    // still declares chokidar ^3. chokidar 4 has dropped braces, so forcing it was tried:
+    // unit tests still pass, but nodemon then crashes on its first restart with
+    // "spawn EBADF", while chokidar 3 restarts cleanly with the same harness. Dev-only
+    // watcher, never on a runtime path. Revisit when nodemon moves to chokidar 4 or
+    // braces 3.0.4 ships.
+    "GHSA-vfj7-8cjw-p6xm"
   ]
 }
