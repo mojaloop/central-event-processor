@@ -1,14 +1,15 @@
 scan-type: source
 ignore:
-  - vulnerability: GHSA-vfj7-8cjw-p6xm
-    include-aliases: true
-    reason: 'Unfixable npm transitive vulnerability: braces (high severity) as of 2026-10-09'
-  - vulnerability: GHSA-x5fp-wj9c-mxmx
-    include-aliases: true
-    reason: 'Unfixable npm transitive vulnerability: unknown (unknown severity) as of 2026-10-09'
-  - vulnerability: GHSA-4mjr-xmp4-gh2g
-    include-aliases: true
-    reason: 'Unfixable npm transitive vulnerability: unknown (unknown severity) as of 2026-10-09'
+  # Empty by design. The grype job here runs with scan-type: source, so it scans
+  # package-lock.json and never the container image. Every entry previously listed was
+  # an Alpine apk finding or an npm package bundled inside the Node base image, none of
+  # which a source scan can see, and each was keyed on vulnerability ID with
+  # include-aliases: true and no package scoping - so it would also have suppressed the
+  # same advisory in this repo's own dependency tree. Verified: grype reports no
+  # findings with no ignores at all. Advisories that genuinely have no fix are recorded
+  # in audit-ci.jsonc instead.
+  []
+
 output:
   - table
   - json
