@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [12.2.8](https://github.com/mojaloop/central-event-processor/compare/v12.2.7...v12.2.8) (2026-10-10)
+
+
+### Bug Fixes
+
+* **security:** patch 1 vulnerability ([#311](https://github.com/mojaloop/central-event-processor/issues/311)) ([3768a7a](https://github.com/mojaloop/central-event-processor/commit/3768a7a7c8241374cfc27850b6bcf41a12881eef))
+* **security:** scope js-yaml/brace-expansion, bump argparse, refresh overrides ([#310](https://github.com/mojaloop/central-event-processor/issues/310)) ([14d1117](https://github.com/mojaloop/central-event-processor/commit/14d1117cde9f826d182a97e1f2097c7d786862b4))
+
 ### [12.2.7](https://github.com/mojaloop/central-event-processor/compare/v12.2.6...v12.2.7) (2026-07-20)
 
 
